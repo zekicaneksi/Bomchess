@@ -21,3 +21,17 @@ So far, my plan goes like this;
 ## The Name
 
 I decided to call it Bomchess for no particular reason.
+
+## Functionalities (so far)
+
+- Authentication
+- Profile pages
+- Sending messages to other users
+- PvP
+- Chat during PvP
+- Duel with a Player
+- Playing with a bot
+- Different match lengths
+- Match Replay
+- Admin panel; Banning users, inspecting reported games and private messages
+- Reporting games, private messages.
