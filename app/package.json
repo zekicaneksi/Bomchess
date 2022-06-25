@@ -1,0 +1,28 @@
+{
+  "name": "bomchess",
+  "version": "1.0.0",
+  "description": "To put on my portfolio, i wanted to make a web application that would show my understanding of basics. I didn't want to do neither heavy backend nor heavy front end app. But not easy either. I kept thinking and came to the conclusion that a fully functional chess site would be best.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zekicaneksi/Bomchess.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zekicaneksi/Bomchess/issues"
+  },
+  "homepage": "https://github.com/zekicaneksi/Bomchess#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.0",
+    "ws": "^8.8.0"
+  }
+}
