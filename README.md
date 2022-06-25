@@ -84,3 +84,54 @@ If i switch, add, or remove a library / tecnology etc. I won't edit what i wrote
 
 I've never used MongoDB or React before. So, today, i finished tutorials on both of them using their offical docs and got the basic knowledge.
 
+## Plan of Building
+
+- Design the database
+- /Sign
+- /
+- /PvP
+- /userName
+- /replay
+- /admin
+
+While designing the database, i realized that i totally forgot about the chess engine. I did a small research i found the "js-chess-engine" npm package. I'll go with this one.
+
+And here is the database;
+
+```
+users:{
+	id: "...",
+	email:"...",
+	username:"...",
+	password:"...",
+	bio:"...",
+	bans:[{playing:"...",chat:"...",message:"..."}]
+}
+
+matches:{
+	id: "...",
+	date: "...",
+	players: [{id:"..." side:"white",id:"...",side:"black"}],
+	length:"...",
+	moves: [{timeBlack:"...", timeWhite:"...", move:"a7c5"}],
+	endedBy: "resign,checkmate,etc.",
+	winner:"...",
+	loser:"..."
+}
+
+reports:{
+	id: "...",
+	type: "user/message/match",
+	targetId: "..."
+}
+
+privateMessages:{
+	id: "...",
+	sender:"...",
+	reciever:"...",
+	content:"...",
+	date:"..."		
+}
+```
+
+From now on, since it's all coding, there is nothing to write here. I will only log the changes i'll make and the hardships i encounter.
