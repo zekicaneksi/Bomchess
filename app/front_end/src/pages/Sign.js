@@ -81,9 +81,9 @@ class Sign extends React.Component{
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
           // Everything is good, the response was received.
           if (httpRequest.status === 200) {
-            alert("login successful");
+            alert(httpRequest.responseText);
           } else if(httpRequest.status === 400){
-            alert("invalid credentials");
+            alert(httpRequest.responseText);
           }
           else {
             alert("unknown error from server");

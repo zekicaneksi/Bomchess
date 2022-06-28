@@ -19,10 +19,10 @@
   "homepage": "https://github.com/zekicaneksi/Bomchess#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "cookie-parser": "^1.4.6",
+    "connect-mongo": "^4.6.0",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
-    "jsonwebtoken": "^8.5.1",
+    "express-session": "^1.17.3",
     "mongoose": "^6.4.0",
     "ws": "^8.8.0"
   }

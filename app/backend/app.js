@@ -1,17 +1,29 @@
 require("dotenv").config();
-require("./config/database").connect();
 const express = require("express");
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const dbConnect = require("./config/database");
+const bcrypt = require("bcryptjs");
 const User = require("./model/user");
-const auth = require("./middleware/auth");
-const cookieParser = require('cookie-parser');
+const Session = require("./model/session");
 
 
 const app = express();
 
+app.use(session({
+  secret: process.env.SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    clientPromise: dbConnect,
+    collectionName: "sessions",
+    stringify: false,
+    autoRemove: 'interval',
+    autoRemoveInterval: 1
+  })
+}));
+
 app.use(express.json());
-app.use(cookieParser());
 
 // Check existence of email
 app.post("/api/checkEmail", async (req, res) => {
@@ -54,31 +66,17 @@ app.post("/api/register", async (req, res) => {
     
         //Encrypt user password
         encryptedPassword = await bcrypt.hash(password, 10);
-    
         // Create user in our database
         const user = await User.create({
           username,
           password,
           email: email.toLowerCase(), // sanitize: convert email to lowercase
           password: encryptedPassword,
+          bio: "hello, i am " + username + "!"
         });
     
-        // Create token
-        const token = jwt.sign(
-          { id:user.id,
-            email:user.email,
-            username:user.username,
-            bans:{playing:user.bans.playing,
-                chat:user.bans.chat,
-                message:user.bans.message}
-            },
-            process.env.TOKEN_KEY/*,
-            {
-              expiresIn: process.env.jwtExp + "d",
-            }*/
-        );
-    
-        return res.status(201).cookie("access_token",token, {httpOnly: true}).send();
+        req.session.userID = user._id.toString();
+        return res.status(201).send("success");
     } catch (err) {
     return res.status(400).send("error, could not create");
     }
@@ -97,37 +95,28 @@ app.post("/api/login", async (req, res) => {
         }
         // Validate if user exist in our database
         const user = await User.findOne({ email });
-    
+        const uId = user._id.toString();
         if (user && (await bcrypt.compare(password, user.password))) {
-          // Create token
-          const token = jwt.sign(
-            { id:user.id,
-              email:user.email,
-              username:user.username,
-              bans:{playing:user.bans.playing,
-                  chat:user.bans.chat,
-                  message:user.bans.message}
-              },
-              process.env.TOKEN_KEY/*,
-              {
-                expiresIn: process.env.jwtExp + "d",
-              }*/
-          );
-    
-          return res.status(200).cookie("access_token",token, {httpOnly: true}).send();
+
+          if(await Session.findOne({ 'session.userID' : uId }) != null){
+            return res.status(400).send('user already logged in');
+          }
+          req.session.userID = user._id.toString();
+          return res.status(200).send("login successful");
         }
-        return res.status(400).send("invalid");
+        return res.status(400).send("invalid credenticals");
     } catch (err) {
-    return res.status(400).send("error, could not process");
+    return res.status(400).send("error, can't login");
     }
 });
 
-app.get("/api/test", auth, async (req, res) => {
-  if(res.locals.token == "valid"){
-    return res.status(200).send("valid token");
-  }else{
-    return res.status(200).cookie("access_token","", {httpOnly: true}).send("invalid token");
-  }
+app.get('/api/logout', async (req, res) => {
+  req.session.destroy();
+  return res.clearCookie('connect.sid').status(200).send('logged out');
+});
+
+app.get("/api/test", async (req, res) => {
+ return res.status(200).send("hello your id is: "+req.session.userID +"<br> and you session id:" + req.sessionID);
 });
 
 

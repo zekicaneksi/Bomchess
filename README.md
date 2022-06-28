@@ -41,51 +41,64 @@
 - Backend
   - Nodejs
     - express (routing, serving, etc.)
-    - mongoose (to access MongoDB and ODB)
-    - jsonwebtoken (for JWT tokens (authentication))
+    - express-session (authentication)
+    - mongoose (to access MongoDB and use of object model)
+    - connect-mongo (storage for express-session)
     - dotenv (environment variables)
     - bcryptjs (to hash passwords)
     - ws (WebSocket library)
-    - cookie-parser (for setting and reading jwt cookies)
 - Database
   - MongoDB
-  - Redis (for the JWT token blacklist)
 
 Database scheme;
 
 ```
-users:{
-	id: "...",
-	email:"...",
-	username:"...",
-	password:"...",
-	bio:"...",
-	bans:{playing:"...",chat:"...",message:"..."}
+users
+{
+	_id: ObjectId,
+	email: String,
+	username: String,
+	password: String,
+	bio: String,
+	bans:{playing: Boolean, chat: Boolean, message: Boolean}
 }
 
-matches:{
-	id: "...",
-	date: "...",
-	players: [{id:"..." side:"white",id:"...",side:"black"}],
-	length:"...",
-	moves: [{timeBlack:"...", timeWhite:"...", move:"a7c5"}],
-	endedBy: "resign,checkmate,etc.",
-	winner:"...",
-	loser:"..."
+matches
+{
+	_id: ObjectId,
+	date: String,
+	players: [{id: String, side: String}, {id: String, side: String}],
+	length: String,
+	moves: [{timeBlack: String, timeWhite: String, move: String}, ...],
+	endedBy: String,
+	winner: String,
+	loser: String
 }
 
-reports:{
-	id: "...",
-	type: "user/message/match",
-	targetId: "..."
+reports
+{
+	_id: ObjectId,
+	type: String,
+	targetId: String
 }
 
-privateMessages:{
-	id: "...",
-	sender:"...",
-	reciever:"...",
-	content:"...",
-	date:"..."		
+privateMessages
+{
+	_id: ObjectId,
+	sender: String,
+	reciever: String,
+	content: String,
+	date: String		
+}
+
+sessions
+{
+	_id: String,
+	expires: Date,
+	session: {
+		cookie: {...},
+		userID: String
+	}
 }
 ```
 
