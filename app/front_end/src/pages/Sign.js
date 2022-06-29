@@ -127,25 +127,31 @@ class Sign extends React.Component{
     {
       return (<Navigate to='/' />);
     }
-
-    if(phase == 'initial'){
-      content = <Initial onClick={this.handleInitial}/>;
-    }else if(phase == 'login'){
-      content = <Login email={this.state.email} onClick={this.handleLogin}/>;
-    }else if(phase == 'navigate') {
-      return(<Navigate to='/' />);
-    } else {
-      content = <Register email={this.state.email} onClick={this.handleRegister} />;
+    else if(isLoggedIn == ""){
+      return(<div>Loading...</div>);
     }
+    else{
 
-    return (
-      <div id="sign-container">
-        {content}
-        {this.state.phase != 'initial' &&
-          <button onClick={this.handleGoBack}>Go Back</button>
-        }
-      </div>
-    );
+      if(phase == 'initial'){
+        content = <Initial onClick={this.handleInitial}/>;
+      }else if(phase == 'login'){
+        content = <Login email={this.state.email} onClick={this.handleLogin}/>;
+      }else if(phase == 'navigate') {
+        return(<Navigate to='/' />);
+      } else {
+        content = <Register email={this.state.email} onClick={this.handleRegister} />;
+      }
+  
+      return (
+        <div id="sign-container">
+          {content}
+          {this.state.phase != 'initial' &&
+            <button onClick={this.handleGoBack}>Go Back</button>
+          }
+        </div>
+      );
+      
+    }
 
   }
 

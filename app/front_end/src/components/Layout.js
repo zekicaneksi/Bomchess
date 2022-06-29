@@ -48,7 +48,7 @@ class Layout extends React.Component{
       );
     }
     else {
-      return (<div></div>);
+      return (<div>Loading...</div>);
     }
     
     

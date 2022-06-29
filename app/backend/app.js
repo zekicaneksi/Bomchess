@@ -101,8 +101,8 @@ app.post("/api/login", async (req, res) => {
         if (user && (await bcrypt.compare(password, user.password))) {
 
           // Check if user is already logged in
-          if(await Session.findOne({ 'session.userID' : uId }) != null){
-            return res.status(406).send();
+          if( await Session.findOne({ 'session.userID' : uId }) != null){
+            await Session.deleteOne({ 'session.userID' : uId });
           }
 
           // Login succssful
