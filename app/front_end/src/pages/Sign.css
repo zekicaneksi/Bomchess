@@ -1,10 +1,35 @@
 #sign-container{
-    width:30%;
-    height:50%;
     position: absolute;
     top: 50%;
     left:50%;
     transform: translate(-50%,-50%);
     background-color: grey;
-    border-radius: 5%;
+    border-radius: 3%;
+    padding: 3%;
+}
+
+#sign-container h1{
+    font-size:2em;
+    margin:0;
+    margin-bottom: 1em;
+}
+
+#sign-container p{
+    font-size:2em;
+    margin:0;
+}
+
+#sign-container button{
+    font-size:1.3em;
+}
+
+#sign-container input{
+    line-height: 2em;
+    margin-bottom:1em;
+}
+
+#sign-initial, #sign-register{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }

@@ -7,11 +7,27 @@ class Sign extends React.Component{
 
   constructor(props){
     super(props);
+    this.checkSession = this.checkSession.bind(this);
     this.handleInitial = this.handleInitial.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleGoBack = this.handleGoBack.bind(this);
-    this.state = {phase:"initial", email:""};
+    this.state = {phase:"initial", email:"", isLoggedIn:""};
+  }
+
+  checkSession(){
+    let responseFunction = (httpRequest) => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) {
+          this.setState({isLoggedIn:"true"});
+        } else if(httpRequest.status === 401) {
+          this.setState({isLoggedIn:"false"});
+        } else {
+          alert("unknown error from server");
+        }
+      }
+    }
+    HelperFunctions.ajax('/checkSession','GET', responseFunction);
   }
 
   handleInitial(){
@@ -98,9 +114,20 @@ class Sign extends React.Component{
     this.setState({phase:"initial"});
   }
 
+  componentDidMount(){
+    this.checkSession();
+  }
+
   render() {
+    let isLoggedIn = this.state.isLoggedIn;
     let phase = this.state.phase;
     let content;
+
+    if(isLoggedIn == "true")
+    {
+      return (<Navigate to='/' />);
+    }
+
     if(phase == 'initial'){
       content = <Initial onClick={this.handleInitial}/>;
     }else if(phase == 'login'){
@@ -127,7 +154,7 @@ class Sign extends React.Component{
 function Initial(props){
   return(
     <div id="sign-initial">
-      <p>Enter your email</p>
+      <h1>Enter your email</h1>
       <input type="email"></input>
       <button onClick={props.onClick}>continue</button>
     </div>
@@ -137,7 +164,7 @@ function Initial(props){
 function Login(props){
   return(
     <div id="sign-login">
-      <p>Please enter your password for <b>{props.email}</b></p>
+      <h1>Please enter your password for <br></br> <b>{props.email}</b></h1>
       <input type="password"></input>
       <button onClick={props.onClick}>Login</button>
     </div>
@@ -147,12 +174,12 @@ function Login(props){
 function Register(props){
   return(
     <div id="sign-register">
-      <p>Register your email <b>{props.email}</b></p>
-      <p>username:</p>
+      <h1>Register your email <br></br><b>{props.email}</b></h1>
+      <p>username</p>
       <input></input>
-      <p>password:</p>
+      <p>password</p>
       <input type="password"></input>
-      <p>password again:</p>
+      <p>password again</p>
       <input type="password"></input>
       <button onClick={props.onClick}>Register</button>
     </div>
