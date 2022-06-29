@@ -6,6 +6,7 @@ const dbConnect = require("./config/database");
 const bcrypt = require("bcryptjs");
 const User = require("./model/user");
 const Session = require("./model/session");
+const auth = require('./middleware/auth')
 
 
 const app = express();
@@ -29,13 +30,13 @@ app.use(express.json());
 app.post("/api/checkEmail", async (req, res) => {
 
     const {email} = req.body;
+    // Validate input
     if (!email) {
-        res.status(400).send("Email empty!");
-        return;
+      return res.status(400).send();  
     }
 
+    // Check if email exists
     const oldUser = await User.findOne({ email });
-
     if (oldUser) {
         return res.status(200).send("exists");
     }
@@ -53,32 +54,31 @@ app.post("/api/register", async (req, res) => {
     
         // Validate user input
         if (!(username && password && email)) {
-          res.status(400).send("All input is required");
-          return;
+          return res.status(400).send();
         }
     
         // check if user already exist
         const oldUser = await User.findOne({ email });
-    
         if (oldUser) {
-          return res.status(409).send("User Already Exist. Please Login");
+          return res.status(409).send();
         }
-    
-        //Encrypt user password
-        encryptedPassword = await bcrypt.hash(password, 10);
-        // Create user in our database
-        const user = await User.create({
-          username,
-          password,
-          email: email.toLowerCase(), // sanitize: convert email to lowercase
-          password: encryptedPassword,
-          bio: "hello, i am " + username + "!"
-        });
-    
-        req.session.userID = user._id.toString();
-        return res.status(201).send("success");
+        // Create the user
+        else {
+          encryptedPassword = await bcrypt.hash(password, 10);
+
+          const user = await User.create({
+            username,
+            password,
+            email: email.toLowerCase(),
+            password: encryptedPassword,
+            bio: "hello, i am " + username + "!"
+          });
+
+          req.session.userID = user._id.toString();
+          return res.status(201).send();
+        }
     } catch (err) {
-    return res.status(400).send("error, could not create");
+    return res.status(500).send();
     }
 });
 
@@ -90,33 +90,41 @@ app.post("/api/login", async (req, res) => {
     
         // Validate user input
         if (!(email && password)) {
-          res.status(400).send("All input is required");
-          return;
+          return res.status(400).send();
         }
+
         // Validate if user exist in our database
         const user = await User.findOne({ email });
         const uId = user._id.toString();
+
+        // Check credentials
         if (user && (await bcrypt.compare(password, user.password))) {
 
+          // Check if user is already logged in
           if(await Session.findOne({ 'session.userID' : uId }) != null){
-            return res.status(400).send('user already logged in');
+            return res.status(406).send();
           }
+
+          // Login succssful
           req.session.userID = user._id.toString();
-          return res.status(200).send("login successful");
+          return res.status(200).send();
         }
-        return res.status(400).send("invalid credenticals");
+        // Invalid credentials 
+        else{
+          return res.status(400).send();
+        }
     } catch (err) {
-    return res.status(400).send("error, can't login");
+    return res.status(500).send();
     }
 });
 
 app.get('/api/logout', async (req, res) => {
   req.session.destroy();
-  return res.clearCookie('connect.sid').status(200).send('logged out');
+  return res.status(200).clearCookie('connect.sid').send();
 });
 
-app.get("/api/test", async (req, res) => {
- return res.status(200).send("hello your id is: "+req.session.userID +"<br> and you session id:" + req.sessionID);
+app.get("/api/checkSession", auth, async (req, res) => {
+ return res.status(200).send();
 });
 
 

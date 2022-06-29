@@ -1,5 +1,7 @@
 import React from 'react'
 import './Sign.css'
+import * as HelperFunctions from './../components/HelperFunctions.js'
+import { Navigate } from "react-router-dom";
 
 class Sign extends React.Component{
 
@@ -13,30 +15,23 @@ class Sign extends React.Component{
   }
 
   handleInitial(){
-    let emailAddress = document.getElementById('sign-container').getElementsByTagName('input')[0].value;
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = () => {
+    let emailAddress = document.getElementById('sign-initial').getElementsByTagName('input')[0].value;
 
+    let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          // Everything is good, the response was received.
-          if (httpRequest.status === 200) {
-            if (httpRequest.responseText == 'exists'){
-              this.setState({phase:"login", email:emailAddress});
-            } else {
-              this.setState({phase:"register", email:emailAddress});
-            }
+        if (httpRequest.status === 200) {
+          if (httpRequest.responseText == 'exists'){
+            this.setState({phase:"login", email:emailAddress});
           } else {
-          
+            this.setState({phase:"register", email:emailAddress});
           }
-      } else {
-          // Not ready yet.
+        } else {
+          alert('unexpected response from server');
+        }
       }
-
     }
+    HelperFunctions.ajax('/checkEmail','POST', responseFunction, { "email": emailAddress});
 
-    httpRequest.open('POST', '/api/checkEmail', true);
-    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    httpRequest.send(JSON.stringify({ "email": emailAddress}));
   }
 
   handleRegister(){
@@ -50,53 +45,53 @@ class Sign extends React.Component{
       return;
     }
 
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = () => {
-
-      if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          // Everything is good, the response was received.
-          if (httpRequest.status === 201) {
-            alert("creation successful");
-          } else {
-            alert("unknown error from server");
-          }
-      } else {
-          // Not ready yet.
-      }
-
+    if(username == '' || password == '') {
+      alert("Don't leave an empty field");
+      return;
     }
 
-    httpRequest.open('POST', '/api/register', true);
-    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    httpRequest.send(JSON.stringify({ "email": this.state.email, "username": username, "password": password}));
+    let responseFunction = (httpRequest) => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 201) {
+          this.setState({phase:"navigate"});
+        } else if (httpRequest.status === 409) {
+          alert('email is in use');
+        }
+        else {
+          alert("unknown error from server");
+        }
+      }
+    }
+    HelperFunctions.ajax('/register','POST', responseFunction,
+    { "email": this.state.email, "username": username, "password": password});
+
   }
 
   handleLogin(){
     let divLogin = document.getElementById('sign-login');
-    let password = document.getElementsByTagName('input')[0].value;
+    let password = divLogin.getElementsByTagName('input')[0].value;
 
-    let httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = () => {
-
-      if (httpRequest.readyState === XMLHttpRequest.DONE) {
-          // Everything is good, the response was received.
-          if (httpRequest.status === 200) {
-            alert(httpRequest.responseText);
-          } else if(httpRequest.status === 400){
-            alert(httpRequest.responseText);
-          }
-          else {
-            alert("unknown error from server");
-          }
-      } else {
-          // Not ready yet.
-      }
-
+    if(password == ''){
+      return;
     }
 
-    httpRequest.open('POST', '/api/login', true);
-    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    httpRequest.send(JSON.stringify({ "email": this.state.email, "password": password}));
+    let responseFunction = (httpRequest) => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) {
+          this.setState({phase:"navigate"});
+        } else if(httpRequest.status === 400) {
+          alert('password is incorrect');
+        } else if(httpRequest.status === 406) {
+          alert('the user is already logged in');
+        }
+        else {
+          alert("unknown error from server");
+        }
+      }
+    }
+    HelperFunctions.ajax('/login','POST', responseFunction,
+    { "email": this.state.email, "password": password});
+
   }
   
   handleGoBack(){
@@ -110,7 +105,9 @@ class Sign extends React.Component{
       content = <Initial onClick={this.handleInitial}/>;
     }else if(phase == 'login'){
       content = <Login email={this.state.email} onClick={this.handleLogin}/>;
-    }else{
+    }else if(phase == 'navigate') {
+      return(<Navigate to='/' />);
+    } else {
       content = <Register email={this.state.email} onClick={this.handleRegister} />;
     }
 
