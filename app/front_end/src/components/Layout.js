@@ -41,8 +41,17 @@ class Layout extends React.Component{
     } 
     else if (isLoggedIn == "true")
     {
-      return (<div>
-        <p>I AM LAYOUT</p>
+      return (<div className="fill">
+        <div id="navbar">
+          <div><a>Bomchess</a></div>
+          <div className="dropdown">
+            <a>usahName</a>
+            <div className="dropdown-content">
+              <a>Profile</a>
+              <a>Logout</a>
+            </div>
+          </div>
+        </div>
         <Outlet />
       </div>
       );
