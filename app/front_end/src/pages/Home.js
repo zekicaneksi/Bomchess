@@ -1,6 +1,28 @@
+import React from 'react'
+import * as HelperFunctions from '../components/HelperFunctions';
 import './Home.css'
 
-function Home() {
+class Home extends React.Component{
+  constructor(props){
+    super(props);
+
+  }
+
+  componentDidMount(){
+    const socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+        socket.send('Hello Server!');
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        console.log('Message from server ', event.data);
+    });
+  }
+
+  render(){
     return (
       <div id="content-container">
 
@@ -48,5 +70,7 @@ function Home() {
     );
   }
   
+}
+
 export default Home;
   

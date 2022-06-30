@@ -13,3 +13,5 @@ export function ajax(route, type, responseFunction, payloadJson) {
         httpRequest.send();
     }
 }
+
+export let apiPort = 4001;
