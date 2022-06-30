@@ -1,0 +1,92 @@
+#content-container{
+    display:flex;
+    flex-direction: column;
+    position: relative;
+    width: 80%;
+    left:10%;
+    background-color: gainsboro;
+    top:5%;
+}
+
+#home-top{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+}
+
+#home-top h1{
+    position: relative;
+    left:50%;
+    transform: translateX(-50%);
+}
+
+#home-top button{
+    position: absolute;
+    right: 10%;
+    top:50%;
+}
+
+#home-middle{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#home-middle button{
+    height: 10em;
+    width: 10em;
+    margin-right: 3%;
+}
+
+#home-bottom{
+    display:flex;
+    flex-direction: row;
+    position: relative;
+}
+
+#home-duel-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+}
+
+#home-duel-container h2{
+    text-align: center;
+}
+
+#home-duel-top{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#home-duel-top button{
+    width: 5em;
+    height: 5em;
+}
+
+#home-duel-bottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#home-chat{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-left: 15%;
+    width: 50%;
+}
+
+#lobby-chat{
+    width: 50%;
+}
+
+#lobby-chat-online{
+    margin-top:1em;
+    height: 80%;
+    width: 100%;
+    background-color: aqua;
+}
