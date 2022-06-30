@@ -6,7 +6,8 @@ const dbConnect = require("./config/database");
 const bcrypt = require("bcryptjs");
 const User = require("./model/user");
 const Session = require("./model/session");
-const auth = require('./middleware/auth')
+const auth = require('./middleware/auth');
+const mongoose = require("mongoose");
 
 
 const app = express();
@@ -74,8 +75,8 @@ app.post("/api/register", async (req, res) => {
             bio: "hello, i am " + username + "!"
           });
 
-          req.session.userID = user._id.toString();
-          return res.status(201).send();
+          // redirect to login
+          return res.redirect(308, 'login');
         }
     } catch (err) {
     return res.status(500).send();
@@ -124,7 +125,9 @@ app.get('/api/logout', async (req, res) => {
 });
 
 app.get("/api/checkSession", auth, async (req, res) => {
- return res.status(200).send();
+  let id = mongoose.Types.ObjectId(req.session.userID);
+  const user = await User.findOne({ '_id' : id });
+  return res.status(200).send({username : user.username});
 });
 
 

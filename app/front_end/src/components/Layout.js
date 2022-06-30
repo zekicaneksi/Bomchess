@@ -8,7 +8,11 @@ class Layout extends React.Component{
 
   constructor(props){
     super(props);
+
     this.checkSession = this.checkSession.bind(this);
+    
+    this.user = {};
+
     this.state = {isLoggedIn:""};
   }
 
@@ -16,6 +20,8 @@ class Layout extends React.Component{
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
+          window.localStorage.setItem('user',httpRequest.responseText);
+          this.user = JSON.parse(window.localStorage.getItem('user'));
           this.setState({isLoggedIn:"true"});
         } else if(httpRequest.status === 401) {
           this.setState({isLoggedIn:"false"});
@@ -45,7 +51,7 @@ class Layout extends React.Component{
         <div id="navbar">
           <div><a>Bomchess</a></div>
           <div className="dropdown">
-            <a>usahName</a>
+            <a>{this.user.username}</a>
             <div className="dropdown-content">
               <a>Profile</a>
               <a>Logout</a>
