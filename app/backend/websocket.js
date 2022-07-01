@@ -4,16 +4,43 @@ const sessionConfig = require("./app").sessionConfig;
 const mongoose = require("mongoose");
 const User = require("./model/user");
 
-const wssLobby = new ws.WebSocketServer({ noServer: true });
+const Servers = {};
 
-wssLobby.on('connection', function connection(ws,req) {
+Servers.wssLobby = new ws.WebSocketServer({ noServer: true });
 
-  ws.on('message', function message(data) {
+function heartbeat(){
+  this.isAlive = true;
+}
+
+Servers.wssLobby.on('connection', (ws,req) => {
+
+  ws.isAlive = true;
+  ws.on('pong', heartbeat);
+
+  ws.on('message', (data) => {
       console.log('received: %s', data);
   });
 
-  ws.send('something from ws 1');
+  ws.send('something from wss lobby');
+
+  ws.on('close', () => {console.log('closedd');});
 });
+
+
+// Ping-pong messages for WebSocketServers to detect and close broken connections
+setInterval( () => {
+
+  Object.entries(Servers).forEach(wss => {
+    Servers[wss[0]].clients.forEach( (ws) => {
+      if (ws.isAlive === false) {
+        return ws.terminate();
+      }
+      ws.isAlive = false;
+      ws.ping();
+    });
+  })
+  
+}, 15000);
 
 const upgrade = async (request, socket, head) => {
 
@@ -41,7 +68,7 @@ const upgrade = async (request, socket, head) => {
 
       // Check if user already has a WebSocket connection
       let webSocketExists = false;
-      wssLobby.clients.forEach( (ws) => {
+      Servers.wssLobby.clients.forEach( (ws) => {
         if(ws.sessionId == request.session.id){
           webSocketExists = true;
           return;
@@ -55,9 +82,9 @@ const upgrade = async (request, socket, head) => {
       }
 
       // Connect the user
-      wssLobby.handleUpgrade(request, socket, head, function done(ws) {
+      Servers.wssLobby.handleUpgrade(request, socket, head, function done(ws) {
         ws.sessionId = request.session.id;
-        wssLobby.emit('connection', ws, request);
+        Servers.wssLobby.emit('connection', ws, request);
       });
     } else {
       socket.destroy();
