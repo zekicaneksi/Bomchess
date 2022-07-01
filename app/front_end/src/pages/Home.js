@@ -9,6 +9,7 @@ class Home extends React.Component{
   }
 
   componentDidMount(){
+    /*
     const socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
 
     // Connection opened
@@ -19,12 +20,28 @@ class Home extends React.Component{
     // Listen for messages
     socket.addEventListener('message', function (event) {
         console.log('Message from server ', event.data);
-    });
+    });*/
   }
 
   render(){
     return (
       <div id="content-container">
+
+        <button onClick={() => {
+          const socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
+
+          // Connection opened
+          socket.addEventListener('open', function (event) {
+              socket.send('Hello Server!');
+          });
+      
+          // Listen for messages
+          socket.addEventListener('message', function (event) {
+              console.log('Message from server ', event.data);
+          });
+        }}>
+          testWSConnection
+        </button>
 
         <div id="home-top">
           <h1>Quick Play</h1>
