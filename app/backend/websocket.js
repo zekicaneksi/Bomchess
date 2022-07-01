@@ -14,16 +14,34 @@ function heartbeat(){
 
 Servers.wssLobby.on('connection', (ws,req) => {
 
+  // Ping-pong messages to keep the connection active
   ws.isAlive = true;
   ws.on('pong', heartbeat);
 
-  ws.on('message', (data) => {
-      console.log('received: %s', data);
+  // Send the active users
+  Servers.wssLobby.clients.forEach((webSocket) => {
+    ws.send('connected:'+webSocket.user.username);
   });
 
-  ws.send('something from wss lobby');
+  // Let the other users know the newcomer
+  Servers.wssLobby.clients.forEach((webSocket) => {
+    webSocket.send('connected:'+ws.user.username);
+  });
 
-  ws.on('close', () => {console.log('closedd');});
+  // Broadcast messages
+  ws.on('message', (data) => {
+    Servers.wssLobby.clients.forEach((webSocket) => {
+      webSocket.send('message:'+ws.user.username+":"+data);
+    });
+  });
+
+  // Broadcast the leaver
+  ws.on('close', () => {
+    Servers.wssLobby.clients.forEach((webSocket) => {
+      webSocket.send('disconnected:'+ws.user.username);
+    });
+  });
+
 });
 
 
@@ -77,13 +95,14 @@ const upgrade = async (request, socket, head) => {
 
       if(webSocketExists){
         socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-          socket.destroy();
-          return;
+        socket.destroy();
+        return;
       }
 
       // Connect the user
       Servers.wssLobby.handleUpgrade(request, socket, head, function done(ws) {
         ws.sessionId = request.session.id;
+        ws.user = user;
         Servers.wssLobby.emit('connection', ws, request);
       });
     } else {

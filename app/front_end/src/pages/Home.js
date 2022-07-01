@@ -6,42 +6,69 @@ class Home extends React.Component{
   constructor(props){
     super(props);
 
+    this.handleSendMessage = this.handleSendMessage.bind(this);
+
+    this.state = {lobbyUser:[], lobbyMessages:[]};
+
+    this.lobbyUser = [];
+    this.lobbyMessages=[];
+    this.socket = WebSocket;
+  }
+
+  handleSendMessage(){
+    this.socket.send(document.getElementById('lobby-chat').getElementsByTagName('input')[0].value);
   }
 
   componentDidMount(){
-    /* BURAYA HATA MESAJLARINI AYARLA. BANLIYKEN FALAN BAĞLANILAMIYOR YA
-    const socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
+   
+    this.socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
 
     // Connection opened
-    socket.addEventListener('open', function (event) {
-        socket.send('Hello Server!');
+    this.socket.addEventListener('open', function (event) {
+        
     });
 
+    let holdThis = this;
+    
     // Listen for messages
-    socket.addEventListener('message', function (event) {
-        console.log('Message from server ', event.data);
-    });*/
+    this.socket.addEventListener('message', function (event) {
+        let type = event.data.substring(0,event.data.indexOf(':'));
+        let content = event.data.substring(event.data.indexOf(':')+1);
+
+        if(type == 'connected'){
+          if(!holdThis.lobbyUser.includes(content)) holdThis.lobbyUser.push(content);
+          holdThis.setState({lobbyUser: holdThis.lobbyUser});
+        }
+        else if(type == 'disconnected'){
+          holdThis.lobbyUser = holdThis.lobbyUser.filter(item => item !== content);
+          holdThis.setState({lobbyUser: holdThis.lobbyUser});
+        }
+        else if(type == 'message'){
+          holdThis.lobbyMessages.push(content);
+          holdThis.setState({lobbyMessages: holdThis.lobbyMessages});
+        }
+
+    });
+
+    // Connection opened
+    this.socket.addEventListener('error', function (event) {
+      // in here, i need to make chat box passive like unaccessible looking for the user
+      alert("can't connect");
+    });
+
   }
 
   render(){
+
+    const LobbyUserListItems = this.state.lobbyUser.map((username,index) =>
+      <p key={index}>{username}</p>
+    );
+    const LobbyMessagesItems = this.state.lobbyMessages.map((message,index) =>
+      <p key={index}>{message}</p>
+    );
+
     return (
       <div id="content-container">
-
-        <button onClick={() => {
-          const socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
-
-          // Connection opened
-          socket.addEventListener('open', function (event) {
-              socket.send('Hello Server!');
-          });
-      
-          // Listen for messages
-          socket.addEventListener('message', function (event) {
-              console.log('Message from server ', event.data);
-          });
-        }}>
-          testWSConnection
-        </button>
 
         <div id="home-top">
           <h1>Quick Play</h1>
@@ -73,10 +100,15 @@ class Home extends React.Component{
           <div id="home-chat">
             <div id="lobby-chat">
               <h2>Lobby Chat</h2>
-              <div></div>
+              <div>
+              {LobbyMessagesItems}
+              </div>
+              <input></input>
+              <button onClick={this.handleSendMessage}>Send</button>
             </div>
             <div id="lobby-chat-online">
-              <p>Online Users:</p>
+              <p>Online Users:{this.state.lobbyUser.length}</p>
+              {LobbyUserListItems}
             </div>
 
           </div>
