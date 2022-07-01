@@ -9,7 +9,7 @@ class Home extends React.Component{
   }
 
   componentDidMount(){
-    /*
+    /* BURAYA HATA MESAJLARINI AYARLA. BANLIYKEN FALAN BAĞLANILAMIYOR YA
     const socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
 
     // Connection opened
