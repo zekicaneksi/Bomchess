@@ -12,7 +12,7 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-app.use(session({
+const sessionConfig = session({
   secret: process.env.SECRET,
   resave: false,
   saveUninitialized: false,
@@ -23,7 +23,9 @@ app.use(session({
     autoRemove: 'interval',
     autoRemoveInterval: 1
   })
-}));
+});
+
+app.use(sessionConfig);
 
 app.use(express.json());
 
@@ -132,3 +134,8 @@ app.get("/api/checkSession", auth, async (req, res) => {
 
 
 module.exports = app;
+
+module.exports = {
+  app: app,
+  sessionConfig: sessionConfig
+};

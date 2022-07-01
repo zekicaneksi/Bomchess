@@ -1,5 +1,5 @@
 const http = require("http");
-const app = require("./app");
+const app = require("./app").app;
 const upgrade = require("./websocket");
 
 const { API_PORT } = process.env;
