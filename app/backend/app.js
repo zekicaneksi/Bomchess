@@ -59,29 +59,35 @@ app.post("/api/register", async (req, res) => {
         if (!(username && password && email)) {
           return res.status(400).send();
         }
-    
-        // check if user already exist
-        const oldUser = await User.findOne({ email });
+
+        // Check if email already exist
+        let oldUser = await User.findOne({ email });
         if (oldUser) {
-          return res.status(409).send();
+          return res.status(409).send('email');
         }
+        
+        // Check if username already exists
+        oldUser = await User.findOne({ username });
+        if(oldUser){
+          return res.status(409).send('username');
+        }
+
         // Create the user
-        else {
-          encryptedPassword = await bcrypt.hash(password, 10);
+        encryptedPassword = await bcrypt.hash(password, 10);
 
-          const user = await User.create({
-            username,
-            password,
-            email: email.toLowerCase(),
-            password: encryptedPassword,
-            bio: "hello, i am " + username + "!"
-          });
+        const user = await User.create({
+          username,
+          password,
+          email: email.toLowerCase(),
+          password: encryptedPassword,
+          bio: "hello, i am " + username + "!"
+        });
 
-          // redirect to login
-          return res.redirect(308, 'login');
-        }
+        // redirect to login
+        return res.redirect(308, 'login');
+      
     } catch (err) {
-    return res.status(500).send();
+      return res.status(500).send();
     }
 });
 
@@ -117,7 +123,7 @@ app.post("/api/login", async (req, res) => {
           return res.status(400).send();
         }
     } catch (err) {
-    return res.status(500).send();
+      return res.status(500).send();
     }
 });
 

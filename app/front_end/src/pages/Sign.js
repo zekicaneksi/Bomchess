@@ -71,7 +71,10 @@ class Sign extends React.Component{
         if (httpRequest.status === 200) {
           this.setState({phase:"navigate"});
         } else if (httpRequest.status === 409) {
-          alert('email is in use');
+          if(httpRequest.responseText == 'email')
+            alert('email is in use');
+          else
+            alert('username is in use');
         }
         else {
           alert("unknown error from server");
