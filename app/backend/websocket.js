@@ -6,25 +6,6 @@ const User = require("./model/user");
 
 const WSSLobby = require('./websocketservers/WSSLobby');
 
-const Servers = {};
-
-Servers.wssLobby = WSSLobby;
-
-
-// Ping-pong messages for WebSocketServers to detect and close broken connections
-setInterval( () => {
-
-  Object.entries(Servers).forEach(wss => {
-    Servers[wss[0]].clients.forEach( (ws) => {
-      if (ws.isAlive === false) {
-        return ws.terminate();
-      }
-      ws.isAlive = false;
-      ws.ping();
-    });
-  })
-  
-}, 10000);
 
 const upgrade = async (request, socket, head) => {
 
@@ -52,7 +33,7 @@ const upgrade = async (request, socket, head) => {
 
       // Check if user already has a WebSocket connection
       let webSocketExists = false;
-      Servers.wssLobby.clients.forEach( (ws) => {
+      WSSLobby.clients.forEach( (ws) => {
         if(ws.sessionId == request.session.id){
           webSocketExists = true;
           return;
@@ -66,10 +47,10 @@ const upgrade = async (request, socket, head) => {
       }
 
       // Connect the user
-      Servers.wssLobby.handleUpgrade(request, socket, head, function done(ws) {
+      WSSLobby.handleUpgrade(request, socket, head, function done(ws) {
         ws.sessionId = request.session.id;
         ws.user = user;
-        Servers.wssLobby.emit('connection', ws, request);
+        WSSLobby.emit('connection', ws, request);
       });
     } else {
       socket.destroy();

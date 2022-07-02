@@ -39,4 +39,21 @@ WSSLobby.on('connection', (ws,req) => {
 
 });
 
+// Ping-pong messages to detect and close broken connections
+const interval = setInterval( () => {
+
+    WSSLobby.clients.forEach( (ws) => {
+    if (ws.isAlive === false) {
+        return ws.terminate();
+    }
+    ws.isAlive = false;
+    ws.ping();
+    });
+
+}, 10000);
+
+WSSLobby.on('close', function close() {
+    clearInterval(interval);
+});
+
 module.exports = WSSLobby;
