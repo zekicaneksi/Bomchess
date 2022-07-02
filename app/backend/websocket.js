@@ -4,45 +4,11 @@ const sessionConfig = require("./app").sessionConfig;
 const mongoose = require("mongoose");
 const User = require("./model/user");
 
+const WSSLobby = require('./websocketservers/WSSLobby');
+
 const Servers = {};
 
-Servers.wssLobby = new ws.WebSocketServer({ noServer: true });
-
-function heartbeat(){
-  this.isAlive = true;
-}
-
-Servers.wssLobby.on('connection', (ws,req) => {
-
-  // Ping-pong messages to keep the connection active
-  ws.isAlive = true;
-  ws.on('pong', heartbeat);
-
-  // Send the active users
-  Servers.wssLobby.clients.forEach((webSocket) => {
-    ws.send('connected:'+webSocket.user.username);
-  });
-
-  // Let the other users know the newcomer
-  Servers.wssLobby.clients.forEach((webSocket) => {
-    webSocket.send('connected:'+ws.user.username);
-  });
-
-  // Broadcast messages
-  ws.on('message', (data) => {
-    Servers.wssLobby.clients.forEach((webSocket) => {
-      webSocket.send('message:'+ws.user.username+":"+data);
-    });
-  });
-
-  // Broadcast the leaver
-  ws.on('close', () => {
-    Servers.wssLobby.clients.forEach((webSocket) => {
-      webSocket.send('disconnected:'+ws.user.username);
-    });
-  });
-
-});
+Servers.wssLobby = WSSLobby;
 
 
 // Ping-pong messages for WebSocketServers to detect and close broken connections
@@ -58,7 +24,7 @@ setInterval( () => {
     });
   })
   
-}, 15000);
+}, 10000);
 
 const upgrade = async (request, socket, head) => {
 
