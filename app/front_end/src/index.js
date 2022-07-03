@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import Home from './pages/Home'
 import Sign from './pages/Sign'
+import Game from './pages/Game'
 import Layout from './components/Layout'
 import reportWebVitals from './reportWebVitals';
 import { Navigate } from "react-router-dom";
@@ -21,6 +22,7 @@ root.render(
           <Route index element={<Home />} />
         </Route>
         <Route path="/sign" element={<Sign />} />
+        <Route path="/game" element={<Game />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
