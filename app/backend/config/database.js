@@ -1,6 +1,9 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import * as dotenv from "dotenv";
 
-const { MONGO_URI } = process.env;
+const config = dotenv.config().parsed;
+
+const MONGO_URI  = config.MONGO_URI;
 
 const dbConnect = 
   // Connecting to the database
@@ -19,4 +22,4 @@ const dbConnect =
       process.exit(1);
     });
 
-module.exports = dbConnect;
+export {dbConnect};

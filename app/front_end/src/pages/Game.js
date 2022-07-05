@@ -1,15 +1,148 @@
-import React from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
+import {Chess} from "chess.js";
+import { Chessboard } from "react-chessboard";
 
+const Game = () => {
+
+  const [game, setGame] = useState(new Chess());
+  const [loadBoard, setLoadBoard] = useState(false);
+
+  const socket = useRef();
+  const orientation = useRef();
+
+  // Function for move validation
+  function safeGameMutate(modify) {
+    setGame((g) => {
+      const update = { ...g };
+      modify(update);
+      return update;
+    });
+  }
+/*
+  function makeRandomMove() {
+    const possibleMoves = game.moves();
+    if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
+      return; // exit if the game is over
+    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+    safeGameMutate((game) => {
+      game.move(possibleMoves[randomIndex]);
+    });
+  }
+*/
+  function onDrop(sourceSquare, targetSquare) {
+    // Validate the move
+    let move = null;
+    safeGameMutate((game) => {
+      move = game.move({
+        from: sourceSquare,
+        to: targetSquare,
+        promotion: "q", // always promote to a queen for example simplicity
+      });
+    });
+
+    // Move is illegal
+    if (move === null) return false;
+
+    // Move is legal
+    socket.current.send("play:"+JSON.stringify(move));
+    
+    return true;
+  }
+
+  useEffect(() => {
+
+    // --- ComponentDidMount
+    socket.current = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/game');
+    
+    // Connection opened
+    socket.current.addEventListener('open', function (event) {
+        
+    });
+    
+    // Listen for messages
+    socket.current.addEventListener('message', function (event) {
+      let type = event.data.substring(0,event.data.indexOf(':'));
+      let content = event.data.substring(event.data.indexOf(':')+1);
+
+      if(type == 'play'){
+        content = JSON.parse(content);
+        safeGameMutate((game) => {
+            game.move({
+            from: content.from,
+            to: content.to,
+            promotion: content.promotion, // always promote to a queen for example simplicity
+          });
+        });
+      } else if (type == 'orientation'){
+        orientation.current = content;
+        setLoadBoard(true);
+      }
+
+    });
+
+    // Connection opened
+    socket.current.addEventListener('error', function (event) {
+      // in here, i need to make chat box passive like unaccessible looking for the user
+      alert("can't connect");
+    });
+
+    // --- ComponentWillUnmount
+    return () => {
+      socket.current.close();
+    }
+  }, []);
+
+  if(loadBoard == false){
+    return(<p>Loading...</p>);
+  }
+  else{
+    return(<Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={orientation.current}/>);
+  }
+
+};
+/*
 class Game extends React.Component{
   constructor(props){
     super(props);
+
+    this.socket = WebSocket;
   }
 
+  componentDidMount(){
+    this.socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/game');
+    
+    // Connection opened
+    this.socket.addEventListener('open', function (event) {
+        
+    });
+
+    let holdThis = this;
+    
+    // Listen for messages
+    this.socket.addEventListener('message', function (event) {
+      let type = event.data.substring(0,event.data.indexOf(':'));
+      let content = event.data.substring(event.data.indexOf(':')+1);
+
+    });
+
+    // Connection opened
+    this.socket.addEventListener('error', function (event) {
+      // in here, i need to make chat box passive like unaccessible looking for the user
+      alert("can't connect");
+    });
+
+  }
+
+  componentWillUnmount(){
+    this.socket.close();
+  }
+
+
   render(){
-    return(<p>hello from game</p>);
+    return(<Chessboard id="board" />);
   }
   
-}
+}*/
 
 export default Game;

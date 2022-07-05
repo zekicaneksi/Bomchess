@@ -21,6 +21,8 @@ class Queue extends React.Component{
         this.socket.addEventListener('message', function (event) {
             if(event.data == 'matched'){
                 holdThis.setState({navigate: '1'});
+            } else {
+                alert(event.data);
             }
         });
     

@@ -1,6 +1,6 @@
-const ws = require("ws");
+import WebSocket, { WebSocketServer } from 'ws';
 
-const WSSLobby = new ws.WebSocketServer({ noServer: true });
+const WSSLobby = new WebSocketServer({ noServer: true });
 
 // Used as a response to 'ping'
 function heartbeat(){
@@ -56,4 +56,4 @@ WSSLobby.on('close', function close() {
     clearInterval(interval);
 });
 
-module.exports = WSSLobby;
+export {WSSLobby};

@@ -35,6 +35,8 @@
   - React
     - create-react-app (the app will be a SPA)
     - react-router-dom@6 (for routing)
+	- chess.js (chess engine)
+	- react-chessboard (chess UI for react)
   - Nodejs
     - express
     - express-http-proxy
@@ -47,6 +49,7 @@
     - dotenv (environment variables)
     - bcryptjs (to hash passwords)
     - ws (WebSocket library)
+    - chess.js (chess engine)
 - Database
   - MongoDB
 

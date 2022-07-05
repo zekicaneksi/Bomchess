@@ -6,7 +6,9 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "chess.js": "^0.13.3",
     "react": "^18.2.0",
+    "react-chessboard": "^1.2.5",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
@@ -18,7 +20,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-"proxy": "http://localhost:4001",
+  "proxy": "http://localhost:4001",
   "eslintConfig": {
     "extends": [
       "react-app",

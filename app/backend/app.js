@@ -1,19 +1,20 @@
-require("dotenv").config();
-const express = require("express");
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-const dbConnect = require("./config/database");
-const bcrypt = require("bcryptjs");
-const User = require("./model/user");
-const Session = require("./model/session");
-const auth = require('./middleware/auth');
-const mongoose = require("mongoose");
 
+import * as dotenv from "dotenv";
+import express from "express";
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import {dbConnect} from "./config/database.js";
+import bcrypt from "bcryptjs";
+import {User} from "./model/user.js";
+import {Session} from "./model/session.js";
+import {auth} from './middleware/auth.js';
+import mongoose from "mongoose";
 
+const config = dotenv.config().parsed;
 const app = express();
 
 const sessionConfig = session({
-  secret: process.env.SECRET,
+  secret: config.SECRET,
   resave: false,
   saveUninitialized: false,
   store: MongoStore.create({
@@ -139,9 +140,4 @@ app.get("/api/checkSession", auth, async (req, res) => {
 });
 
 
-module.exports = app;
-
-module.exports = {
-  app: app,
-  sessionConfig: sessionConfig
-};
+export {app, sessionConfig};

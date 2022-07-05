@@ -1,8 +1,10 @@
-const ws = require("ws");
+import WebSocket, { WebSocketServer } from 'ws';
 
-let Games = require('./Share').Games;
+import {createWSSGame} from './WSSGame.js';
 
-const WSSQueue = new ws.WebSocketServer({ noServer: true });
+import {Games} from './Share.js';
+
+const WSSQueue = new WebSocketServer({ noServer: true });
 
 let usersInQueue = new Map();
 
@@ -13,17 +15,35 @@ function heartbeat(){
 
 WSSQueue.on('connection', (ws,req) => {
 
+    // For security reasons, check if the player already has a game going on
+    let alreadyPlaying = false;
+    Games.forEach(wssGame => {
+        if(wssGame.players.includes(ws.user._id.toString())){
+            alreadyPlaying = true;
+            ws.send("already has a match, cannot join queue");
+            return;
+        }
+    });
+    if(alreadyPlaying){
+        return ws.close();
+    }
+
     // Check if there's a match in queue
     let isThereAMatch = false;
     usersInQueue.forEach((wsInList, key) => {
         if(ws.matchLength == wsInList.matchLength){
+
            isThereAMatch = true;
-           /* 
-            here, create a WSSGame and put the game in the Games array.
-            -- but before creating the game, check the Games array
-            and see if the users already have a game or not, beacuse
-            theoritaclly they can create multiple games simultaneously --
-           */
+
+            // Create the game
+            let WSSGame = createWSSGame();
+            WSSGame.players=[ws.user._id.toString(),wsInList.user._id.toString()];
+            WSSGame.orientation={};
+            WSSGame.orientation.white = [WSSGame.players[0]];
+            WSSGame.orientation.black = [WSSGame.players[1]];
+            Games.set([ws.user._id.toString(), wsInList.user._id.toString()], WSSGame);
+
+            // Let the users know
             wsInList.send('matched');
             ws.send('matched');
             wsInList.close();
@@ -33,11 +53,11 @@ WSSQueue.on('connection', (ws,req) => {
     if(isThereAMatch) return ws.close();
     
     // If there is not a match, put the user in queue
-    usersInQueue.set(req.session.id,ws);
+    usersInQueue.set(ws.user._id.toString(),ws);
 
     // On socket close, remove from the list.
     ws.on('close', () => {
-        usersInQueue.delete(req.session.id);
+        usersInQueue.delete(ws.user._id.toString());
     });
 
     // Ping-pong messages to keep the connection active
@@ -63,4 +83,4 @@ WSSQueue.on('close', function close() {
     clearInterval(interval);
 });
 
-module.exports = WSSQueue;
+export {WSSQueue};

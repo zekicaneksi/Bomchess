@@ -1,13 +1,13 @@
-const ws = require("ws");
-const URL = require('node:url');
-const sessionConfig = require("./app").sessionConfig;
-const mongoose = require("mongoose");
-const User = require("./model/user");
+import ws from "ws";
+import URL from 'node:url';
+import {sessionConfig} from "./app.js";
+import mongoose from "mongoose";
+import {User} from "./model/user.js";
 
-const WSSLobby = require('./websocketservers/WSSLobby');
-const WSSQueue = require('./websocketservers/WSSQueue');
+import {WSSLobby} from './websocketservers/WSSLobby.js';
+import {WSSQueue} from './websocketservers/WSSQueue.js';
 
-let Games = require('./websocketservers/Share').Games; // Array of WSSGame's.
+import {Games} from './websocketservers/Share.js'; // Array of WSSGame's.
 
 
 const upgrade = async (request, socket, head) => {
@@ -37,19 +37,12 @@ const upgrade = async (request, socket, head) => {
       }
 
       // Check if user already has a WebSocket connection
-      let webSocketExists = false;
       WSSLobby.clients.forEach( (ws) => {
         if(ws.sessionId == request.session.id){
-          webSocketExists = true;
+          ws.terminate();
           return;
         }
       });
-
-      if(webSocketExists){
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        socket.destroy();
-        return;
-      }
 
       // Connect the user
       WSSLobby.handleUpgrade(request, socket, head, function done(ws) {
@@ -67,26 +60,37 @@ const upgrade = async (request, socket, head) => {
       }
 
       // Check if user already has a WebSocket connection
-      let webSocketExists = false;
       WSSQueue.clients.forEach( (ws) => {
         if(ws.sessionId == request.session.id){
-          webSocketExists = true;
+          ws.terminate();
           return;
         }
       });
 
-      if(webSocketExists){
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        socket.destroy();
-        return;
-      }
-
       // Connect the user
       WSSQueue.handleUpgrade(request, socket, head, function done(ws) {
         ws.matchLength = myUrl.query.matchLength;
-        ws.sessionId = request.session.id;
         ws.user = user;
         WSSQueue.emit('connection', ws, request);
+      });
+    } else if (pathname === '/api/game') {
+      // Get the WSSGame WebSocketServer
+      Games.forEach((WSSGame, key) => {
+        if(key.includes(user._id.toString())){
+          // Check if the WebSocketServer already has a websocket connection for the user
+          WSSGame.clients.forEach(ws => {
+            if(ws.user._id.toString() == user._id.toString()){
+              ws.terminate();
+              return;
+            } 
+          });
+          // Connect the user
+          WSSGame.handleUpgrade(request, socket, head, function done(ws) {
+            ws.user = user;
+            WSSGame.emit('connection', ws, request);
+          });
+          return;
+        }
       });
     } else {
       socket.destroy();
@@ -97,4 +101,4 @@ const upgrade = async (request, socket, head) => {
 
 }
 
-module.exports = upgrade;
+export {upgrade};
