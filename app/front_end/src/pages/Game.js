@@ -50,6 +50,16 @@ const Game = () => {
     return true;
   }
 
+  function isDraggablePiece({piece, sourceSquare}){
+
+    if(piece[0] != orientation.current[0]){
+      return false;
+    }else{
+      return true;
+    }
+      
+  }
+
   useEffect(() => {
 
     // --- ComponentDidMount
@@ -97,52 +107,9 @@ const Game = () => {
     return(<p>Loading...</p>);
   }
   else{
-    return(<Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={orientation.current}/>);
+    return(<Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={orientation.current} isDraggablePiece={isDraggablePiece}/>);
   }
 
 };
-/*
-class Game extends React.Component{
-  constructor(props){
-    super(props);
-
-    this.socket = WebSocket;
-  }
-
-  componentDidMount(){
-    this.socket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/game');
-    
-    // Connection opened
-    this.socket.addEventListener('open', function (event) {
-        
-    });
-
-    let holdThis = this;
-    
-    // Listen for messages
-    this.socket.addEventListener('message', function (event) {
-      let type = event.data.substring(0,event.data.indexOf(':'));
-      let content = event.data.substring(event.data.indexOf(':')+1);
-
-    });
-
-    // Connection opened
-    this.socket.addEventListener('error', function (event) {
-      // in here, i need to make chat box passive like unaccessible looking for the user
-      alert("can't connect");
-    });
-
-  }
-
-  componentWillUnmount(){
-    this.socket.close();
-  }
-
-
-  render(){
-    return(<Chessboard id="board" />);
-  }
-  
-}*/
 
 export default Game;
