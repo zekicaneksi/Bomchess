@@ -77,7 +77,7 @@ const upgrade = async (request, socket, head) => {
       // Get the WSSGame WebSocketServer
       Games.forEach((WSSGame, key) => {
         if(key.includes(user._id.toString())){
-          // Check if the WebSocketServer already has a websocket connection for the user
+          // Check if the WSSGame already has a websocket connection for the user
           WSSGame.clients.forEach(ws => {
             if(ws.user._id.toString() == user._id.toString()){
               ws.terminate();

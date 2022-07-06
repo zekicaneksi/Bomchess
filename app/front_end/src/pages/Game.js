@@ -30,6 +30,27 @@ const Game = () => {
     });
   }
 */
+  function checkGameEnd(){
+    if(game.game_over()){
+      if(game.in_checkmate()){
+        let winner = "b";
+        if(game.turn() == "b")
+          winner="w";
+        alert('game has ended via checkmate, the winner is: ' + winner);
+      }else if(game.in_draw()){
+        if(game.in_stalemate()){
+          alert('game has ended as a draw in stalemate');
+        }else if(game.in_threefold_repetition()){
+          alert('game has ended as a draw in threefold repetition');
+        }else if(game.insufficient_material()){
+          alert('game has ended as a draw in insufficient material');
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
   function onDrop(sourceSquare, targetSquare) {
     // Validate the move
     let move = null;
@@ -51,7 +72,7 @@ const Game = () => {
   }
 
   function isDraggablePiece({piece, sourceSquare}){
-    
+
     if(piece[0] != orientation.current[0]){
       return false;
     }else{
@@ -84,6 +105,10 @@ const Game = () => {
             promotion: content.promotion, // always promote to a queen for example simplicity
           });
         });
+
+        // Check if the game ended
+        checkGameEnd();
+
       } else if (type == 'orientation'){
         orientation.current = content;
         setLoadBoard(true);

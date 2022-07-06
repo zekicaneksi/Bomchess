@@ -11,6 +11,27 @@ function heartbeat(){
     this.isAlive = true;
 }
 
+function checkGameEnd(){
+    if(chess.game_over()){
+        if(chess.in_checkmate()){
+            let winner = "b";
+            if(chess.turn() == "b")
+                winner="w";
+            console.log('game has ended via checkmate, the winner is: ' + winner);
+        }else if(chess.in_draw()){
+            if(chess.in_stalemate()){
+                console.log('game has ended as a draw in stalemate');
+            }else if(chess.in_threefold_repetition()){
+                console.log('game has ended as a draw in threefold repetition');
+            }else if(chess.insufficient_material()){
+                console.log('game has ended as a draw in insufficient material');
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
 WSSGame.on('connection', (ws,req) => {
 
     // Send user the orientation
@@ -41,6 +62,11 @@ WSSGame.on('connection', (ws,req) => {
                     WSSGame.clients.forEach((webSocket) => {
                         webSocket.send(data);
                     });
+
+                    // Check if the game ended
+                    if(checkGameEnd()){
+                        
+                    }
                 }
 
             }
