@@ -29,10 +29,20 @@ WSSGame.on('connection', (ws,req) => {
         let content = data.substring(data.indexOf(':')+1);
 
         if(type == 'play'){
-            if(chess.move(JSON.parse(content)) != null){
-                WSSGame.clients.forEach((webSocket) => {
-                    webSocket.send(data);
-                });
+            // Check if the player has the turn to play
+            if(
+                (WSSGame.orientation.white == ws.user._id.toString() && chess.turn() == "w")
+                ||
+                (WSSGame.orientation.black == ws.user._id.toString() && chess.turn() == "b"))
+                {
+             
+                // Validate and then make the move
+                if(chess.move(JSON.parse(content)) != null){
+                    WSSGame.clients.forEach((webSocket) => {
+                        webSocket.send(data);
+                    });
+                }
+
             }
             
         }

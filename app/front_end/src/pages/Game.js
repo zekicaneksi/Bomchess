@@ -51,7 +51,7 @@ const Game = () => {
   }
 
   function isDraggablePiece({piece, sourceSquare}){
-
+    
     if(piece[0] != orientation.current[0]){
       return false;
     }else{
