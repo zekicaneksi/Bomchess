@@ -34,16 +34,22 @@ function checkGameEnd(){
 
 WSSGame.on('connection', (ws,req) => {
 
-    // Send user the orientation
+    // JSON object to hold information about the game
+    let initials ={};
+
+    // Orientation
     if(WSSGame.orientation.white == ws.user._id.toString()){
-        ws.send("orientation:white");
+        initials.orientation = "white";
     }
     else{
-        ws.send("orientation:black");
+        initials.orientation = "black";
     }
 
-    // Send user the current position of the board
-    ws.send("fen:" + chess.fen());
+    // Current position of the board
+    initials.position = chess.fen();
+
+    // Send the initials
+    ws.send("initials:" + JSON.stringify(initials));
 
     ws.on('message', (data) => {
         

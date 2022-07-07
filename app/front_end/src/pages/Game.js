@@ -9,15 +9,7 @@ const Game = () => {
   const [loadBoard, setLoadBoard] = useState(false);
 
   const socket = useRef();
-  const orientation = useRef(null);
-  const initialPosition = useRef(null);
-
-  function isTableReady(){
-    if(orientation.current!=null
-      &&
-      initialPosition.current!=null)
-      setLoadBoard(true);
-  }
+  const initials = useRef({});
 
   // Function for move validation
   function safeGameMutate(modify) {
@@ -71,7 +63,7 @@ const Game = () => {
 
   function isDraggablePiece({piece, sourceSquare}){
 
-    if(piece[0] != orientation.current[0]){
+    if(piece[0] != initials.current.orientation[0]){
       return false;
     }else{
       return true;
@@ -107,13 +99,10 @@ const Game = () => {
         // Check if the game ended
         checkGameEnd();
 
-      } else if (type == 'orientation'){
-        orientation.current = content;
-        isTableReady();
-      } else if (type == 'fen'){
-        initialPosition.current = content;
-        game.load(content);
-        isTableReady();
+      } else if (type=="initials"){
+        initials.current = JSON.parse(content);
+        game.load(initials.current.position);
+        setLoadBoard(true);
       }
 
     });
@@ -134,7 +123,7 @@ const Game = () => {
     return(<p>Loading...</p>);
   }
   else{
-    return(<Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={orientation.current} isDraggablePiece={isDraggablePiece}/>);
+    return(<Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece}/>);
   }
 
 };
