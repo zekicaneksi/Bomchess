@@ -42,6 +42,9 @@ WSSGame.on('connection', (ws,req) => {
         ws.send("orientation:black");
     }
 
+    // Send user the current position of the board
+    ws.send("fen:" + chess.fen());
+
     ws.on('message', (data) => {
         
         data = data.toString();

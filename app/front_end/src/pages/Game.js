@@ -9,7 +9,15 @@ const Game = () => {
   const [loadBoard, setLoadBoard] = useState(false);
 
   const socket = useRef();
-  const orientation = useRef();
+  const orientation = useRef(null);
+  const initialPosition = useRef(null);
+
+  function isTableReady(){
+    if(orientation.current!=null
+      &&
+      initialPosition.current!=null)
+      setLoadBoard(true);
+  }
 
   // Function for move validation
   function safeGameMutate(modify) {
@@ -19,17 +27,7 @@ const Game = () => {
       return update;
     });
   }
-/*
-  function makeRandomMove() {
-    const possibleMoves = game.moves();
-    if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
-      return; // exit if the game is over
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-    safeGameMutate((game) => {
-      game.move(possibleMoves[randomIndex]);
-    });
-  }
-*/
+
   function checkGameEnd(){
     if(game.game_over()){
       if(game.in_checkmate()){
@@ -111,7 +109,11 @@ const Game = () => {
 
       } else if (type == 'orientation'){
         orientation.current = content;
-        setLoadBoard(true);
+        isTableReady();
+      } else if (type == 'fen'){
+        initialPosition.current = content;
+        game.load(content);
+        isTableReady();
       }
 
     });
