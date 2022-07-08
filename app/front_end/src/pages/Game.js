@@ -17,15 +17,6 @@ const Game = () => {
   const turn = useRef();
   const timer = useRef();
 
-  // Function to update the board
-  function safeGameMutate(modify) {
-    setGame((g) => {
-      const update = { ...g };
-      modify(update);
-      return update;
-    });
-  }
-
   // Function to check if the game is ended or not
   function checkGameEnd(){
     if(game.game_over()){
@@ -51,19 +42,16 @@ const Game = () => {
   function onDrop(sourceSquare, targetSquare) {
 
     // Make the move
-    let move = game.move({
+    let gameCopy = {...game};
+    let move = gameCopy.move({
       from: sourceSquare,
       to: targetSquare,
       promotion: "q", // always promote to a queen for example simplicity
-    });
+    })
+    setGame(gameCopy);
 
     // Move is illegal
     if(move === null)  return false;
-
-    // Move is legal, update the board
-    safeGameMutate((game) => {
-      game.move(move);
-    });
 
     // Send the move to the server
     socket.current.send("play:"+JSON.stringify(move));
@@ -100,9 +88,10 @@ const Game = () => {
 
         content = JSON.parse(content);
 
-        safeGameMutate((game) => {
-            game.move(content.move);
-        });
+        // Make the move
+        let gameCopy = {...game};
+        gameCopy.move(content.move);
+        setGame(gameCopy);
 
         setBlackRemainingTime(content.blackRemainingTime);
         setWhiteRemainingTime(content.whiteRemainingTime);
