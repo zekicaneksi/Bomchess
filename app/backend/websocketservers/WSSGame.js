@@ -47,14 +47,14 @@ function createWSSGame(){
         if(whiteRemainingTime == 0 || blackRemainingTime == 0){
             clearInterval(gameTimer);
         }
-    },1000);
+    },100);
     
     WSSGame.on('connection', (ws,req) => {
 
         // Set the remaining times
         if(whiteRemainingTime == null){
-            whiteRemainingTime = WSSGame.matchLength*60;
-            blackRemainingTime = WSSGame.matchLength*60;
+            whiteRemainingTime = WSSGame.matchLength*60*10; // Minutes to deciseconds
+            blackRemainingTime = WSSGame.matchLength*60*10; // Minutes to deciseconds
         }
             
         // JSON object to hold information about the game
@@ -100,6 +100,7 @@ function createWSSGame(){
                             toSend.move = JSON.parse(content);
                             toSend.whiteRemainingTime = whiteRemainingTime;
                             toSend.blackRemainingTime = blackRemainingTime;
+                            toSend.timestamp = new Date().getTime();
                             webSocket.send(type+':'+JSON.stringify(toSend));
                         });
     

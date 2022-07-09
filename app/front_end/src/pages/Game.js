@@ -93,9 +93,21 @@ const Game = () => {
         gameCopy.move(content.move);
         setGame(gameCopy);
 
-        setBlackRemainingTime(content.blackRemainingTime);
-        setWhiteRemainingTime(content.whiteRemainingTime);
+        // Set the current turn
         turn.current = (turn.current=='w' ? 'b' : 'w');
+
+        // Calculate the latency if it's the player's turn and render it
+        if(turn.current == initials.current.orientation[0]){
+          if(turn.current == "w"){
+            setWhiteRemainingTime(content.whiteRemainingTime-((new Date().getTime()) - content.timestamp));
+            setBlackRemainingTime(content.blackRemainingTime);
+          }
+          else{
+            setWhiteRemainingTime(content.whiteRemainingTime);
+            setBlackRemainingTime(content.blackRemainingTime-((new Date().getTime()) - content.timestamp));
+          }
+        }
+          
 
         // Check if the game ended
         checkGameEnd();
@@ -115,7 +127,7 @@ const Game = () => {
             setBlackRemainingTime((oldTime) => oldTime-1);
           else
             setWhiteRemainingTime((oldTime) => oldTime-1);
-        },1000);
+        },100);
       }
 
     });
@@ -136,11 +148,15 @@ const Game = () => {
     return(<p>Loading...</p>);
   }
   else{
+
+    let toShow_blackTime = HelperFunctions.decisecondsToChessCountDown(blackRemainingTime);
+    let toShow_whiteTime = HelperFunctions.decisecondsToChessCountDown(whiteRemainingTime);
+
     return(
     <div>
       <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece}/>
-      <p className='game-timer'>{(initials.current.orientation == "white") ? String(blackRemainingTime) : String(whiteRemainingTime)}</p>
-      <p className='game-timer'>{(initials.current.orientation == "white") ? String(whiteRemainingTime) : String(blackRemainingTime)}</p>
+      <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
+      <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p>
     </div>);
   }
 
