@@ -34,6 +34,8 @@ function createWSSGame(WSSGame_initialData){
         let toSend = {};
         toSend.endedBy = WSSGame.endedBy;
         toSend.winner = WSSGame.winner;
+        toSend.blackRemainingTime = blackRemainingTime;
+        toSend.whiteRemainingTime = whiteRemainingTime;
 
         WSSGame.clients.forEach((webSocket) => {
             webSocket.send('end:'+JSON.stringify(toSend));
@@ -51,6 +53,8 @@ function createWSSGame(WSSGame_initialData){
                 WSSGame.endedBy = "checkmate"
                 if(chess.turn() == "b")
                     WSSGame.winner="w";
+                else
+                    WSSGame.winner="b";
             }else if(chess.in_draw()){
                     WSSGame.winner="-";
                 if(chess.in_stalemate()){

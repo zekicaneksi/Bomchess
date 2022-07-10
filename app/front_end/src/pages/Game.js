@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
+import { Navigate } from "react-router-dom";
 import {Chess} from "chess.js";
 import { Chessboard } from "react-chessboard";
 import './Game.css';
@@ -8,6 +9,8 @@ const Game = () => {
 
   const [game, setGame] = useState(new Chess());
   const [loadBoard, setLoadBoard] = useState(false);
+  const [isGameEnded, setIsGameEnded] = useState(false);
+  const [navigateBack, setNavigateBack] = useState(false);
 
   const socket = useRef();
   const initials = useRef({});
@@ -17,27 +20,6 @@ const Game = () => {
   const turn = useRef();
   const timer = useRef();
 
-  // Function to check if the game is ended or not
-  function checkGameEnd(){
-    if(game.game_over()){
-      if(game.in_checkmate()){
-        let winner = "b";
-        if(game.turn() == "b")
-          winner="w";
-        alert('game has ended via checkmate, the winner is: ' + winner);
-      }else if(game.in_draw()){
-        if(game.in_stalemate()){
-          alert('game has ended as a draw in stalemate');
-        }else if(game.in_threefold_repetition()){
-          alert('game has ended as a draw in threefold repetition');
-        }else if(game.insufficient_material()){
-          alert('game has ended as a draw in insufficient material');
-        }
-      }
-      return true;
-    }
-    return false;
-  }
 
   function onDrop(sourceSquare, targetSquare) {
 
@@ -88,13 +70,13 @@ const Game = () => {
 
         content = JSON.parse(content);
 
+        // Set the current turn
+        turn.current = (turn.current=='w' ? 'b' : 'w');
+        
         // Make the move
         let gameCopy = {...game};
         gameCopy.move(content.move);
         setGame(gameCopy);
-
-        // Set the current turn
-        turn.current = (turn.current=='w' ? 'b' : 'w');
 
         // Calculate the latency if it's the player's turn and render it
         if(turn.current == initials.current.orientation[0]){
@@ -107,10 +89,6 @@ const Game = () => {
             setBlackRemainingTime(content.blackRemainingTime-((new Date().getTime()) - content.timestamp));
           }
         }
-          
-
-        // Check if the game ended
-        checkGameEnd();
 
         // initials is sent when connected to setup the game
       } else if (type=="initials"){
@@ -128,6 +106,17 @@ const Game = () => {
           else
             setWhiteRemainingTime((oldTime) => oldTime-1);
         },100);
+      } else if (type=="end"){
+        clearInterval(timer.current);
+        timer.current=null; // For safety, in case of being clearInterval'd again.
+
+        content = JSON.parse(content);
+
+        setWhiteRemainingTime(content.whiteRemainingTime);
+        setBlackRemainingTime(content.blackRemainingTime);
+
+        setIsGameEnded(true);
+        alert(JSON.stringify(content));
       }
 
     });
@@ -152,9 +141,12 @@ const Game = () => {
     let toShow_blackTime = HelperFunctions.decisecondsToChessCountDown(blackRemainingTime);
     let toShow_whiteTime = HelperFunctions.decisecondsToChessCountDown(whiteRemainingTime);
 
+    if(navigateBack)
+      return(<Navigate to='/' />);
     return(
     <div>
-      <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece}/>
+      {isGameEnded && <button className='goBackButton' onClick={() => setNavigateBack(true)}>Go Back</button>}
+      <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece} arePiecesDraggable={!isGameEnded}/>
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p>
     </div>);
