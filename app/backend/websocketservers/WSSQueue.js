@@ -42,7 +42,7 @@ WSSQueue.on('connection', (ws,req) => {
             WSSGame.orientation.white = [WSSGame.players[0]];
             WSSGame.orientation.black = [WSSGame.players[1]];
             WSSGame.matchLength = ws.matchLength;
-            Games.set([ws.user._id.toString(), wsInList.user._id.toString()], WSSGame);
+            Games.set(ws.user._id.toString() +':' + wsInList.user._id.toString(), WSSGame);
 
             // Let the users know
             wsInList.send('matched');

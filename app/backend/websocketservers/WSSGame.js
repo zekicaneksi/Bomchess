@@ -4,29 +4,62 @@ import { Chess } from 'chess.js'
 import {Games} from './Share.js';
 
 function createWSSGame(){
+
     const WSSGame = new WebSocketServer({ noServer: true });
+
     const chess = new Chess();
+
+    let gameTimer; // Hold the id of setInterval that's for user remaining time countdown.
+    let whiteRemainingTime=null;
+    let blackRemainingTime=null;
+
+    WSSGame.date = new Date().getTime(); // Date of the game
+    WSSGame.endedBy = '-';
+
     
     // Used as a response to 'ping'
     function heartbeat(){
         this.isAlive = true;
     }
+
+    // Ends the game
+    function endTheGame() {
+
+        // End the countdown timer for players
+        clearInterval(gameTimer);
+        gameTimer = null; // For safety, in case of multiple clearInterval's for the same id
+
+        // Send the players match results
+        let toSend = {};
+        toSend.endedBy = WSSGame.endedBy;
+        toSend.winner = WSSGame.winner;
+
+        WSSGame.clients.forEach((webSocket) => {
+            webSocket.send('end:'+JSON.stringify(toSend));
+            webSocket.close();
+        });
+
+        // Close the WSSGame
+        WSSGame.close();
+    }
     
-    // Checks if the game ended or not
+    // Checks if the game ended or not (excluding timeout)
     function checkGameEnd(){
         if(chess.game_over()){
             if(chess.in_checkmate()){
-                let winner = "b";
+                WSSGame.endedBy = "checkmate"
                 if(chess.turn() == "b")
-                    winner="w";
-                console.log('game has ended via checkmate, the winner is: ' + winner);
+                    WSSGame.winner="w";
             }else if(chess.in_draw()){
+                    WSSGame.winner="-";
                 if(chess.in_stalemate()){
-                    console.log('game has ended as a draw in stalemate');
+                    WSSGame.endedBy = "stalemate";
                 }else if(chess.in_threefold_repetition()){
-                    console.log('game has ended as a draw in threefold repetition');
+                    WSSGame.endedBy = "threefold";
                 }else if(chess.insufficient_material()){
-                    console.log('game has ended as a draw in insufficient material');
+                    WSSGame.endedBy = "insufficient";
+                } else{
+                    WSSGame.endedBy = "unknown";
                 }
             }
             return true;
@@ -35,10 +68,7 @@ function createWSSGame(){
     }
     
     // Timer for the game
-    let whiteRemainingTime=null;
-    let blackRemainingTime=null;
-    
-    const gameTimer = setInterval(() => {
+    gameTimer = setInterval(() => {
         if(chess.turn() == "b")
             blackRemainingTime--;
         else
@@ -46,6 +76,10 @@ function createWSSGame(){
 
         if(whiteRemainingTime == 0 || blackRemainingTime == 0){
             clearInterval(gameTimer);
+            gameTimer = null; // For safety, in case of multiple clearInterval's for the same id
+            WSSGame.endedBy = "timeout";
+            WSSGame.winner = (whiteRemainingTime == 0 ? 'b' : 'w');
+            endTheGame();
         }
     },100);
     
@@ -85,6 +119,11 @@ function createWSSGame(){
             let content = data.substring(data.indexOf(':')+1);
     
             if(type == 'play'){
+
+                // To prevent playing a move after the game ends
+                if(WSSGame.endedBy != '-')
+                    return;
+                
                 // Check if the player has the turn to play
                 if(
                     (WSSGame.orientation.white == ws.user._id.toString() && chess.turn() == "w")
@@ -106,7 +145,7 @@ function createWSSGame(){
     
                         // Check if the game ended
                         if(checkGameEnd()){
-                            
+                            endTheGame();
                         }
                     }
     
@@ -137,7 +176,7 @@ function createWSSGame(){
     WSSGame.on('close', function close() {
         clearInterval(pingPongInterval);
         clearInterval(gameTimer);
-        Games.delete(WSSGame.players[0].id.toString(),WSSGame.players[1].id.toString());
+        Games.delete(WSSGame.players[0] + ':' + WSSGame.players[1]);
     });
 
     return WSSGame;
