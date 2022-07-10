@@ -36,13 +36,15 @@ WSSQueue.on('connection', (ws,req) => {
            isThereAMatch = true;
 
             // Create the game
-            let WSSGame = createWSSGame();
-            WSSGame.players=[ws.user._id.toString(),wsInList.user._id.toString()];
-            WSSGame.orientation={};
-            WSSGame.orientation.white = [WSSGame.players[0]];
-            WSSGame.orientation.black = [WSSGame.players[1]];
-            WSSGame.matchLength = ws.matchLength;
-            Games.set(ws.user._id.toString() +':' + wsInList.user._id.toString(), WSSGame);
+            let initialData = {};
+            initialData.players=[ws.user._id.toString(),wsInList.user._id.toString()];
+            initialData.orientation={};
+            initialData.orientation.white = [initialData.players[0]];
+            initialData.orientation.black = [initialData.players[1]];
+            initialData.matchLength = ws.matchLength;
+
+            let WSSGame = createWSSGame(initialData);
+            Games.set(initialData.players[0] +':' + initialData.players[1], WSSGame);
 
             // Let the users know
             wsInList.send('matched');

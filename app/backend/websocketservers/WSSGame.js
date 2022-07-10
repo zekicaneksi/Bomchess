@@ -3,15 +3,16 @@ import { Chess } from 'chess.js'
 
 import {Games} from './Share.js';
 
-function createWSSGame(){
+function createWSSGame(WSSGame_initialData){
 
     const WSSGame = new WebSocketServer({ noServer: true });
+    WSSGame.initialData = WSSGame_initialData;
 
     const chess = new Chess();
 
     let gameTimer; // Hold the id of setInterval that's for user remaining time countdown.
-    let whiteRemainingTime=null;
-    let blackRemainingTime=null;
+    let whiteRemainingTime=WSSGame.initialData.matchLength*60*10; // Minutes to deciseconds
+    let blackRemainingTime=WSSGame.initialData.matchLength*60*10; // Minutes to deciseconds
 
     WSSGame.date = new Date().getTime(); // Date of the game
     WSSGame.endedBy = '-';
@@ -84,18 +85,12 @@ function createWSSGame(){
     },100);
     
     WSSGame.on('connection', (ws,req) => {
-
-        // Set the remaining times
-        if(whiteRemainingTime == null){
-            whiteRemainingTime = WSSGame.matchLength*60*10; // Minutes to deciseconds
-            blackRemainingTime = WSSGame.matchLength*60*10; // Minutes to deciseconds
-        }
             
         // JSON object to hold information about the game
         let initials ={};
     
         // Orientation
-        if(WSSGame.orientation.white == ws.user._id.toString()){
+        if(WSSGame.initialData.orientation.white == ws.user._id.toString()){
             initials.orientation = "white";
         }
         else{
@@ -126,9 +121,9 @@ function createWSSGame(){
                 
                 // Check if the player has the turn to play
                 if(
-                    (WSSGame.orientation.white == ws.user._id.toString() && chess.turn() == "w")
+                    (WSSGame.initialData.orientation.white == ws.user._id.toString() && chess.turn() == "w")
                     ||
-                    (WSSGame.orientation.black == ws.user._id.toString() && chess.turn() == "b"))
+                    (WSSGame.initialData.orientation.black == ws.user._id.toString() && chess.turn() == "b"))
                     {
                  
                     // Validate and then make the move
@@ -176,7 +171,7 @@ function createWSSGame(){
     WSSGame.on('close', function close() {
         clearInterval(pingPongInterval);
         clearInterval(gameTimer);
-        Games.delete(WSSGame.players[0] + ':' + WSSGame.players[1]);
+        Games.delete(WSSGame.initialData.players[0] + ':' + WSSGame.initialData.players[1]);
     });
 
     return WSSGame;
