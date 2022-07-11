@@ -16,12 +16,12 @@ export function ajax(route, type, responseFunction, payloadJson) {
     }
 }
 
-export function decisecondsToChessCountDown(deciseconds) {
-    let deciseconds_min = parseInt(deciseconds/600);
-    let deciseconds_sec = parseInt((deciseconds-(deciseconds_min*600))/10);
+export function milisecondsToChessCountDown(miliseconds) {
+    let miliseconds_min = parseInt(miliseconds/60000);
+    let miliseconds_sec = parseInt((miliseconds-(miliseconds_min*60000))/1000);
 
-    let toShow_min = (deciseconds_min>=10 ? String(deciseconds_min) : "0"+ String(deciseconds_min));
-    let toShow_sec = (deciseconds_sec>=10 ? String(deciseconds_sec) : "0"+ String(deciseconds_sec));
+    let toShow_min = (miliseconds_min>=10 ? String(miliseconds_min) : "0"+ String(miliseconds_min));
+    let toShow_sec = (miliseconds_sec>=10 ? String(miliseconds_sec) : "0"+ String(miliseconds_sec));
 
     return toShow_min + ':' + toShow_sec;
 }

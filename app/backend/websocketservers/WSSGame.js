@@ -12,12 +12,15 @@ function createWSSGame(WSSGame_initialData){
 
     let moves = []; // Hold the moves that are made
 
-    let gameTimer; // Hold the id of setInterval that's for user remaining time countdown.
-    let whiteRemainingTime=WSSGame.initialData.matchLength*60*10; // Minutes to deciseconds
-    let blackRemainingTime=WSSGame.initialData.matchLength*60*10; // Minutes to deciseconds
-
     WSSGame.date = new Date().getTime(); // Date of the game
     WSSGame.endedBy = '-';
+
+    // Variables that are used for gameTimer interval
+    let gameTimer; // Hold the id of setInterval that's for user remaining time countdown.
+    let whiteRemainingTime= WSSGame.initialData.matchLength*60*1000; // Minutes to miliseconds
+    let blackRemainingTime= WSSGame.initialData.matchLength*60*1000; // Minutes to miliseconds
+    let timePassedSinceLastCalculation = 0;
+    let holdMovesLength = 0;
 
     
     // Used as a response to 'ping'
@@ -73,21 +76,42 @@ function createWSSGame(WSSGame_initialData){
         }
         return false;
     }
-    
+
+
     // Timer for the game
     gameTimer = setInterval(() => {
-        if(chess.turn() == "b")
-            blackRemainingTime--;
-        else
-            whiteRemainingTime--;
 
-        if(whiteRemainingTime == 0 || blackRemainingTime == 0){
+        if(whiteRemainingTime <= 0 || blackRemainingTime <= 0){
             clearInterval(gameTimer);
             gameTimer = null; // For safety, in case of multiple clearInterval's for the same id
             WSSGame.endedBy = "timeout";
-            WSSGame.winner = (whiteRemainingTime == 0 ? 'b' : 'w');
+            WSSGame.winner = (whiteRemainingTime <= 0 ? 'b' : 'w');
             endTheGame();
         }
+        
+        const currentTime = new Date().getTime();
+        let passedTimeFromLastMove;
+
+        if(holdMovesLength != moves.length){
+            holdMovesLength = moves.length;
+            timePassedSinceLastCalculation = 0;
+        }
+
+        if(moves.length==0)
+            passedTimeFromLastMove = currentTime - WSSGame.date;
+        else
+            passedTimeFromLastMove = currentTime - moves[moves.length-1].timestamp;
+
+        if(chess.turn() == "b"){
+            blackRemainingTime-= (passedTimeFromLastMove - timePassedSinceLastCalculation);
+        }
+        else{
+            whiteRemainingTime-= (passedTimeFromLastMove - timePassedSinceLastCalculation);
+        }
+
+        timePassedSinceLastCalculation = passedTimeFromLastMove;
+        holdMovesLength = moves.length;
+
     },100);
     
     WSSGame.on('connection', (ws,req) => {

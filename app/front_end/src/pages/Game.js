@@ -102,9 +102,9 @@ const Game = () => {
         // Start the countdown timer for the remaining times
         timer.current = setInterval(() => {
           if(turn.current == 'b')
-            setBlackRemainingTime((oldTime) => oldTime-1);
+            setBlackRemainingTime((oldTime) => oldTime-100);
           else
-            setWhiteRemainingTime((oldTime) => oldTime-1);
+            setWhiteRemainingTime((oldTime) => oldTime-100);
         },100);
       } else if (type=="end"){
         clearInterval(timer.current);
@@ -138,8 +138,8 @@ const Game = () => {
   }
   else{
 
-    let toShow_blackTime = HelperFunctions.decisecondsToChessCountDown(blackRemainingTime);
-    let toShow_whiteTime = HelperFunctions.decisecondsToChessCountDown(whiteRemainingTime);
+    let toShow_blackTime = HelperFunctions.milisecondsToChessCountDown(blackRemainingTime);
+    let toShow_whiteTime = HelperFunctions.milisecondsToChessCountDown(whiteRemainingTime);
 
     if(navigateBack)
       return(<Navigate to='/' />);
