@@ -103,18 +103,8 @@ const Game = () => {
 
         holdPlayerRemainingTime.current = (turn.current == "w" ? content.whiteRemainingTime : content.blackRemainingTime);
 
-
-        // Calculate the latency if it's the player's turn and render it
-        if(turn.current == initials.current.orientation[0]){
-          if(turn.current == "w"){
-            setWhiteRemainingTime(content.whiteRemainingTime-((new Date().getTime()) - content.timestamp));
-            setBlackRemainingTime(content.blackRemainingTime);
-          }
-          else{
-            setWhiteRemainingTime(content.whiteRemainingTime);
-            setBlackRemainingTime(content.blackRemainingTime-((new Date().getTime()) - content.timestamp));
-          }
-        }
+        setWhiteRemainingTime(content.whiteRemainingTime);
+        setBlackRemainingTime(content.blackRemainingTime);
 
         // initials is sent when connected to setup the game
       } else if (type=="initials"){

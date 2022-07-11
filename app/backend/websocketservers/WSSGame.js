@@ -168,7 +168,6 @@ function createWSSGame(WSSGame_initialData){
                             toSend.move = JSON.parse(content);
                             toSend.whiteRemainingTime = whiteRemainingTime;
                             toSend.blackRemainingTime = blackRemainingTime;
-                            toSend.timestamp = new Date().getTime();
                             webSocket.send(type+':'+JSON.stringify(toSend));
                         });
     
