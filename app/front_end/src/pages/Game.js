@@ -18,7 +18,11 @@ const Game = () => {
   const [blackRemainingTime, setBlackRemainingTime] = useState(0);
   const [whiteRemainingTime, setWhiteRemainingTime] = useState(0);
   const turn = useRef();
+
+  
   const timer = useRef();
+  const lastMoveTimestamp = useRef(new Date().getTime());
+  const holdPlayerRemainingTime = useRef();
 
 
   function onDrop(sourceSquare, targetSquare) {
@@ -52,6 +56,22 @@ const Game = () => {
       
   }
 
+  // Decreases remaining times
+  function timerStart(){
+    return setInterval(() => {
+
+      const passedTimeFromLastMove = (new Date().getTime()) - lastMoveTimestamp.current;
+
+      if(turn.current == 'b'){
+        setBlackRemainingTime(holdPlayerRemainingTime.current - passedTimeFromLastMove);
+      }
+      else{
+        setWhiteRemainingTime(holdPlayerRemainingTime.current - passedTimeFromLastMove);
+      }
+      
+    },200);
+  }
+
   useEffect(() => {
 
     // --- ComponentDidMount
@@ -72,11 +92,17 @@ const Game = () => {
 
         // Set the current turn
         turn.current = (turn.current=='w' ? 'b' : 'w');
-        
+
+        // Set the last move timestamp
+        lastMoveTimestamp.current = new Date().getTime();
+
         // Make the move
         let gameCopy = {...game};
         gameCopy.move(content.move);
         setGame(gameCopy);
+
+        holdPlayerRemainingTime.current = (turn.current == "w" ? content.whiteRemainingTime : content.blackRemainingTime);
+
 
         // Calculate the latency if it's the player's turn and render it
         if(turn.current == initials.current.orientation[0]){
@@ -97,15 +123,12 @@ const Game = () => {
         setWhiteRemainingTime(initials.current.whiteRemainingTime);
         game.load(initials.current.position);
         turn.current=game.turn();
+        holdPlayerRemainingTime.current = (turn.current == "w" ? initials.current.whiteRemainingTime : initials.current.blackRemainingTime);
         setLoadBoard(true);
 
         // Start the countdown timer for the remaining times
-        timer.current = setInterval(() => {
-          if(turn.current == 'b')
-            setBlackRemainingTime((oldTime) => oldTime-100);
-          else
-            setWhiteRemainingTime((oldTime) => oldTime-100);
-        },100);
+        timer.current = timerStart();
+
       } else if (type=="end"){
         clearInterval(timer.current);
         timer.current=null; // For safety, in case of being clearInterval'd again.

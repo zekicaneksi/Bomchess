@@ -17,13 +17,18 @@ WSSQueue.on('connection', (ws,req) => {
 
     // For security reasons, check if the player already has a game going on
     let alreadyPlaying = false;
-    Games.forEach(wssGame => {
-        if(wssGame.players.includes(ws.user._id.toString())){
-            alreadyPlaying = true;
-            ws.send("already has a match, cannot join queue");
-            return;
-        }
-    });
+    try { // In try block because WSSGame may be deleted while foreach is working.
+        Games.forEach(wssGame => {
+            if(wssGame.players.includes(ws.user._id.toString())){
+                alreadyPlaying = true;
+                ws.send("already has a match, cannot join queue");
+                return;
+            }
+        });    
+    } catch (error) {
+        
+    }
+    
     if(alreadyPlaying){
         return ws.close();
     }
