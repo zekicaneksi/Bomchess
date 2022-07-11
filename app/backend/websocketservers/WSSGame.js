@@ -10,6 +10,8 @@ function createWSSGame(WSSGame_initialData){
 
     const chess = new Chess();
 
+    let moves = []; // Hold the moves that are made
+
     let gameTimer; // Hold the id of setInterval that's for user remaining time countdown.
     let whiteRemainingTime=WSSGame.initialData.matchLength*60*10; // Minutes to deciseconds
     let blackRemainingTime=WSSGame.initialData.matchLength*60*10; // Minutes to deciseconds
@@ -131,8 +133,12 @@ function createWSSGame(WSSGame_initialData){
                     {
                  
                     // Validate and then make the move
-                    
-                    if(chess.move(JSON.parse(content)) != null){
+                    let move = chess.move(JSON.parse(content));
+                    if(move != null){
+                        move.timestamp = new Date().getTime();
+                        moves.push(move);
+
+                        // Let the players know what move has been made
                         WSSGame.clients.forEach((webSocket) => {
                             let toSend = {};
                             toSend.move = JSON.parse(content);
