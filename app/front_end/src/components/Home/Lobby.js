@@ -36,21 +36,22 @@ class Lobby extends React.Component{
         
         // Listen for messages
         this.socket.addEventListener('message', function (event) {
-            let type = event.data.substring(0,event.data.indexOf(':'));
-            let content = event.data.substring(event.data.indexOf(':')+1);
+
+          let dataJson = JSON.parse(event.data);
     
-            if(type == 'connected'){
-              if(!holdThis.lobbyUser.includes(content)) holdThis.lobbyUser.push(content);
-              holdThis.setState({lobbyUser: holdThis.lobbyUser});
-            }
-            else if(type == 'disconnected'){
-              holdThis.lobbyUser = holdThis.lobbyUser.filter(item => item !== content);
-              holdThis.setState({lobbyUser: holdThis.lobbyUser});
-            }
-            else if(type == 'message'){
-              holdThis.lobbyMessages.push(content);
-              holdThis.setState({lobbyMessages: holdThis.lobbyMessages});
-            }
+          if(dataJson.type == 'connected'){
+            if(!holdThis.lobbyUser.includes(dataJson.username))
+              holdThis.lobbyUser.push(dataJson.username);
+            holdThis.setState({lobbyUser: holdThis.lobbyUser});
+          }
+          else if(dataJson.type == 'disconnected'){
+            holdThis.lobbyUser = holdThis.lobbyUser.filter(item => item !== dataJson.username);
+            holdThis.setState({lobbyUser: holdThis.lobbyUser});
+          }
+          else if(dataJson.type == 'message'){
+            holdThis.lobbyMessages.push(dataJson.username + ': '+ dataJson.message);
+            holdThis.setState({lobbyMessages: holdThis.lobbyMessages});
+          }
     
         });
     

@@ -40,7 +40,10 @@ const Game = () => {
     if(move === null)  return false;
 
     // Send the move to the server
-    socket.current.send("play:"+JSON.stringify(move));
+    let toSend = {};
+    toSend.type = 'play';
+    toSend.move = move;
+    socket.current.send(JSON.stringify(toSend));
     
     return true;
   }
@@ -83,12 +86,10 @@ const Game = () => {
     socket.current.addEventListener('message', function (event) {
 
       // Parse the message
-      let type = event.data.substring(0,event.data.indexOf(':'));
-      let content = event.data.substring(event.data.indexOf(':')+1);
 
-      if(type == 'play'){
+      let dataJson = JSON.parse(event.data);
 
-        content = JSON.parse(content);
+      if(dataJson.type == 'play'){
 
         // Set the current turn
         turn.current = (turn.current=='w' ? 'b' : 'w');
@@ -98,17 +99,17 @@ const Game = () => {
 
         // Make the move
         let gameCopy = {...game};
-        gameCopy.move(content.move);
+        gameCopy.move(dataJson.move);
         setGame(gameCopy);
 
-        holdPlayerRemainingTime.current = (turn.current == "w" ? content.whiteRemainingTime : content.blackRemainingTime);
+        holdPlayerRemainingTime.current = (turn.current == "w" ? dataJson.whiteRemainingTime : dataJson.blackRemainingTime);
 
-        setWhiteRemainingTime(content.whiteRemainingTime);
-        setBlackRemainingTime(content.blackRemainingTime);
+        setWhiteRemainingTime(dataJson.whiteRemainingTime);
+        setBlackRemainingTime(dataJson.blackRemainingTime);
 
         // initials is sent when connected to setup the game
-      } else if (type=="initials"){
-        initials.current = JSON.parse(content);
+      } else if (dataJson.type=="initials"){
+        initials.current = {...dataJson};
         setBlackRemainingTime(initials.current.blackRemainingTime);
         setWhiteRemainingTime(initials.current.whiteRemainingTime);
         game.load(initials.current.position);
@@ -119,17 +120,15 @@ const Game = () => {
         // Start the countdown timer for the remaining times
         timer.current = timerStart();
 
-      } else if (type=="end"){
+      } else if (dataJson.type=="end"){
         clearInterval(timer.current);
         timer.current=null; // For safety, in case of being clearInterval'd again.
 
-        content = JSON.parse(content);
-
-        setWhiteRemainingTime(content.whiteRemainingTime);
-        setBlackRemainingTime(content.blackRemainingTime);
+        setWhiteRemainingTime(dataJson.whiteRemainingTime);
+        setBlackRemainingTime(dataJson.blackRemainingTime);
 
         setIsGameEnded(true);
-        alert(JSON.stringify(content));
+        alert(JSON.stringify(dataJson));
       }
 
     });

@@ -37,13 +37,14 @@ function createWSSGame(WSSGame_initialData){
 
         // Send the players match results
         let toSend = {};
+        toSend.type="end";
         toSend.endedBy = WSSGame.endedBy;
         toSend.winner = WSSGame.winner;
         toSend.blackRemainingTime = blackRemainingTime;
         toSend.whiteRemainingTime = whiteRemainingTime;
 
         WSSGame.clients.forEach((webSocket) => {
-            webSocket.send('end:'+JSON.stringify(toSend));
+            webSocket.send(JSON.stringify(toSend));
             webSocket.close();
         });
 
@@ -118,6 +119,7 @@ function createWSSGame(WSSGame_initialData){
             
         // JSON object to hold information about the game
         let initials ={};
+        initials.type="initials";
     
         // Orientation
         if(WSSGame.initialData.orientation.white == ws.user._id.toString()){
@@ -134,16 +136,13 @@ function createWSSGame(WSSGame_initialData){
         initials.blackRemainingTime = blackRemainingTime;
 
         // Send the initials
-        ws.send("initials:" + JSON.stringify(initials));
+        ws.send(JSON.stringify(initials));
     
         ws.on('message', (data) => {
             
-            data = data.toString();
-            
-            let type = data.substring(0,data.indexOf(':'));
-            let content = data.substring(data.indexOf(':')+1);
+            let dataJson = JSON.parse(data.toString());
     
-            if(type == 'play'){
+            if(dataJson.type == 'play'){
 
                 // To prevent playing a move after the game ends
                 if(WSSGame.endedBy != '-')
@@ -157,7 +156,7 @@ function createWSSGame(WSSGame_initialData){
                     {
                  
                     // Validate and then make the move
-                    let move = chess.move(JSON.parse(content));
+                    let move = chess.move(dataJson.move);
                     if(move != null){
                         move.timestamp = new Date().getTime();
                         moves.push(move);
@@ -165,10 +164,11 @@ function createWSSGame(WSSGame_initialData){
                         // Let the players know what move has been made
                         WSSGame.clients.forEach((webSocket) => {
                             let toSend = {};
-                            toSend.move = JSON.parse(content);
+                            toSend.move = dataJson.move;
                             toSend.whiteRemainingTime = whiteRemainingTime;
                             toSend.blackRemainingTime = blackRemainingTime;
-                            webSocket.send(type+':'+JSON.stringify(toSend));
+                            toSend.type='play';
+                            webSocket.send(JSON.stringify(toSend));
                         });
     
                         // Check if the game ended

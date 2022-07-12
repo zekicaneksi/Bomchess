@@ -15,25 +15,38 @@ WSSLobby.on('connection', (ws,req) => {
 
   // Send the active users
   WSSLobby.clients.forEach((webSocket) => {
-    ws.send('connected:'+webSocket.user.username);
+    let toSend={};
+    toSend.type = 'connected';
+    toSend.username = webSocket.user.username;
+    ws.send(JSON.stringify(toSend));
   });
 
   // Let the other users know the newcomer
   WSSLobby.clients.forEach((webSocket) => {
-    webSocket.send('connected:'+ws.user.username);
+    let toSend={};
+    toSend.type = 'connected';
+    toSend.username = ws.user.username;
+    webSocket.send(JSON.stringify(toSend));
   });
 
   // Broadcast messages
   ws.on('message', (data) => {
+    let toSend={};
+    toSend.type = 'message';
+    toSend.username = ws.user.username;
+    toSend.message = data.toString();
     WSSLobby.clients.forEach((webSocket) => {
-      webSocket.send('message:'+ws.user.username+":"+data);
+      webSocket.send(JSON.stringify(toSend));
     });
   });
 
   // Broadcast the leaver
   ws.on('close', () => {
+    let toSend={};
+    toSend.type = 'disconnected';
+    toSend.username = ws.user.username;
     WSSLobby.clients.forEach((webSocket) => {
-      webSocket.send('disconnected:'+ws.user.username);
+      webSocket.send(JSON.stringify(toSend));
     });
   });
 
