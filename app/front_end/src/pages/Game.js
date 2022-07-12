@@ -5,9 +5,24 @@ import {Chess} from "chess.js";
 import { Chessboard } from "react-chessboard";
 import './Game.css';
 
+// A component to render the list of moves that are made
+function MovesList(props) {
+
+  const listItems = props.moves.map((move,index) => {
+    return <option key={index}>{move.from + move.to}</option>
+  });
+
+  return (
+    <select>
+      {listItems}
+    </select>
+  );
+}
+
 const Game = () => {
 
   const [game, setGame] = useState(new Chess());
+  const [moves, setMoves] = useState([]);
   const [loadBoard, setLoadBoard] = useState(false);
   const [isGameEnded, setIsGameEnded] = useState(false);
   const [navigateBack, setNavigateBack] = useState(false);
@@ -75,6 +90,26 @@ const Game = () => {
     },200);
   }
 
+  // To convert json to array for move history
+  function moves_jsonToArray(){
+    let toReturn = [];
+    for(var i in initials.current.moves){
+      toReturn.push(initials.current.moves[i]);
+    }
+
+    const holdMoves = {...game.history({verbose:true})};
+    for(var i in holdMoves){
+      toReturn.push(holdMoves[i]);
+    }
+
+    return toReturn;
+  }
+
+  // Update moves made when a move is made
+  useEffect(() => {
+    setMoves(moves_jsonToArray());
+ }, [game]);
+
   useEffect(() => {
 
     // --- ComponentDidMount
@@ -115,6 +150,8 @@ const Game = () => {
         game.load(initials.current.position);
         turn.current=game.turn();
         holdPlayerRemainingTime.current = (turn.current == "w" ? initials.current.whiteRemainingTime : initials.current.blackRemainingTime);
+        setMoves(moves_jsonToArray());
+        
         setLoadBoard(true);
 
         // Start the countdown timer for the remaining times
@@ -153,14 +190,21 @@ const Game = () => {
     let toShow_blackTime = HelperFunctions.milisecondsToChessCountDown(blackRemainingTime);
     let toShow_whiteTime = HelperFunctions.milisecondsToChessCountDown(whiteRemainingTime);
 
+    let showAbortMessage = ((moves.length < 1 && (parseInt(whiteRemainingTime / 1000) < (initials.current.matchLength * 60 - 10))
+                            ||
+                            moves.length < 2 && (parseInt(blackRemainingTime / 1000) < (initials.current.matchLength * 60 - 10))) 
+                            ? true : false);
+
     if(navigateBack)
       return(<Navigate to='/' />);
     return(
     <div>
       {isGameEnded && <button className='goBackButton' onClick={() => setNavigateBack(true)}>Go Back</button>}
       <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece} arePiecesDraggable={!isGameEnded}/>
+      {showAbortMessage && <p>If player doesn't make a move in first 30 seconds, match will be aborted</p>}
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
-      <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p>
+      <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p> 
+      <MovesList moves={moves} />
     </div>);
   }
 

@@ -149,8 +149,12 @@ function createWSSGame(WSSGame_initialData){
         // Current position of the board
         initials.position = chess.fen();
 
+        initials.moves = {...moves};
+
         initials.whiteRemainingTime = whiteRemainingTime;
         initials.blackRemainingTime = blackRemainingTime;
+
+        initials.matchLength = WSSGame.initialData.matchLength;
 
         // Send the initials
         ws.send(JSON.stringify(initials));
