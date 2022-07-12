@@ -82,14 +82,31 @@ function createWSSGame(WSSGame_initialData){
     // Timer for the game
     gameTimer = setInterval(() => {
 
+        // End the game in case of either player's time running out
         if(whiteRemainingTime <= 0 || blackRemainingTime <= 0){
             clearInterval(gameTimer);
             gameTimer = null; // For safety, in case of multiple clearInterval's for the same id
             WSSGame.endedBy = "timeout";
             WSSGame.winner = (whiteRemainingTime <= 0 ? 'b' : 'w');
             endTheGame();
+            return;
         }
-        
+
+        // Abort the game if either player doesn't play their first move in 30 seconds
+        if(moves.length < 2 &&
+            (whiteRemainingTime / 1000 <  (WSSGame.initialData.matchLength*60) - 30
+            ||
+            blackRemainingTime / 1000 < (WSSGame.initialData.matchLength*60) - 30)){
+
+                clearInterval(gameTimer);
+                gameTimer = null; // For safety, in case of multiple clearInterval's for the same id
+                WSSGame.endedBy = "abort";
+                WSSGame.winner = '-'
+                endTheGame();
+                return;
+        }
+
+
         const currentTime = new Date().getTime();
         let passedTimeFromLastMove;
 
