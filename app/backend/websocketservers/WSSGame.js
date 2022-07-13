@@ -22,6 +22,8 @@ function createWSSGame(WSSGame_initialData){
     let timePassedSinceLastCalculation = 0;
     let holdMovesLength = 0;
 
+    let holdOfferDraw = '-'; // To hold draw offers
+
     
     // Used as a response to 'ping'
     function heartbeat(){
@@ -155,6 +157,7 @@ function createWSSGame(WSSGame_initialData){
         initials.blackRemainingTime = blackRemainingTime;
 
         initials.matchLength = WSSGame.initialData.matchLength;
+        initials.drawOffer = holdOfferDraw;
 
         // Send the initials
         ws.send(JSON.stringify(initials));
@@ -178,7 +181,7 @@ function createWSSGame(WSSGame_initialData){
                  
                     // Validate and then make the move
                     let move = chess.move(dataJson.move);
-                    if(move != null){
+                    if(move != '-'){
                         move.timestamp = new Date().getTime();
                         moves.push(move);
 
@@ -204,6 +207,37 @@ function createWSSGame(WSSGame_initialData){
                 WSSGame.endedBy = "surrender";
                 WSSGame.winner = (WSSGame.initialData.orientation.white == ws.user._id.toString() ? 'b' : 'w');
                 endTheGame();
+            } else if (dataJson.type == 'offerDraw'){
+
+                let holdRequestOrientation = (WSSGame.initialData.orientation.white == ws.user._id.toString() ? 'w' : 'b')
+
+                if(dataJson.value == "yes"){
+                    if(holdOfferDraw == '-'){
+                        holdOfferDraw = holdRequestOrientation;
+                        WSSGame.clients.forEach((webSocket) => {
+                            let toSend = {};
+                            toSend.type = "offerDraw";
+                            toSend.from = holdOfferDraw;
+                            webSocket.send(JSON.stringify(toSend));
+                        });
+                    } else if(holdOfferDraw != holdRequestOrientation){
+                        WSSGame.endedBy = "drawOffer";
+                        WSSGame.winner = "-";
+                        endTheGame();
+                    }
+                } else{
+                    if(holdOfferDraw == holdRequestOrientation){
+                        holdOfferDraw = '-';
+                        WSSGame.clients.forEach((webSocket) => {
+                            let toSend = {};
+                            toSend.type = "offerDraw";
+                            toSend.from = holdRequestOrientation;
+                            webSocket.send(JSON.stringify(toSend));
+                        });
+                    }
+                }
+
+                
             }
         });
     

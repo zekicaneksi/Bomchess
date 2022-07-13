@@ -32,6 +32,7 @@ const Game = () => {
 
   const [blackRemainingTime, setBlackRemainingTime] = useState(0);
   const [whiteRemainingTime, setWhiteRemainingTime] = useState(0);
+  const [drawOffer, setDrawOffer] = useState('-');
   const turn = useRef();
 
   
@@ -112,6 +113,14 @@ const Game = () => {
     socket.current.send(JSON.stringify(toSend));
   }
 
+  function offerDraw(e){
+    let toSend = {};
+    toSend.type = "offerDraw";
+    toSend.value = (e.target.value == "yes" ? "yes" : "no");
+
+    socket.current.send(JSON.stringify(toSend));
+  }
+
   // Update moves made when a move is made
   useEffect(() => {
     setMoves(moves_jsonToArray());
@@ -154,6 +163,7 @@ const Game = () => {
         initials.current = {...dataJson};
         setBlackRemainingTime(initials.current.blackRemainingTime);
         setWhiteRemainingTime(initials.current.whiteRemainingTime);
+        setDrawOffer(initials.current.drawOffer);
         game.load(initials.current.position);
         turn.current=game.turn();
         holdPlayerRemainingTime.current = (turn.current == "w" ? initials.current.whiteRemainingTime : initials.current.blackRemainingTime);
@@ -173,6 +183,9 @@ const Game = () => {
 
         setIsGameEnded(true);
         alert(JSON.stringify(dataJson));
+
+      } else if (dataJson.type=="offerDraw"){
+        setDrawOffer((old) => (dataJson.from == old ? '-' : dataJson.from));
       }
 
     });
@@ -209,10 +222,16 @@ const Game = () => {
       {isGameEnded && <button className='goBackButton' onClick={() => setNavigateBack(true)}>Go Back</button>}
       <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece} arePiecesDraggable={!isGameEnded}/>
       {showAbortMessage && <p>If player doesn't make a move in first 30 seconds, match will be aborted</p>}
+      {drawOffer != "-" && <p>{drawOffer} is offerin a draw</p>}
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p> 
       <MovesList moves={moves} />
       <button onClick={surrender}>surrender</button>
+      <p>offer draw</p>
+      <select defaultValue={(drawOffer == initials.current.orientation[0] ? "yes" : "no")} onChange={offerDraw}>
+        <option value={"yes"}>yes</option>
+        <option value={"no"}>no</option>
+      </select>
     </div>);
   }
 
