@@ -200,6 +200,10 @@ function createWSSGame(WSSGame_initialData){
     
                 }
                 
+            } else if (dataJson.type == 'surrender'){
+                WSSGame.endedBy = "surrender";
+                WSSGame.winner = (WSSGame.initialData.orientation.white == ws.user._id.toString() ? 'b' : 'w');
+                endTheGame();
             }
         });
     

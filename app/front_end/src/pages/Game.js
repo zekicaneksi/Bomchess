@@ -105,6 +105,13 @@ const Game = () => {
     return toReturn;
   }
 
+  // Send the server the surrender message
+  function surrender(){
+    let toSend = {};
+    toSend.type = "surrender";
+    socket.current.send(JSON.stringify(toSend));
+  }
+
   // Update moves made when a move is made
   useEffect(() => {
     setMoves(moves_jsonToArray());
@@ -205,6 +212,7 @@ const Game = () => {
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p> 
       <MovesList moves={moves} />
+      <button onClick={surrender}>surrender</button>
     </div>);
   }
 
