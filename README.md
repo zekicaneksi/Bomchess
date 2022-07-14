@@ -69,10 +69,11 @@ users
 matches
 {
 	_id: ObjectId,
-	date: String,
-	players: [{id: String, side: String}, {id: String, side: String}],
+	date: Number,
 	length: String,
-	moves: [{timeBlack: String, timeWhite: String, move: String}, ...],
+	white: ObjectId,
+	black: ObjectId,
+	moves: [{Object}, {Object}, ...],
 	endedBy: String,
 	winner: String,
 	loser: String
@@ -108,10 +109,17 @@ sessions
 
 ## Regarding Development
 
-Considering required technologies and libraries are installed and running,
+Considering required technologies; Node.js (npm) and MongoDB are installed and running,
+and collections (users, matches, reports, ...) in MongoDB are created,
 
-Running "npm start" in the app/front_end, <br>
-and running "node index.js" in the app/backend sets up the app for development.
+running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
+
+finally running "npm start" in the `app/front_end`, <br>
+and "node index.js" in the `app/backend` sets up the app for development.
+
+the SECRET for sessions in the backend's .env file must be changed.
+
+The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
 
 #### Notes
 
@@ -121,8 +129,8 @@ To proxy them, this line is added to the create-react-app's package.json file; <
 
 ## Regarding Building
 
-Considering required technologies and libraries are installed and running,
+Considering required technologies and libraries are installed are running as described in `Regarding Development` section,
 
-Running "npm run build" in app/front_end creates the static files in the app/_build/client folder. To serve the files, run "node index.js" in the _build folder.
+Running `npm run build` in `app/front_end` creates the static files in the `app/_build/client` folder. To serve the files, run `node index.js` in the `_build` folder.
 
-Running "node index.js" in app/backend sets up the backend.
+Running `node index.js` in `app/backend` sets up the backend.

@@ -1,4 +1,5 @@
-export let apiPort = 4001;
+export let apiPort = process.env.REACT_APP_BACKEND_API_PORT;
+
 
 /**
  * @param route /api will added to the route automatically. ex:/login
