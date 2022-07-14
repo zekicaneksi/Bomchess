@@ -123,9 +123,9 @@ The ports of backend, frontend and database can be changed in `app/front_end/.en
 
 #### Notes
 
-Because the front end (create-react-app) listens on the port 3000, and the backend listens on port 4001, when making AJAX requests from the create-react-app those requests go to the port 3000.<br>
+Because backend listen on a different port, when making AJAX requests from the create-react-app those requests need to be proxied.<br>
 To proxy them, this line is added to the create-react-app's package.json file; <br>
-"proxy": "http://localhost:4001"
+`"proxy": "http://localhost:4001"` The port, must be the backend api's port.
 
 ## Regarding Building
 
@@ -136,4 +136,4 @@ To serve the files, in the `app/_build` folder, run `npm install` to install the
 
 Running `node index.js` in `app/backend` sets up the backend.
 
-If changed, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
+If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
