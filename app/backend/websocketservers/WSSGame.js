@@ -1,6 +1,9 @@
 import WebSocket, { WebSocketServer } from 'ws';
 import { Chess } from 'chess.js'
 
+import mongoose from "mongoose";
+import {Match} from "../model/match.js";
+
 import {Games} from './Share.js';
 
 function createWSSGame(WSSGame_initialData){
@@ -263,7 +266,24 @@ function createWSSGame(WSSGame_initialData){
     WSSGame.on('close', function close() {
         clearInterval(pingPongInterval);
         clearInterval(gameTimer);
-        Games.delete(WSSGame.initialData.players[0] + ':' + WSSGame.initialData.players[1]);
+
+        try {
+        // Save the game to the database
+        const match = Match.create({
+            date: WSSGame.date,
+            length: WSSGame.initialData.matchLength,
+            white: mongoose.Types.ObjectId(WSSGame.initialData.orientation.white),
+            black: mongoose.Types.ObjectId(WSSGame.initialData.orientation.black),
+            moves: moves,
+            endedBy: WSSGame.endedBy,
+            winner: WSSGame.winner
+        });
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            Games.delete(WSSGame.initialData.players[0] + ':' + WSSGame.initialData.players[1]);
+        }
     });
 
     return WSSGame;
