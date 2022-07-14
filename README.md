@@ -131,6 +131,7 @@ To proxy them, this line is added to the create-react-app's package.json file; <
 
 Considering required technologies and libraries are installed are running as described in `Regarding Development` section,
 
-Running `npm run build` in `app/front_end` creates the static files in the `app/_build/client` folder. To serve the files, run `node index.js` in the `_build` folder.
+Running `npm run build` in `app/front_end` creates the static files in the `app/_build/client` folder. <br>
+To serve the files, in the `_build` folder, run `npm install` to install the libraries and then `node index.js`.
 
 Running `node index.js` in `app/backend` sets up the backend.
