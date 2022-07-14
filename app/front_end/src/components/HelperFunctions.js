@@ -1,5 +1,11 @@
 export let apiPort = 4001;
 
+/**
+ * @param route /api will added to the route automatically. ex:/login
+ * @param type 'GET' or 'POST'
+ * @param responseFunction will be assigned to onreadystatechange of the request
+ * @param payloadJson payload for 'POST' requests, don't give anything for GET requests.
+ */
 export function ajax(route, type, responseFunction, payloadJson) {
     let httpRequest = new XMLHttpRequest();
     

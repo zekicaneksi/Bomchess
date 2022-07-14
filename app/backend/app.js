@@ -74,7 +74,7 @@ app.post("/api/register", async (req, res) => {
         }
 
         // Create the user
-        encryptedPassword = await bcrypt.hash(password, 10);
+        const encryptedPassword = await bcrypt.hash(password, 10);
 
         const user = await User.create({
           username,
@@ -88,6 +88,7 @@ app.post("/api/register", async (req, res) => {
         return res.redirect(308, 'login');
       
     } catch (err) {
+      console.log(err);
       return res.status(500).send();
     }
 });

@@ -10,6 +10,7 @@ class Layout extends React.Component{
     super(props);
 
     this.checkSession = this.checkSession.bind(this);
+    this.logoutBtnHandle = this.logoutBtnHandle.bind(this);
     
     this.user = {};
 
@@ -33,6 +34,27 @@ class Layout extends React.Component{
     HelperFunctions.ajax('/checkSession','GET', responseFunction);
   }
 
+  logoutBtnHandle() {
+    
+    let responseFunction = (httpRequest) => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        if (httpRequest.status === 200) {
+          window.localStorage.removeItem('user');
+          this.setState({isLoggedIn:"false"});
+        } else {
+          alert("unknown error from server");
+        }
+      }
+    }
+
+    HelperFunctions.ajax('/logout','GET', responseFunction);
+
+  }
+
+  randomThing() {
+    console.log("randomThing");
+  }
+
   componentDidMount(){
     this.checkSession();
   }
@@ -47,14 +69,15 @@ class Layout extends React.Component{
     } 
     else if (isLoggedIn == "true")
     {
-      return (<div className="fill">
+      return (
+      <div className="fill">
         <div id="navbar">
           <div><a>Bomchess</a></div>
           <div className="dropdown">
             <a>{this.user.username}</a>
             <div className="dropdown-content">
               <a>Profile</a>
-              <a>Logout</a>
+              <a onClick={this.logoutBtnHandle}>Logout</a>
             </div>
           </div>
         </div>
