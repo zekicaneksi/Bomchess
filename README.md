@@ -135,3 +135,5 @@ Running `npm run build` in `app/front_end` creates the static files in the `app/
 To serve the files, in the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
 
 Running `node index.js` in `app/backend` sets up the backend.
+
+If changed, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
