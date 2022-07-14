@@ -109,15 +109,15 @@ sessions
 
 ## Regarding Development
 
-Considering required technologies; Node.js (npm) and MongoDB are installed and running,
+Considering required technologies; Node.js (npm) and MongoDB are installed and running, <br>
 and collections (users, matches, reports, ...) in MongoDB are created,
 
-running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
+Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
 
-finally running "npm start" in the `app/front_end`, <br>
+Finally, running "npm start" in the `app/front_end`, <br>
 and "node index.js" in the `app/backend` sets up the app for development.
 
-the SECRET for sessions in the backend's .env file must be changed.
+the `SECRET` for sessions in the backend's .env file must be changed.
 
 The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
 
