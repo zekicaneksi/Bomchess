@@ -1,29 +1,47 @@
-import React from 'react'
+import {React, useEffect, useState} from 'react'
 import './Layout.css';
-import {Outlet} from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import {Outlet, Navigate, useLocation} from "react-router-dom";
 import * as HelperFunctions from './../components/HelperFunctions.js';
 
-class Layout extends React.Component{
+// The navbar component for Layout to render
+const Navbar = (props) => {
+  return(
+    <div className="fill">
+    <div id="navbar">
+      <div><a>Bomchess</a></div>
+      <div className="dropdown">
+        <a>{props.username}</a>
+        <div className="dropdown-content">
+          <a>Profile</a>
+          <a onClick={props.onClick}>Logout</a>
+        </div>
+      </div>
+    </div>
+    <Outlet />
+  </div>
+  );
+}
 
-  constructor(props){
-    super(props);
+const Layout = () => {
 
-    this.checkSession = this.checkSession.bind(this);
-    this.logoutBtnHandle = this.logoutBtnHandle.bind(this);
-    
-    this.user = {};
+  const [isLoggedIn, setIsLoggedIn] = useState("");
+  const [username, setUsername] = useState("");
+  const [hasGame, setHasGame] = useState("");
 
-    this.state = {isLoggedIn:""};
-  }
-
-  checkSession(){
+  
+  function checkSession(){
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-          window.localStorage.setItem('user',httpRequest.responseText);
-          this.user = JSON.parse(window.localStorage.getItem('user'));
-          this.setState({isLoggedIn:"true"});
+
+          let responseJson = JSON.parse(httpRequest.responseText);
+
+          window.localStorage.setItem('user', responseJson.username);
+          
+          setIsLoggedIn("true");
+          setUsername(window.localStorage.getItem('user'));
+          setHasGame(responseJson.hasGame);
+
         } else if(httpRequest.status === 401) {
           this.setState({isLoggedIn:"false"});
         } else {
@@ -34,13 +52,13 @@ class Layout extends React.Component{
     HelperFunctions.ajax('/checkSession','GET', responseFunction);
   }
 
-  logoutBtnHandle() {
+  function logoutBtnHandle() {
     
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
           window.localStorage.removeItem('user');
-          this.setState({isLoggedIn:"false"});
+          setIsLoggedIn("false");
         } else {
           alert("unknown error from server");
         }
@@ -48,51 +66,35 @@ class Layout extends React.Component{
     }
 
     HelperFunctions.ajax('/logout','GET', responseFunction);
-
   }
 
-  randomThing() {
-    console.log("randomThing");
-  }
+  // ComponentDidMount
+  useEffect(() => {
+    checkSession();
+  },[]);
 
-  componentDidMount(){
-    this.checkSession();
-  }
+  // Render
+  let location = useLocation();
 
-  render(){
-
-    let isLoggedIn = this.state.isLoggedIn;
-
-    if(isLoggedIn == "false")
-    {
-      return (<Navigate to='/sign' />);
-    } 
-    else if (isLoggedIn == "true")
-    {
+  if(isLoggedIn == "false")
+  {
+    return (<Navigate to='/sign' />);
+  } 
+  else if (isLoggedIn == "true")
+  {
+    if(hasGame == "yes" && location.pathname != '/game'){
+      return (<Navigate to='/game' />);
+    }
+    else{
       return (
-      <div className="fill">
-        <div id="navbar">
-          <div><a>Bomchess</a></div>
-          <div className="dropdown">
-            <a>{this.user.username}</a>
-            <div className="dropdown-content">
-              <a>Profile</a>
-              <a onClick={this.logoutBtnHandle}>Logout</a>
-            </div>
-          </div>
-        </div>
-        <Outlet />
-      </div>
+        <Navbar username={username} onClick={logoutBtnHandle}/>
       );
     }
-    else {
-      return (<div>Loading...</div>);
-    }
-    
-    
   }
-  
-}
-  
+  else {
+    return (<div>Loading...</div>);
+  }
+
+};
+
 export default Layout;
-  

@@ -10,6 +10,8 @@ import {Session} from "./model/session.js";
 import {auth} from './middleware/auth.js';
 import mongoose from "mongoose";
 
+import {Games} from './websocketservers/Share.js';
+
 const config = dotenv.config().parsed;
 const app = express();
 
@@ -137,7 +139,27 @@ app.get('/api/logout', async (req, res) => {
 app.get("/api/checkSession", auth, async (req, res) => {
   let id = mongoose.Types.ObjectId(req.session.userID);
   const user = await User.findOne({ '_id' : id });
-  return res.status(200).send({username : user.username});
+
+  let toSend={
+    username: user.username,
+    hasGame: "no"
+  }
+
+  // Check if the player already has a game going on
+  try { // In try block because WSSGame may be deleted while foreach is working.
+      Games.forEach(wssGame => {
+        
+          if(wssGame.initialData.players.includes(id.toString())){
+              toSend.hasGame="yes";
+              return;
+          }
+      });    
+  } catch (error) {
+      console.log(error);
+  }
+
+  return res.status(200).send(JSON.stringify(toSend));
+
 });
 
 

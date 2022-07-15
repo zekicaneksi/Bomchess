@@ -19,14 +19,14 @@ WSSQueue.on('connection', (ws,req) => {
     let alreadyPlaying = false;
     try { // In try block because WSSGame may be deleted while foreach is working.
         Games.forEach(wssGame => {
-            if(wssGame.players.includes(ws.user._id.toString())){
+            if(wssGame.initialData.players.includes(ws.user._id.toString())){
                 alreadyPlaying = true;
                 ws.send("already has a match, cannot join queue");
                 return;
             }
         });    
     } catch (error) {
-        
+        console.log(error);
     }
     
     if(alreadyPlaying){
