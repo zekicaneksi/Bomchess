@@ -28,6 +28,8 @@ const Layout = () => {
   const [username, setUsername] = useState("");
   const [hasGame, setHasGame] = useState("");
 
+  let location = useLocation();
+
   
   function checkSession(){
     let responseFunction = (httpRequest) => {
@@ -43,7 +45,7 @@ const Layout = () => {
           setHasGame(responseJson.hasGame);
 
         } else if(httpRequest.status === 401) {
-          this.setState({isLoggedIn:"false"});
+          setIsLoggedIn("false");
         } else {
           alert("unknown error from server");
         }
@@ -73,9 +75,11 @@ const Layout = () => {
     checkSession();
   },[]);
 
-  // Render
-  let location = useLocation();
+  useEffect(() => {
+    checkSession();
+  }, [location]);
 
+  // Render
   if(isLoggedIn == "false")
   {
     return (<Navigate to='/sign' />);
@@ -84,8 +88,9 @@ const Layout = () => {
   {
     if(hasGame == "yes" && location.pathname != '/game'){
       return (<Navigate to='/game' />);
-    }
-    else{
+    } else if (hasGame == "no" && location.pathname == '/game'){
+      return (<Navigate to='/' />);
+    } else{
       return (
         <Navbar username={username} onClick={logoutBtnHandle}/>
       );
