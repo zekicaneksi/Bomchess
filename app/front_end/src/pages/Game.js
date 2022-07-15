@@ -192,7 +192,7 @@ const Game = () => {
 
     // Connection failed
     socket.current.addEventListener('error', function (event) {
-      alert("can't connect");
+      console.log("can't connect");
     });
 
     // --- ComponentWillUnmount

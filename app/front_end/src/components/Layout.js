@@ -5,21 +5,42 @@ import * as HelperFunctions from './../components/HelperFunctions.js';
 
 // The navbar component for Layout to render
 const Navbar = (props) => {
-  return(
-    <div className="fill">
-    <div id="navbar">
-      <div><a>Bomchess</a></div>
-      <div className="dropdown">
-        <a>{props.username}</a>
-        <div className="dropdown-content">
-          <a>Profile</a>
-          <a onClick={props.onClick}>Logout</a>
+
+  const [navigateHome, setNavigateHome] = useState("no");
+
+  let location = useLocation();
+
+  function homepageBtnHandle(){
+    setNavigateHome('yes');
+  }
+
+  useEffect((old) => {
+    if(old != 'no'){
+      setNavigateHome('no');
+    }
+  }, [navigateHome]);
+
+  if (navigateHome == "yes" && location.pathname != '/'){
+    return (<Navigate to='/' />);
+  } else {
+    
+    return(
+      <div className="fill">
+      <div id="navbar">
+        <div><a onClick={homepageBtnHandle}>Bomchess</a></div>
+        <div className="dropdown">
+          <a>{props.username}</a>
+          <div className="dropdown-content">
+            <a>Profile</a>
+            <a onClick={props.logoutBtnHandle}>Logout</a>
+          </div>
         </div>
       </div>
+      <Outlet />
     </div>
-    <Outlet />
-  </div>
-  );
+    );
+  }
+
 }
 
 const Layout = () => {
@@ -92,7 +113,7 @@ const Layout = () => {
       return (<Navigate to='/' />);
     } else{
       return (
-        <Navbar username={username} onClick={logoutBtnHandle}/>
+        <Navbar username={username} logoutBtnHandle={logoutBtnHandle}/>
       );
     }
   }
