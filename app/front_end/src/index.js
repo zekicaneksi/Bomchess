@@ -20,9 +20,9 @@ root.render(
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          <Route path="game" element={<Game />} />
         </Route>
         <Route path="/sign" element={<Sign />} />
-        <Route path="/game" element={<Game />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
