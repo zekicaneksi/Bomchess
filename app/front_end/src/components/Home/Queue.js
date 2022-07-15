@@ -39,7 +39,12 @@ class Queue extends React.Component{
 
     render(){
         if(this.state.navigate == '0')
-            return(<p>Searching for a {this.props.matchLength} min long game...</p>);
+            return(
+                <div>
+                    <p>Searching for a {this.props.matchLength} min long game...</p>
+                    <button onClick={() => this.props.handleContentChange('lobby',0)}>cancel</button>
+                </div>
+            );
         else
             return(<Navigate to='/game' />);
     }

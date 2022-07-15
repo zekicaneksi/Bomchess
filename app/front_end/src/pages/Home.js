@@ -21,7 +21,7 @@ class Home extends React.Component{
 
   render(){
     if(this.state.content == 'queue')
-      return(<Queue matchLength={this.matchLength}/>);
+      return(<Queue matchLength={this.matchLength} handleContentChange={this.handleContentChange} />);
     else
       return(<Lobby contentChange={this.handleContentChange} />);
   }

@@ -58,7 +58,7 @@ class Lobby extends React.Component{
         // Connection opened
         this.socket.addEventListener('error', function (event) {
           // in here, i need to make chat box passive like unaccessible looking for the user
-          alert("can't connect");
+          console.log("can't connect");
         });
     
       }
