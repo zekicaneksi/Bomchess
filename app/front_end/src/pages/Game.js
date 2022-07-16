@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
-import { Navigate } from "react-router-dom";
+import { Navigate, renderMatches } from "react-router-dom";
 import {Chess} from "chess.js";
 import { Chessboard } from "react-chessboard";
 import './Game.css';
@@ -27,7 +27,9 @@ const Game = () => {
   const [isGameEnded, setIsGameEnded] = useState(false);
   const [navigateBack, setNavigateBack] = useState(false);
 
+  // Custom squares for Chess board
   const [optionSquares, setOptionSquares] = useState({});
+  const [inCheckSquare, setInCheckSquare] = useState({});
 
   const socket = useRef();
   const initials = useRef({});
@@ -47,7 +49,39 @@ const Game = () => {
     let gameCopy = {...game};
     let result = gameCopy.move(moveToMake);
     setGame(gameCopy);
+
+    if(result != null ) inCheckBackground(); // Check and set the background to red if the king is in check
+
+
     return result;
+  }
+
+  // Check and set the background to red if the king is in check
+  function inCheckBackground() {
+
+    const board = game.board();
+
+    if(game.in_check()){
+      board.forEach((rowArray) => {
+        rowArray.forEach((square) => {
+          if(square == null)
+            return;
+          else {
+            if(square.type == "k" && game.turn() == square.color){
+              let toSetSquare = {};
+              toSetSquare[square.square] = {
+                background: 'red'
+              }
+              setInCheckSquare(toSetSquare);
+            }
+          }
+        }); 
+      });
+    }
+    else {
+      setInCheckSquare({});
+    }
+    
   }
 
   function onMouseOverSquare(square) {
@@ -203,7 +237,7 @@ const Game = () => {
         turn.current=game.turn();
         holdPlayerRemainingTime.current = (turn.current == "w" ? initials.current.whiteRemainingTime : initials.current.blackRemainingTime);
         setMoves(moves_jsonToArray());
-        
+        inCheckBackground();
         setLoadBoard(true);
 
         // Start the countdown timer for the remaining times
@@ -264,7 +298,8 @@ const Game = () => {
       onMouseOverSquare={onMouseOverSquare}
       onMouseOutSquare={onMouseOutSquare}
       customSquareStyles={{
-        ...optionSquares
+        ...optionSquares,
+        ...inCheckSquare
       }}
       />
       {showAbortMessage && <p>If player doesn't make a move in first 30 seconds, match will be aborted</p>}
