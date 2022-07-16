@@ -40,17 +40,23 @@ const Game = () => {
   const lastMoveTimestamp = useRef(new Date().getTime());
   const holdPlayerRemainingTime = useRef();
 
+  function makeAMove(moveToMake){
+    // Make the move
+    let gameCopy = {...game};
+    let result = gameCopy.move(moveToMake);
+    setGame(gameCopy);
+    return result;
+  }
+
 
   function onDrop(sourceSquare, targetSquare) {
 
     // Make the move
-    let gameCopy = {...game};
-    let move = gameCopy.move({
+    let move = makeAMove({
       from: sourceSquare,
       to: targetSquare,
       promotion: "q", // always promote to a queen for example simplicity
-    })
-    setGame(gameCopy);
+    });
 
     // Move is illegal
     if(move === null)  return false;
@@ -149,9 +155,7 @@ const Game = () => {
         lastMoveTimestamp.current = new Date().getTime();
 
         // Make the move
-        let gameCopy = {...game};
-        gameCopy.move(dataJson.move);
-        setGame(gameCopy);
+        makeAMove(dataJson.move);
 
         holdPlayerRemainingTime.current = (turn.current == "w" ? dataJson.whiteRemainingTime : dataJson.blackRemainingTime);
 
