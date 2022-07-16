@@ -27,6 +27,8 @@ const Game = () => {
   const [isGameEnded, setIsGameEnded] = useState(false);
   const [navigateBack, setNavigateBack] = useState(false);
 
+  const [optionSquares, setOptionSquares] = useState({});
+
   const socket = useRef();
   const initials = useRef({});
 
@@ -48,6 +50,35 @@ const Game = () => {
     return result;
   }
 
+  function onMouseOverSquare(square) {
+    const moves = game.moves({
+      square,
+      verbose: true
+    });
+    if (moves.length === 0) {
+      return;
+    }
+
+    const newSquares = {};
+    moves.map((move) => {
+      newSquares[move.to] = {
+        background:
+          game.get(move.to) && game.get(move.to).color !== game.get(square).color
+            ? 'radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)'
+            : 'radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)',
+        borderRadius: '50%'
+      };
+      return move;
+    });
+    newSquares[square] = {
+      background: 'rgba(255, 255, 0, 0.4)'
+    };
+    setOptionSquares(newSquares);
+  }
+
+  function onMouseOutSquare() {
+    if (Object.keys(optionSquares).length !== 0) setOptionSquares({});
+  }
 
   function onDrop(sourceSquare, targetSquare) {
 
@@ -224,7 +255,18 @@ const Game = () => {
     return(
     <div>
       {isGameEnded && <button className='goBackButton' onClick={() => setNavigateBack(true)}>Go Back</button>}
-      <Chessboard position={game.fen()} onPieceDrop={onDrop} boardOrientation={initials.current.orientation} isDraggablePiece={isDraggablePiece} arePiecesDraggable={!isGameEnded}/>
+      <Chessboard
+      position={game.fen()}
+      onPieceDrop={onDrop}
+      boardOrientation={initials.current.orientation}
+      isDraggablePiece={isDraggablePiece}
+      arePiecesDraggable={!isGameEnded}
+      onMouseOverSquare={onMouseOverSquare}
+      onMouseOutSquare={onMouseOutSquare}
+      customSquareStyles={{
+        ...optionSquares
+      }}
+      />
       {showAbortMessage && <p>If player doesn't make a move in first 30 seconds, match will be aborted</p>}
       {drawOffer != "-" && <p>{drawOffer} is offerin a draw</p>}
       <p className='game-timer'>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
