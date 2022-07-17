@@ -33,6 +33,7 @@
     transform: translate(-50%,-50%);
     margin:0;
     text-align: center;
+    width: 100%;
 }
 
 #home-left-middle{
@@ -69,6 +70,15 @@
     left: 50%;
     transform: translateX(-50%);
     font-size: 1em;
+}
+
+.queue-cancel-btn{
+    width: 50%;
+    height: 20%;
+    left: 50%;
+    position: relative;
+    transform: translate(-50%,-50%);
+    top: 50%;
 }
 
 #home-left-bottom{
