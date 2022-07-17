@@ -21,8 +21,8 @@ class Lobby extends React.Component{
         this.props.contentChange('queue',matchLength);
       }
     
-      handleSendMessage(){
-        this.socket.send(document.getElementById('lobby-chat').getElementsByTagName('input')[0].value);
+      handleSendMessage(msg){
+        this.socket.send(msg);
       }
 
       duelOnChange(event){

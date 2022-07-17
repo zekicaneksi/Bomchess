@@ -5,6 +5,7 @@ const Chat = (props) => {
 
     const isMounted = useRef();
     const messagesEndRef = useRef(null);
+    const inputRef = useRef(null);
 
     useEffect(() => {
     if (!isMounted.current) {
@@ -21,7 +22,7 @@ const Chat = (props) => {
     );
 
     return(
-        <div id="lobby-chat">
+        <div className="lobby-chat">
 
             <div className='lobby-chat-messages'>
                 {MessageItems}
@@ -29,8 +30,8 @@ const Chat = (props) => {
             </div>
 
             <div className='lobby-chat-input'>
-                <input></input>
-                <button onClick={props.handleSendMessage}>Send</button>
+                <input ref={inputRef}></input>
+                <button onClick={() => {props.handleSendMessage(inputRef.current.value);}}>Send</button>
             </div>
 
         </div>

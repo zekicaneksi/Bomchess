@@ -1,0 +1,24 @@
+.lobby-chat{
+    position: relative;
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(170, 170, 170);;
+}
+
+.lobby-chat-messages{
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.lobby-chat-input{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.lobby-chat-input input{
+    flex-grow: 1;
+    min-width: 0;
+}
