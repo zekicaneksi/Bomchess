@@ -20,8 +20,8 @@ class Home extends React.Component{
     this.lobbyUser = [];
     this.lobbyMessages=[];
 
-    this.chatSocket = WebSocket;
-    this.queueSocket = WebSocket;
+    this.chatSocket = null;
+    this.queueSocket = null;
 
   }
 
@@ -105,8 +105,8 @@ class Home extends React.Component{
 
   componentWillUnmount(){
     try {
-      this.chatSocket.close();
-      this.queueSocket.close(); 
+      this.chatSocket?.close();
+      this.queueSocket?.close(); 
     } catch (error) {
       console.log(error);
     }

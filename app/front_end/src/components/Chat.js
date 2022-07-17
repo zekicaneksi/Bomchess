@@ -13,7 +13,7 @@ const Chat = (props) => {
         isMounted.current = true;
     } else {
         // ComponentDidUpdate
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        messagesEndRef.current?.scrollTo({ top: messagesEndRef.current.scrollHeight, left:0, behavior: 'smooth'});
     }
     });
 
@@ -24,9 +24,8 @@ const Chat = (props) => {
     return(
         <div className="lobby-chat">
 
-            <div className='lobby-chat-messages'>
+            <div className='lobby-chat-messages' ref={messagesEndRef}>
                 {MessageItems}
-                <div ref={messagesEndRef} />
             </div>
 
             <div className='lobby-chat-input'>
