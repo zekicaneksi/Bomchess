@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import Chat from '../Chat.js';
 import * as HelperFunctions from '../../components/HelperFunctions';
 
 class Lobby extends React.Component{
@@ -55,6 +56,7 @@ class Lobby extends React.Component{
           }
           else if(dataJson.type == 'message'){
             holdThis.lobbyMessages.push(dataJson.username + ': '+ dataJson.message);
+            if(holdThis.lobbyMessages.length >= 50) holdThis.lobbyMessages.splice(0,8);
             holdThis.setState({lobbyMessages: holdThis.lobbyMessages});
           }
     
@@ -76,9 +78,6 @@ class Lobby extends React.Component{
     
         const LobbyUserListItems = this.state.lobbyUser.map((username,index) =>
           <p key={index}>{username}</p>
-        );
-        const LobbyMessagesItems = this.state.lobbyMessages.map((message,index) =>
-          <p key={index}>{message}</p>
         );
     
         return (
@@ -152,15 +151,7 @@ class Lobby extends React.Component{
                 </div>
 
                 <div className='home-right-bottom'>
-                  <div id="lobby-chat">
-                    <div className='lobby-chat-messages'>
-                      {LobbyMessagesItems}
-                    </div>
-                    <div className='lobby-chat-input'>
-                      <input></input>
-                      <button onClick={this.handleSendMessage}>Send</button>
-                    </div>
-                  </div>
+                  <Chat Messages={this.lobbyMessages} handleSendMessage={this.handleSendMessage}/>
                 </div>
 
               </div>
