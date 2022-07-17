@@ -36,7 +36,9 @@ const Navbar = (props) => {
           </div>
         </div>
       </div>
-      <Outlet />
+      <div id='content-div'>
+        <Outlet />
+      </div>
     </div>
     );
   }

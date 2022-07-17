@@ -7,6 +7,7 @@ class Lobby extends React.Component{
     
         this.handleSendMessage = this.handleSendMessage.bind(this);
         this.handleContentChange = this.handleContentChange.bind(this);
+        this.duelOnChange = this.duelOnChange.bind(this);
 
         this.state = {lobbyUser:[], lobbyMessages:[]};
     
@@ -21,6 +22,10 @@ class Lobby extends React.Component{
     
       handleSendMessage(){
         this.socket.send(document.getElementById('lobby-chat').getElementsByTagName('input')[0].value);
+      }
+
+      duelOnChange(event){
+        console.log(event.target.value);
       }
     
       componentDidMount(){
@@ -77,51 +82,89 @@ class Lobby extends React.Component{
         );
     
         return (
-          <div id="content-container">
-    
-            <div id="home-top">
-              <h1>Quick Play</h1>
-              <button>Play against computer</button>
-            </div>
-    
-            <div id="home-middle">
-              <button onClick={() => {this.handleContentChange(5)}}>5 min</button>
-              <button onClick={() => {this.handleContentChange(10)}}>10 min</button>
-              <button onClick={() => {this.handleContentChange(15)}}>15 min</button>
-            </div>
-    
-            <div id="home-bottom">
-    
-              <div id="home-duel-container">
-                <h2>Duel</h2>
-                <div id="home-duel-top">
-                  <button>5 min</button>
-                  <button>10 min</button>
-                  <button>15 min</button>
-                </div>
-                <div id="home-duel-bottom">
-                  <p>username:</p>
-                  <input></input>
-                  <button>Duel</button>
-                </div>
+          <div className="home-content-container">
+
+            <div className='home-left-div'>
+
+              <div id="home-left-top">
+                <h1>Quick Play</h1>
               </div>
-    
-              <div id="home-chat">
-                <div id="lobby-chat">
-                  <h2>Lobby Chat</h2>
-                  <div>
-                  {LobbyMessagesItems}
+      
+              <div id="home-left-middle">
+
+                <div className='home-quickplay'>
+                  <button onClick={() => {this.handleContentChange(5)}}>5 min</button>
+                  <button onClick={() => {this.handleContentChange(10)}}>10 min</button>
+                  <button onClick={() => {this.handleContentChange(15)}}>15 min</button>
+                </div>
+
+                <div className='againstComputer'>
+                  <button>Play against computer</button>
+                </div>
+                
+              </div>
+      
+              <div id="home-left-bottom">
+      
+                <div id="home-duel-container">
+                  <h2>Duel</h2>
+                  <div id="home-duel-top" onChange={this.duelOnChange}>
+                    
+                    <label>
+                      <input type="radio" value="5" name="length"></input>
+                      5 Min
+                    </label>
+                    
+                    <label>
+                      <input type="radio" value="10" name="length"></input>
+                      10 Min
+                    </label>
+
+                    <label>
+                      <input type="radio" value="15" name="length"></input>
+                      15 Min
+                    </label>
+                    
                   </div>
-                  <input></input>
-                  <button onClick={this.handleSendMessage}>Send</button>
+                  <div id="home-duel-bottom">
+                    <input placeholder='Username'></input>
+                    <button>Duel</button>
+                  </div>
                 </div>
-                <div id="lobby-chat-online">
-                  <p>Online Users:{this.state.lobbyUser.length}</p>
-                  {LobbyUserListItems}
-                </div>
-    
+      
               </div>
-    
+
+            </div>
+
+            <div className='home-right-div'>
+
+              <div id="home-chat">
+
+                <div className='home-right-top'>
+                  <h1>Lobby Chat</h1>
+                </div>
+
+                <div className='home-right-middle'>
+                  <div>
+                    <p>Online Users: {this.state.lobbyUser.length}</p>
+                    {LobbyUserListItems}
+                  </div>
+                </div>
+
+                <div className='home-right-bottom'>
+                  <div id="lobby-chat">
+                    <div className='lobby-chat-messages'>
+                      {LobbyMessagesItems}
+                    </div>
+                    <div className='lobby-chat-input'>
+                      <input></input>
+                      <button onClick={this.handleSendMessage}>Send</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
             </div>
     
           </div>

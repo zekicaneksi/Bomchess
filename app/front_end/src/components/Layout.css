@@ -12,6 +12,11 @@
     display: flex;
     justify-content: space-between;
     background-color: gray;
+    height:6%;
+}
+
+#content-div{
+    height:94%;
 }
 
 #navbar a{

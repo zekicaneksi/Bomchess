@@ -1,64 +1,108 @@
-#content-container{
+.home-content-container{
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-evenly;
     position: relative;
-    width: 80%;
-    left:10%;
     background-color: gainsboro;
-    top:5%;
+    width: 80%;
+    height: 80%;
+    top:10%;
+    left:10%;
+    font-size: 1rem;
 }
 
-#home-top{
+.home-left-div, .home-right-div{
+    flex-direction: column;
+    justify-content: center;
+    width: 45%;
+    height: 100%;
+}
+
+#home-left-top{
     display: flex;
     flex-direction: row;
     position: relative;
+    width: 100%;
+    height: 20%;
 }
 
-#home-top h1{
-    position: relative;
-    left:50%;
-    transform: translateX(-50%);
-}
-
-#home-top button{
+#home-left-top h1{
     position: absolute;
-    right: 10%;
+    left:50%;
     top:50%;
+    transform: translate(-50%,-50%);
+    margin:0;
+    text-align: center;
 }
 
-#home-middle{
+#home-left-middle{
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+    height: 35%;
+}
+
+.home-quickplay{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 70%;
+}
+
+.home-quickplay button{
+    height: 100%;
+    width: 25%;
+    font-size: 1em;
+}
+
+.againstComputer{
+    width: 100%;
+    height: 30%;
+    position: relative;
+}
+
+.againstComputer button{
+    height: 60%;
+    position: relative;
+    top:20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1em;
+}
+
+#home-left-bottom{
     display:flex;
     flex-direction: row;
     justify-content: center;
-}
-
-#home-middle button{
-    height: 10em;
-    width: 10em;
-    margin-right: 3%;
-}
-
-#home-bottom{
-    display:flex;
-    flex-direction: row;
     position: relative;
+    width: 100%;
+    height: 40%;
 }
 
 #home-duel-container{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-evenly;
     position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 #home-duel-container h2{
     text-align: center;
+    margin: 0;
+    font-size:1.7em;
 }
 
 #home-duel-top{
     display:flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-evenly;
+}
+
+#home-duel-top label{
+    font-size: 1.2em;
 }
 
 #home-duel-top button{
@@ -72,21 +116,96 @@
     justify-content: center;
 }
 
+#home-duel-bottom input{
+    position: relative;
+    top:50%;
+    transform: translateY(-50%);
+    height: 1.5em;
+    padding:0;
+    min-width: 0;
+}
+
 #home-chat{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
-    margin-left: 15%;
-    width: 50%;
+    width: 100%;
+    height: 100%;
+}
+
+.home-right-top{
+    width: 100%;
+    height: 20%;
+    text-align: center;
+    position: relative;
+}
+
+.home-right-top h1{
+    position: absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    margin:0;
+}
+
+.home-right-middle{
+    height: 35%;
+    width: 80%;
+    position: relative;
+    left:10%;
+    overflow: auto;
+    background-color: rgb(195, 194, 194);
+    box-sizing: border-box;
+    padding-left: 10%;
+}
+
+.home-right-bottom{
+    margin-top: 5%;
+    height: 40%;
+    width: 80%;
+    position: relative;
+    left:10%;
 }
 
 #lobby-chat{
-    width: 50%;
+    position: relative;
+    width: 100%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(170, 170, 170);;
 }
 
-#lobby-chat-online{
-    margin-top:1em;
-    height: 80%;
+.lobby-chat-messages{
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.lobby-chat-input{
     width: 100%;
-    background-color: aqua;
+    display: flex;
+    flex-direction: row;
+}
+
+.lobby-chat-input input{
+    flex-grow: 1;
+    min-width: 0;
+}
+
+@media only screen and (max-width: 960px) {
+    .home-content-container{
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .home-left-div, .home-right-div{
+        flex-shrink: 0;
+        width: 100%;
+        background-color: gainsboro;
+    }
+}
+
+@media only screen and (max-width: 340px) {
+    .home-content-container{
+        font-size: 0.8rem;
+    }
 }
