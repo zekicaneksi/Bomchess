@@ -27,9 +27,9 @@ const Navbar = (props) => {
     return(
       <div className="fill">
       <div id="navbar">
-        <div><a onClick={homepageBtnHandle}>Bomchess</a></div>
+        <div><a onClick={homepageBtnHandle}><p>Bomchess</p></a></div>
         <div className="dropdown">
-          <a>{props.username}</a>
+          <a><p>{props.username}</p></a>
           <div className="dropdown-content">
             <a>Profile</a>
             <a onClick={props.logoutBtnHandle}>Logout</a>
@@ -60,12 +60,10 @@ const Layout = () => {
         if (httpRequest.status === 200) {
 
           let responseJson = JSON.parse(httpRequest.responseText);
-
-          window.localStorage.setItem('user', responseJson.username);
           
-          setIsLoggedIn("true");
-          setUsername(window.localStorage.getItem('user'));
+          setUsername(responseJson.username);
           setHasGame(responseJson.hasGame);
+          setIsLoggedIn("true");
 
         } else if(httpRequest.status === 401) {
           setIsLoggedIn("false");
@@ -82,7 +80,6 @@ const Layout = () => {
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-          window.localStorage.removeItem('user');
           setIsLoggedIn("false");
         } else {
           alert("unknown error from server");

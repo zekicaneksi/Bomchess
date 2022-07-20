@@ -138,18 +138,28 @@ function createWSSGame(WSSGame_initialData){
     },100);
     
     WSSGame.on('connection', (ws,req) => {
-            
+
+        // -- Send the connected user the info about the game
+
         // JSON object to hold information about the game
         let initials ={};
         initials.type="initials";
     
         // Orientation
-        if(WSSGame.initialData.orientation.white == ws.user._id.toString()){
+        if(WSSGame.initialData.orientation.white._id.toString() == ws.user._id.toString()){
             initials.orientation = "white";
         }
         else{
             initials.orientation = "black";
         }
+
+        initials.white = {
+            username: WSSGame.initialData.orientation.white.username
+        };
+
+        initials.black = {
+            username: WSSGame.initialData.orientation.black.username
+        };
     
         // Current position of the board
         initials.position = chess.fen();
@@ -177,9 +187,9 @@ function createWSSGame(WSSGame_initialData){
                 
                 // Check if the player has the turn to play
                 if(
-                    (WSSGame.initialData.orientation.white == ws.user._id.toString() && chess.turn() == "w")
+                    (WSSGame.initialData.orientation.white._id.toString() == ws.user._id.toString() && chess.turn() == "w")
                     ||
-                    (WSSGame.initialData.orientation.black == ws.user._id.toString() && chess.turn() == "b"))
+                    (WSSGame.initialData.orientation.black._id.toString() == ws.user._id.toString() && chess.turn() == "b"))
                     {
                  
                     // Validate and then make the move
@@ -208,11 +218,11 @@ function createWSSGame(WSSGame_initialData){
                 
             } else if (dataJson.type == 'surrender'){
                 WSSGame.endedBy = "surrender";
-                WSSGame.winner = (WSSGame.initialData.orientation.white == ws.user._id.toString() ? 'b' : 'w');
+                WSSGame.winner = (WSSGame.initialData.orientation.white._id.toString() == ws.user._id.toString() ? 'b' : 'w');
                 endTheGame();
             } else if (dataJson.type == 'offerDraw'){
 
-                let holdRequestOrientation = (WSSGame.initialData.orientation.white == ws.user._id.toString() ? 'w' : 'b')
+                let holdRequestOrientation = (WSSGame.initialData.orientation.white._id.toString() == ws.user._id.toString() ? 'w' : 'b')
 
                 if(dataJson.value == "yes"){
                     if(holdOfferDraw == '-'){
@@ -241,6 +251,14 @@ function createWSSGame(WSSGame_initialData){
                 }
 
                 
+            } else if (dataJson.type == 'message'){
+                let toSend={};
+                toSend.type = 'message';
+                toSend.username = ws.user.username;
+                toSend.message = dataJson.msg;
+                WSSGame.clients.forEach((webSocket) => {
+                    webSocket.send(JSON.stringify(toSend));
+                });
             }
         });
     
@@ -272,8 +290,8 @@ function createWSSGame(WSSGame_initialData){
         const match = Match.create({
             date: WSSGame.date,
             length: WSSGame.initialData.matchLength,
-            white: mongoose.Types.ObjectId(WSSGame.initialData.orientation.white),
-            black: mongoose.Types.ObjectId(WSSGame.initialData.orientation.black),
+            white: mongoose.Types.ObjectId(WSSGame.initialData.orientation.white._id.toString()),
+            black: mongoose.Types.ObjectId(WSSGame.initialData.orientation.black._id.toString()),
             moves: moves,
             endedBy: WSSGame.endedBy,
             winner: WSSGame.winner

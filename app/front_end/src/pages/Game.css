@@ -1,7 +1,425 @@
-.game-timer{
-    font-size: 3rem;
+.game-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: gainsboro;
+    width: 80%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    left: 10%;
 }
 
-.goBackButton{
-    font-size: 3rem;
+.game-left-column, .game-middle-column, .game-right-column{
+    background-color: gainsboro;
+}
+
+.game-left-column{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+.game-middle-column{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-right-column{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+.game-left-column .moves-div{
+    width: 100%;
+    height: 50%;
+    box-sizing: border-box;
+    padding-bottom: 5%;
+}
+
+.game-left-column .chat-div{
+    width: 100%;
+    height: 50%;
+    box-sizing: border-box;
+    padding-top: 5%;
+}
+
+.game-middle-column .game-board-container{
+    margin: auto;
+}
+
+
+.game-right-column p{
+    font-size: 3em;
+    margin:0;
+    padding:0;
+}
+
+.game-user-timer-top{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 30%;
+    box-sizing: border-box;
+}
+
+.game-user-timer-top p{
+    padding-top: 10%;
+}
+
+.report-chat-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+    height: 10%;
+}
+
+.report-chat-div > button{
+    background-image: url(../../public/report.svg);
+    background-size: 100% 100%;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.game-user-timer-bottom{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 30%;
+    box-sizing: border-box;
+}
+
+.game-user-timer-bottom p{
+    padding-bottom: 10%;
+}
+
+.game-messages{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 20%;
+}
+
+.game-messages p{
+    font-size: 2em;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    position: relative;
+}
+
+.game-buttons{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+    height: 10%;
+}
+
+.game-surrender-btn{
+    background-image: url(../../public/surrender.svg);
+    background-size: 100% 100%;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.game-draw-btn{
+    background-image: url(../../public/offerDraw.svg);
+    background-size: 100% 100%;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+    height: 4em;
+    width: 4em;
+}
+
+.game-draw-btn-cross {
+    background-image: url(../../public/cross.svg);
+}
+
+.game-report-div{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width: 30%;
+    height: 50%;
+    background-color: rgb(176, 176, 176);
+    z-index: 5;
+    font-size: 1.5rem;
+}
+
+.game-report-div > form{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    height: 100%;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    justify-content: space-evenly;
+}
+
+.game-report-div > form h2{
+    font-size: 1.5em;
+    margin:0;
+}
+
+.game-report-div div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.game-report-div > form input[type="checkbox"]{
+    display: inline-block;
+    height: 1.5em;
+    width: 1.5em;
+}
+
+.game-report-div > form input[type="submit"], .game-report-div button{
+    display: inline-block;
+    font-size: 1em;
+}
+
+.game-report-div textarea{
+    height: 40%;
+    font-size: 1em;
+}
+
+.game-report-div label{
+    font-size: 1em;
+}
+
+.game-result-div{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width: 30%;
+    height: 50%;
+    background-color: rgb(176, 176, 176);
+    z-index: 5;
+    font-size: 1.5rem;
+    box-sizing: border-box;
+    padding: 1.5%;
+}
+
+.game-result-div button{
+    font-size:1em;
+}
+
+@media only screen and (max-width: 1537px) {
+    .game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+        height: 3.5em;
+        width: 3.5em;
+    }
+
+    .game-right-column p{
+        font-size: 2.5em;
+    }
+
+    .game-messages p{
+        font-size: 1.4em;
+    }
+
+}
+
+@media only screen and (max-width: 1367px) {
+    .game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+        height: 3em;
+        width: 3em;
+    }
+
+    .game-right-column p{
+        font-size: 2em;
+    }
+
+    .game-messages p{
+        font-size: 1.2em;
+    }
+
+}
+
+@media only screen and (max-width: 1200px) {
+
+    .game-left-column{
+        width: 100%;
+        height: 45%;
+        order: 2;
+        flex-direction: row;
+    }
+    
+    .game-middle-column{
+        width: 60%;
+        order: 0;
+    }
+    
+    .game-right-column{
+        width: 40%;
+        order: 1;
+    }
+
+    .game-left-column .moves-div, .game-left-column .chat-div{
+        height: 100%;
+        width: 50%;
+        padding: 0.5%;
+    }
+    
+    .game-right-column{
+        width: 20%;
+    }
+
+    .game-middle-column{
+        width: 80%;
+    }
+
+    .game-report-div{
+        width: 40%;
+    }
+
+}
+
+@media only screen and (max-width: 1000px) {
+    .game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+        height: 2.5em;
+        width: 2.5em;
+    }
+
+    .game-right-column p{
+        font-size: 2em;
+    }
+
+    .game-messages p{
+        font-size: 1.2em;
+    }
+
+    .game-report-div{
+        width: 45%;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+
+    .game-right-column p{
+        font-size: 1.2em;
+    }
+
+    .game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+        height: 2em;
+        width: 2em;
+    }
+
+    .game-messages p{
+        font-size: 0.8em;
+    }
+
+    .game-middle-column{
+        width: 100%;
+    }
+
+    .game-right-column{
+        width: 100%;
+        flex-direction: row;
+        height: 20%;
+    }
+
+    .game-right-column div{
+        height: 100%;
+    }
+
+    .game-buttons{
+        flex-direction: column;
+    }
+
+    .game-buttons button{
+        top:0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .game-user-timer-top p{
+        padding-top: 0;
+    }
+
+    .game-user-timer-bottom p{
+        padding-bottom: 0;
+    }
+
+    .game-user-timer-top > p:first-child{
+        order: 1;
+    }
+
+    .game-report-div{
+        width: 50%;
+        height: 40%;
+    }
+
+}
+
+@media only screen and (max-width: 461px) {
+
+    .game-right-column p{
+        font-size: 1em;
+    }
+
+    .game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+        height: 2em;
+        width: 2em;
+    }
+
+    .game-messages p{
+        font-size: 0.5em;
+    }
+
+    .game-right-column{
+        height: 15%;
+    }
+}
+
+@media only screen and (max-width: 1537px) {
+    .game-report-div, .game-result-div{
+        font-size: 1.2em;
+    }
+}
+
+@media only screen and (max-width: 1367px) {
+    .game-report-div, .game-result-div{
+        font-size: 1em;
+    }
+
+}
+
+@media only screen and (max-width: 800px) {
+    .game-report-div, .game-result-div{
+        font-size: 0.8em;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .game-report-div, .game-result-div{
+        font-size: 0.6em;
+    }
+
+    .game-report-div, .game-result-div{
+        width: 60%;
+        height: 30%;
+    }
 }

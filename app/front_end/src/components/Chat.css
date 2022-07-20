@@ -1,24 +1,51 @@
-.lobby-chat{
+.chat{
     position: relative;
     width: 100%;
-    height: 80%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    background-color: rgb(170, 170, 170);;
+    background-color: rgb(170, 170, 170);
+    font-size: 1.5rem;
 }
 
-.lobby-chat-messages{
+.chat-messages{
     flex-grow: 1;
     overflow-y: auto;
+    overflow-wrap: break-word;
+    font-size: 1em;
 }
 
-.lobby-chat-input{
+.chat-input{
     width: 100%;
     display: flex;
     flex-direction: row;
+    font-size: 1em;
 }
 
-.lobby-chat-input input{
+.chat-input input{
     flex-grow: 1;
     min-width: 0;
+    font-size: 1em;
+}
+
+.chat-input button{
+    font-size: 1em;
+}
+
+@media only screen and (max-width: 1567px) {
+    .chat{
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (max-width: 1001px) {
+    .chat{
+        font-size: 0.8rem;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .chat{
+        font-size: 0.6rem;
+    }
 }

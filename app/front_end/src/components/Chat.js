@@ -22,13 +22,13 @@ const Chat = (props) => {
     );
 
     return(
-        <div className="lobby-chat">
+        <div className="chat">
 
-            <div className='lobby-chat-messages' ref={messagesEndRef}>
+            <div className='chat-messages' ref={messagesEndRef}>
                 {MessageItems}
             </div>
 
-            <div className='lobby-chat-input'>
+            <div className='chat-input'>
                 <input ref={inputRef}></input>
                 <button onClick={() => {props.handleSendMessage(inputRef.current.value);}}>Send</button>
             </div>

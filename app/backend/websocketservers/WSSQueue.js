@@ -44,8 +44,8 @@ WSSQueue.on('connection', (ws,req) => {
             let initialData = {};
             initialData.players=[ws.user._id.toString(),wsInList.user._id.toString()];
             initialData.orientation={};
-            initialData.orientation.white = initialData.players[0];
-            initialData.orientation.black = initialData.players[1];
+            initialData.orientation.white = ws.user;
+            initialData.orientation.black = wsInList.user;
             initialData.matchLength = ws.matchLength;
 
             let WSSGame = createWSSGame(initialData);
