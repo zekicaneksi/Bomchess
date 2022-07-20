@@ -129,7 +129,7 @@ To proxy them, this line is added to the create-react-app's package.json file (`
 
 ## Regarding Building
 
-Considering required technologies and libraries are installed are running as described in `Regarding Development` section,
+Considering required technologies and libraries are installed and running as described in `Regarding Development` section,
 
 Running `npm run build` in `app/front_end` creates the static files in the `app/_build/public` folder. <br>
 To serve the files, in the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
