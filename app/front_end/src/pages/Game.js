@@ -15,6 +15,7 @@ const Game = () => {
   const [moves, setMoves] = useState([]);
   const [loadBoard, setLoadBoard] = useState(false);
   const [isGameEnded, setIsGameEnded] = useState(false);
+  const [clickedSquare, setClickedSquare] = useState('-');
 
   const [navigateBack, setNavigateBack] = useState(false);
   const [popupDiv, setPopupDiv] = useState('-');
@@ -81,34 +82,96 @@ const Game = () => {
     
   }
 
-  function onMouseOverSquare(square) {
+  function showPossibleMoves(square){
     const moves = game.moves({
       square,
       verbose: true
     });
-    if (moves.length === 0) {
-      return;
-    }
 
     const newSquares = {};
-    moves.map((move) => {
-      newSquares[move.to] = {
-        background:
-          game.get(move.to) && game.get(move.to).color !== game.get(square).color
-            ? 'radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)'
-            : 'radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)',
-        borderRadius: '50%'
-      };
-      return move;
-    });
+
     newSquares[square] = {
       background: 'rgba(255, 255, 0, 0.4)'
     };
+
+    if (moves.length !== 0) {
+      
+      moves.map((move) => {
+        newSquares[move.to] = {
+          background:
+            game.get(move.to) && game.get(move.to).color !== game.get(square).color
+              ? 'radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)'
+              : 'radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)',
+          borderRadius: '50%'
+        };
+        return move;
+      });
+
+    }
+    
     setOptionSquares(newSquares);
   }
 
+  function onMouseOverSquare(square) {
+
+    const pieceOnTheSquare = game.get(square);
+    const myColor = initials.current.orientation[0];
+
+    if(clickedSquare == '-') {
+      if(pieceOnTheSquare != null
+      && game.turn() == myColor
+      && pieceOnTheSquare.color == myColor) showPossibleMoves(square);
+    }
+  }
+
   function onMouseOutSquare() {
-    if (Object.keys(optionSquares).length !== 0) setOptionSquares({});
+
+    if(clickedSquare=='-') {
+      if (Object.keys(optionSquares).length !== 0) setOptionSquares({});
+    }
+  }
+
+  function onPieceDragBegin(piece, sourceSquare){
+    setClickedSquare('-');
+    setOptionSquares({});
+    showPossibleMoves(sourceSquare);
+  }
+
+  function onSquareClick(square){
+
+    const myColor = initials.current.orientation[0];
+    const squareColor = game.get(square)?.color;
+
+    if(myColor != game.turn()) return; // do nothing if it isn't my turn
+
+    if(squareColor == myColor){
+      if (Object.keys(optionSquares).length !== 0) setOptionSquares({}); // if showing, don't show possible moves for any piece
+      setClickedSquare(square);
+      showPossibleMoves(square);
+
+    } else if (squareColor != myColor && clickedSquare != '-'){
+
+      const move = makeAMove({
+        from: clickedSquare,
+        to: square,
+        promotion: "q", // always promote to a queen for example simplicity
+      });
+
+      // If the move is legal, send the move to the server
+      if(move != null){
+        let toSend = {};
+        toSend.type = 'play';
+        toSend.move = move;
+        socket.current.send(JSON.stringify(toSend));
+      }
+
+      setOptionSquares({});
+      setClickedSquare('-');
+
+    } else{
+      return;
+    }
+    
   }
 
   function onDrop(sourceSquare, targetSquare) {
@@ -128,6 +191,8 @@ const Game = () => {
     toSend.type = 'play';
     toSend.move = move;
     socket.current.send(JSON.stringify(toSend));
+
+    setOptionSquares({});
     
     return true;
   }
@@ -427,9 +492,11 @@ const Game = () => {
             boardWidth={boardWidth}
             position={game.fen()}
             onPieceDrop={onDrop}
+            onSquareClick={onSquareClick}
             boardOrientation={initials.current.orientation}
             isDraggablePiece={isDraggablePiece}
             arePiecesDraggable={!isGameEnded}
+            onPieceDragBegin={onPieceDragBegin}
             onMouseOverSquare={onMouseOverSquare}
             onMouseOutSquare={onMouseOutSquare}
             customSquareStyles={{

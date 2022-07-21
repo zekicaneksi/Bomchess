@@ -4,8 +4,11 @@ import './Chat.css';
 const Chat = (props) => {
 
     const isMounted = useRef();
-    const messagesEndRef = useRef(null);
+    const messagesRef = useRef(null);
     const inputRef = useRef(null);
+
+    const enableAutoScroll = useRef(true);
+    const holdScrollValue = useRef(0);
 
     useEffect(() => {
     if (!isMounted.current) {
@@ -13,7 +16,19 @@ const Chat = (props) => {
         isMounted.current = true;
     } else {
         // ComponentDidUpdate
-        messagesEndRef.current?.scrollTo({ top: messagesEndRef.current.scrollHeight, left:0, behavior: 'smooth'});
+
+        // If user scrolled up, disable auto scroll
+        if(holdScrollValue.current > messagesRef.current.scrollTop)
+            enableAutoScroll.current = false;
+        
+        // Enable auto scroll if user scrolled to bottom
+        if((messagesRef.current.scrollTop + messagesRef.current.offsetHeight + 2) >= messagesRef.current.scrollHeight)
+            enableAutoScroll.current = true;
+        
+        if(enableAutoScroll.current){
+            messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight, left:0, behavior: 'smooth'});
+            holdScrollValue.current = messagesRef.current.scrollTop;
+        }
     }
     });
 
@@ -24,7 +39,7 @@ const Chat = (props) => {
     return(
         <div className="chat">
 
-            <div className='chat-messages' ref={messagesEndRef}>
+            <div className='chat-messages' ref={messagesRef}>
                 {MessageItems}
             </div>
 
