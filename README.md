@@ -114,8 +114,8 @@ and collections (users, matches, reports, ...) in MongoDB are created,
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
 
-Finally, running "npm start" in the `app/front_end`, <br>
-and "node index.js" in the `app/backend` sets up the app for development.
+Finally, running `npm start` in the `app/front_end`, <br>
+and `node index.js` in the `app/backend` sets up the app for development.
 
 the `SECRET` for sessions in the backend's .env file must be changed.
 
