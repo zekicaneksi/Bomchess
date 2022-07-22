@@ -15,7 +15,7 @@ class Home extends React.Component{
     this.joinQueue = this.joinQueue.bind(this);
     this.cancelQueue = this.cancelQueue.bind(this);
     
-    this.state = {lobbyUser:[], lobbyMessages:[], navigate : '0', inQueue : false};
+    this.state = {lobbyUser:[], lobbyMessages:[], navigate : 'home', inQueue : false};
 
     this.lobbyUser = [];
     this.lobbyMessages=[];
@@ -76,7 +76,7 @@ class Home extends React.Component{
     // Listen for messages
     this.queueSocket.addEventListener('message', function (event) {
         if(event.data == 'matched'){
-            holdThis.setState({navigate: '1'});
+            holdThis.setState({navigate: 'game'});
         } else {
             console.log(event.data);
         }
@@ -118,7 +118,7 @@ class Home extends React.Component{
       <p key={index}>{username}</p>
     );
 
-    if(this.state.navigate == '0'){
+    if(this.state.navigate == 'home'){
 
       return (
         <div className="home-content-container">
@@ -146,7 +146,7 @@ class Home extends React.Component{
                 </div>
 
                 <div className='againstComputer'>
-                  <button>Play against computer</button>
+                  <button onClick={() => {this.setState({navigate: 'computer'});}}>Play against computer</button>
                 </div>
               
               </div>
@@ -210,9 +210,17 @@ class Home extends React.Component{
 
         </div>
       );
-    } else {
+    } else if (this.state.navigate == 'game') {
       return (
         <Navigate to='/game' />
+      );
+    } else if (this.state.navigate == 'computer') {
+      return (
+        <Navigate to='/computer' />
+      );
+    } else {
+      return(
+        <p>Loading...</p>
       );
     }
 
