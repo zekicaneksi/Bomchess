@@ -54,7 +54,8 @@
 }
 
 .game-middle-column .game-board-container{
-    margin: auto;
+    width: 100%;
+    height: 100%;
 }
 
 

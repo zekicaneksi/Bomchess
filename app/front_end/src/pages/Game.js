@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
 import { Navigate, renderMatches } from "react-router-dom";
 import {Chess} from "chess.js";
-import { Chessboard } from "react-chessboard";
+import GameBoard from "../components/GameBoard";
 import MovesList from '../components/MovesList';
 import Chat from '../components/Chat.js';
 import './Game.css';
@@ -13,21 +13,14 @@ const Game = () => {
 
   const [game, setGame] = useState(new Chess());
   const [moves, setMoves] = useState([]);
+
   const [loadBoard, setLoadBoard] = useState(false);
   const [isGameEnded, setIsGameEnded] = useState(false);
-  const [clickedSquare, setClickedSquare] = useState('-');
 
   const [navigateBack, setNavigateBack] = useState(false);
   const [popupDiv, setPopupDiv] = useState('-');
 
-  const boardContainerRef = useRef();
-  const [boardWidth, setBoardWidth] = useState();
-
   const [chatMessages, setChatMessages] = useState([]);
-
-  // Custom squares for Chess board
-  const [optionSquares, setOptionSquares] = useState({});
-  const [inCheckSquare, setInCheckSquare] = useState({});
 
   const socket = useRef();
   const initials = useRef({});
@@ -41,172 +34,6 @@ const Game = () => {
   const timer = useRef();
   const lastMoveTimestamp = useRef(new Date().getTime());
   const holdPlayerRemainingTime = useRef();
-
-  function makeAMove(moveToMake){
-    // Make the move
-    let gameCopy = {...game};
-    let result = gameCopy.move(moveToMake);
-    setGame(gameCopy);
-
-    if(result != null ) inCheckBackground(); // Check and set the background to red if the king is in check
-
-
-    return result;
-  }
-
-  // Check and set the background to red if the king is in check
-  function inCheckBackground() {
-
-    const board = game.board();
-
-    if(game.in_check()){
-      board.forEach((rowArray) => {
-        rowArray.forEach((square) => {
-          if(square == null)
-            return;
-          else {
-            if(square.type == "k" && game.turn() == square.color){
-              let toSetSquare = {};
-              toSetSquare[square.square] = {
-                background: 'red'
-              }
-              setInCheckSquare(toSetSquare);
-            }
-          }
-        }); 
-      });
-    }
-    else {
-      setInCheckSquare({});
-    }
-    
-  }
-
-  function showPossibleMoves(square){
-    const moves = game.moves({
-      square,
-      verbose: true
-    });
-
-    const newSquares = {};
-
-    newSquares[square] = {
-      background: 'rgba(255, 255, 0, 0.4)'
-    };
-
-    if (moves.length !== 0) {
-      
-      moves.map((move) => {
-        newSquares[move.to] = {
-          background:
-            game.get(move.to) && game.get(move.to).color !== game.get(square).color
-              ? 'radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)'
-              : 'radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)',
-          borderRadius: '50%'
-        };
-        return move;
-      });
-
-    }
-    
-    setOptionSquares(newSquares);
-  }
-
-  function onMouseOverSquare(square) {
-
-    const pieceOnTheSquare = game.get(square);
-    const myColor = initials.current.orientation[0];
-
-    if(clickedSquare == '-') {
-      if(pieceOnTheSquare != null
-      && game.turn() == myColor
-      && pieceOnTheSquare.color == myColor) showPossibleMoves(square);
-    }
-  }
-
-  function onMouseOutSquare() {
-
-    if(clickedSquare=='-') {
-      if (Object.keys(optionSquares).length !== 0) setOptionSquares({});
-    }
-  }
-
-  function onPieceDragBegin(piece, sourceSquare){
-    setClickedSquare('-');
-    setOptionSquares({});
-    showPossibleMoves(sourceSquare);
-  }
-
-  function onSquareClick(square){
-
-    const myColor = initials.current.orientation[0];
-    const squareColor = game.get(square)?.color;
-
-    if(myColor != game.turn()) return; // do nothing if it isn't my turn
-
-    if(squareColor == myColor){
-      if (Object.keys(optionSquares).length !== 0) setOptionSquares({}); // if showing, don't show possible moves for any piece
-      setClickedSquare(square);
-      showPossibleMoves(square);
-
-    } else if (squareColor != myColor && clickedSquare != '-'){
-
-      const move = makeAMove({
-        from: clickedSquare,
-        to: square,
-        promotion: "q", // always promote to a queen for example simplicity
-      });
-
-      // If the move is legal, send the move to the server
-      if(move != null){
-        let toSend = {};
-        toSend.type = 'play';
-        toSend.move = move;
-        socket.current.send(JSON.stringify(toSend));
-      }
-
-      setOptionSquares({});
-      setClickedSquare('-');
-
-    } else{
-      return;
-    }
-    
-  }
-
-  function onDrop(sourceSquare, targetSquare) {
-
-    // Make the move
-    let move = makeAMove({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: "q", // always promote to a queen for example simplicity
-    });
-
-    // Move is illegal
-    if(move === null)  return false;
-
-    // Send the move to the server
-    let toSend = {};
-    toSend.type = 'play';
-    toSend.move = move;
-    socket.current.send(JSON.stringify(toSend));
-
-    setOptionSquares({});
-    
-    return true;
-  }
-
-  // Makes opponent's pieces undraggable
-  function isDraggablePiece({piece, sourceSquare}){
-
-    if(piece[0] != initials.current.orientation[0]){
-      return false;
-    }else{
-      return true;
-    }
-      
-  }
 
   // Decreases remaining times
   function timerStart(){
@@ -283,7 +110,9 @@ const Game = () => {
         lastMoveTimestamp.current = new Date().getTime();
 
         // Make the move
-        makeAMove(dataJson.move);
+        let gameCopy = {...game};
+        gameCopy.move(dataJson.move);
+        setGame(gameCopy);
 
         holdPlayerRemainingTime.current = (turn.current == "w" ? dataJson.whiteRemainingTime : dataJson.blackRemainingTime);
 
@@ -300,7 +129,6 @@ const Game = () => {
         turn.current=game.turn();
         holdPlayerRemainingTime.current = (turn.current == "w" ? initials.current.whiteRemainingTime : initials.current.blackRemainingTime);
         setMoves(moves_jsonToArray());
-        inCheckBackground();
         setLoadBoard(true);
 
         // Start the countdown timer for the remaining times
@@ -334,13 +162,18 @@ const Game = () => {
     });
   }
 
-  function resizeBoard(){
-    let clientWidth = boardContainerRef.current?.clientWidth;
-    let clientHeight = boardContainerRef.current?.clientHeight;
+  function onSquareClickCallback(move){
+    let toSend = {};
+    toSend.type = 'play';
+    toSend.move = move;
+    socket.current.send(JSON.stringify(toSend));
+  }
 
-
-    if(clientWidth > clientHeight) setBoardWidth(clientHeight);
-    else setBoardWidth(clientWidth);
+  function onDropCallback(move){
+    let toSend = {};
+    toSend.type = 'play';
+    toSend.move = move;
+    socket.current.send(JSON.stringify(toSend));
   }
 
   function showReportDiv(){
@@ -422,16 +255,6 @@ const Game = () => {
 
   useEffect(() => {
 
-    if(loadBoard == true){
-      resizeBoard();
-
-      window.addEventListener('resize', resizeBoard);
-    }
-
-  }, [loadBoard]);
-
-  useEffect(() => {
-
     // ComponentDidMount
     if (isInitialMount.current) {
       isInitialMount.current = false;
@@ -450,7 +273,6 @@ const Game = () => {
     return () => {
       socket.current.close();
       clearInterval(timer.current);
-      window.removeEventListener('resize', resizeBoard);
     }
   },[]);
 
@@ -486,24 +308,16 @@ const Game = () => {
 
         </div>
 
-        <div className='game-middle-column' ref={boardContainerRef}>
+        <div className='game-middle-column'>
           <div className='game-board-container'>
-            <Chessboard
-            boardWidth={boardWidth}
-            position={game.fen()}
-            onPieceDrop={onDrop}
-            onSquareClick={onSquareClick}
-            boardOrientation={initials.current.orientation}
-            isDraggablePiece={isDraggablePiece}
-            arePiecesDraggable={!isGameEnded}
-            onPieceDragBegin={onPieceDragBegin}
-            onMouseOverSquare={onMouseOverSquare}
-            onMouseOutSquare={onMouseOutSquare}
-            customSquareStyles={{
-              ...optionSquares,
-              ...inCheckSquare
-            }}
-            />
+              <GameBoard 
+                game={game}
+                setGame={setGame}
+                myColor = {initials.current.orientation[0]}
+                onSquareClickCallback={onSquareClickCallback}
+                onDropCallback={onDropCallback}
+                arePiecesDraggable={!isGameEnded}
+              />
           </div>
         </div>
 
