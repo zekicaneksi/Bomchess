@@ -68,7 +68,7 @@ const Computer = () => {
             <div className='computer-left-column'>
 
                 <div className='computer-moves-div'>
-                    <MovesList moves={moves} />
+                    <MovesList moves={moves} orientation={'v'}/>
                 </div>
 
                 <div className='computer-buttons'>

@@ -163,6 +163,8 @@ const GameBoard = (props) => {
           to: targetSquare,
           promotion: "q", // always promote to a queen for example simplicity
         });
+
+        setOptionSquares({});
     
         // Move is illegal
         if(move === null)  return false;
@@ -171,7 +173,7 @@ const GameBoard = (props) => {
         if(props.onDropCallback) props.onDropCallback(move);
         
     
-        setOptionSquares({});
+        
         
         return true;
     }

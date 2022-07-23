@@ -299,7 +299,7 @@ const Game = () => {
         <div className='game-left-column'>
 
           <div className='moves-div'>
-            <MovesList moves={moves} />
+            <MovesList moves={moves} orientation={'v'}/>
           </div>
 
           <div className='chat-div'>

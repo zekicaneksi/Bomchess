@@ -41,6 +41,36 @@
     box-sizing: border-box;
 }
 
+.moveslist-horizontal-column{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-right: 2px;
+}
+
+.moveslist-horizontal-column p{
+    flex: 1 0;
+    width: 100%;
+    height: 100%;
+    margin:0;
+    padding: 0;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.moveslist-horizontal-column > p{
+    margin-left: 4%;
+    margin-right: 4%;
+}
+
+.moveslist-horizontal-column .moveslist-row-move-item{
+    padding-left: 0.5em !important;
+    padding-right: 0.5em !important;
+}
+
 @media only screen and (max-width: 1367px) {
     .moveslist-container{
         font-size: 1.5em;
