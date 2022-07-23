@@ -2,6 +2,19 @@ import React, {useEffect, useState, useRef} from 'react';
 import { Chessboard } from "react-chessboard";
 import './GameBoard.css';
 
+
+/**
+ * 
+ * @param {{game: chess.js,
+ * setGame: chess.js,
+ * myColor: string, 
+ * arePiecesDraggable: Boolean,
+ * onSquareClickCallback: function,
+ * onDropCallback: function }} props
+ * myColor is 'w' or 'b' 
+ * 
+ * Callback funcions are functions to be called on valid moves and are optional
+ */
 const GameBoard = (props) => {
 
     const isInitialMount = useRef(true);
@@ -130,7 +143,7 @@ const GameBoard = (props) => {
     
           // If the move is legal, call the callback
           if(move != null){
-            props.onSquareClickCallback(move);
+            if(props.onSquareClickCallback) props.onSquareClickCallback(move);
           }
     
           setOptionSquares({});
@@ -155,7 +168,7 @@ const GameBoard = (props) => {
         if(move === null)  return false;
     
         // If the move is legal, call the callback
-        props.onDropCallback(move);
+        if(props.onDropCallback) props.onDropCallback(move);
         
     
         setOptionSquares({});
