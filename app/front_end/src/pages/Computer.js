@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
 import GameBoard from '../components/GameBoard';
 import {Chess} from "chess.js";
+import {Navigate} from "react-router-dom";
 import MovesList from '../components/MovesList';
 import './Computer.css';
 
@@ -11,6 +12,8 @@ const Computer = () => {
     const [game, setGame] = useState(new Chess());
     const [myColor, setMyColor] = useState(((Math.floor(Math.random() * 100)) > 50 ? 'w' : 'b'))
     const [moves, setMoves] = useState([]);
+    const [movesListOrientation, setMovesListOrientation] = useState('v');
+    const [navigate, setNavigate] = useState('computer');
 
     function makeARandomMove(){
         const possibleMoves = game.moves();
@@ -46,6 +49,13 @@ const Computer = () => {
 
     }, [game]);
 
+    function changeLayoutOfMovesList(){
+        if(window.innerWidth <= 600){
+            setMovesListOrientation('h');
+        } else{
+            setMovesListOrientation('v');
+        }
+    }
 
     useEffect(() => {
 
@@ -53,7 +63,11 @@ const Computer = () => {
         if (isInitialMount.current) {
           isInitialMount.current = false;
 
+          changeLayoutOfMovesList();
+
           if(game.turn() != myColor) setTimeout(() => makeARandomMove(),1000);
+
+          window.addEventListener('resize', changeLayoutOfMovesList);
     
         } else {
           // ComponentDidUpdate
@@ -62,38 +76,53 @@ const Computer = () => {
         
     });
 
-    return(
-        <div className='computer-container'>
+    useEffect(() => {
+        // --- ComponentWillUnmount
+        return () => {
+          window.removeEventListener('resize', changeLayoutOfMovesList);
+        }
+    },[]);
 
-            <div className='computer-left-column'>
-
-                <div className='computer-moves-div'>
-                    <MovesList moves={moves} orientation={'v'}/>
+    if(navigate==='computer'){
+        return(
+            <div className='computer-container'>
+    
+                <div className='computer-left-column'>
+    
+                    <div className='computer-moves-div'>
+                        <MovesList moves={moves} orientation={movesListOrientation}/>
+                    </div>
+    
+                    <div className='computer-buttons'>
+                        <button className='computer-back-button'  onClick={() => setNavigate('back')}></button>
+                        <button className='computer-restart-button'></button>
+                    </div>
                 </div>
-
-                <div className='computer-buttons'>
-                    <button className='computer-back-button'></button>
-                    <button className='computer-restart-button'></button>
+    
+                <div className='computer-right-column'>
+    
+                    <div className='computer-board-container'>
+                        <GameBoard 
+                            game={game}
+                            setGame={setGame}
+                            myColor={myColor}
+                            arePiecesDraggable={true}
+                            onDropCallback={moveCallback}
+                            onSquareClickCallback={moveCallback}
+                        />    
+                    </div>
+    
                 </div>
+    
             </div>
+        );
+    } else if(navigate === 'back'){
+        return(
+            <Navigate to='/' />
+        );
+    } else {
 
-            <div className='computer-right-column'>
-
-                <div className='computer-board-container'>
-                    <GameBoard 
-                        game={game}
-                        setGame={setGame}
-                        myColor={myColor}
-                        arePiecesDraggable={true}
-                        onDropCallback={moveCallback}
-                        onSquareClickCallback={moveCallback}
-                    />    
-                </div>
-
-            </div>
-
-        </div>
-    );
+    }
 
 };
 
