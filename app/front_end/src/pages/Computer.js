@@ -17,11 +17,25 @@ const Computer = () => {
     const [navigate, setNavigate] = useState('computer');
     const restartRef = useRef();
     const mutex = useRef(new Mutex());
+    const [popupDiv, setPopupDiv] = useState('-');
+
+    function showResultDiv(){
+        let matchResult = (game.in_draw() ? 'Draw' : (game.turn() == myColor ? 'Lost' : 'Won'));
+        setPopupDiv(
+            <div className='computer-result-container'>
+                <h2>{matchResult}</h2>
+                <button onClick={() => setPopupDiv('-')}>OK</button>
+            </div>
+        );
+    }
 
     function makeARandomMove(){
         const possibleMoves = game.moves();
-        if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
-        return; // exit if the game is over
+        // If the game is over
+        if (game.game_over() || game.in_draw() || possibleMoves.length === 0){
+            showResultDiv();
+            return; // exit if the game is over
+        }
         const randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
         let gameCopy = {...game};
@@ -95,7 +109,7 @@ const Computer = () => {
     if(navigate==='computer'){
         return(
             <div className='computer-container'>
-    
+                {popupDiv !== '-' && popupDiv}
                 <div className='computer-left-column'>
     
                     <div className='computer-moves-div'>
