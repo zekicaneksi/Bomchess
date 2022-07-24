@@ -6,22 +6,26 @@ import * as HelperFunctions from './../components/HelperFunctions.js';
 // The navbar component for Layout to render
 const Navbar = (props) => {
 
-  const [navigateHome, setNavigateHome] = useState("no");
+  const [navigate, setNavigate] = useState("-");
 
   let location = useLocation();
 
   function homepageBtnHandle(){
-    setNavigateHome('yes');
+    setNavigate('/');
+  }
+
+  function profileBtnHandle(){
+    setNavigate('/profile/'+props.username);
   }
 
   useEffect((old) => {
-    if(old != 'no'){
-      setNavigateHome('no');
+    if(old != '-'){
+      setNavigate('-');
     }
-  }, [navigateHome]);
+  }, [navigate]);
 
-  if (navigateHome == "yes" && location.pathname != '/'){
-    return (<Navigate to='/' />);
+  if (navigate !== "-" && location.pathname !== navigate){
+    return (<Navigate to={navigate} />);
   } else {
     
     return(
@@ -31,7 +35,7 @@ const Navbar = (props) => {
         <div className="dropdown">
           <a><p>{props.username}</p></a>
           <div className="dropdown-content">
-            <a>Profile</a>
+            <a onClick={profileBtnHandle}>Profile</a>
             <a onClick={props.logoutBtnHandle}>Logout</a>
           </div>
         </div>
@@ -100,12 +104,14 @@ const Layout = () => {
   }, [location]);
 
   // Render
+
   if(isLoggedIn == "false")
   {
     return (<Navigate to='/sign' />);
   } 
   else if (isLoggedIn == "true")
   {
+
     if(hasGame == "yes" && location.pathname != '/game'){
       return (<Navigate to='/game' />);
     } else if (hasGame == "no" && location.pathname == '/game'){
