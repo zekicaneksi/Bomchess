@@ -3,6 +3,7 @@ import GameBoard from '../components/GameBoard';
 import {Chess} from "chess.js";
 import {Navigate} from "react-router-dom";
 import MovesList from '../components/MovesList';
+import {Mutex} from 'async-mutex';
 import './Computer.css';
 
 const Computer = () => {
@@ -14,6 +15,8 @@ const Computer = () => {
     const [moves, setMoves] = useState([]);
     const [movesListOrientation, setMovesListOrientation] = useState('v');
     const [navigate, setNavigate] = useState('computer');
+    const restartRef = useRef();
+    const mutex = useRef(new Mutex());
 
     function makeARandomMove(){
         const possibleMoves = game.moves();
@@ -26,8 +29,10 @@ const Computer = () => {
         setGame(gameCopy);
     }
 
-    function moveCallback(){
-        setTimeout(() => makeARandomMove(),1000);
+    function handleRestartBtn(){
+        setGame(new Chess());
+        setMyColor((old) => (old === 'w' ? 'b' : 'w'));
+        restartRef.current.disabled = true;
     }
 
     // Update moves when a move is made
@@ -44,6 +49,12 @@ const Computer = () => {
             return toReturn;
         }
 
+        mutex.current.runExclusive(async function () {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            if(game.turn() !== myColor) makeARandomMove();
+            restartRef.current.disabled = false;
+            mutex.current.cancel();
+        }).catch(e => {});
 
         setMoves(moves_jsonToArray());
 
@@ -64,8 +75,6 @@ const Computer = () => {
           isInitialMount.current = false;
 
           changeLayoutOfMovesList();
-
-          if(game.turn() != myColor) setTimeout(() => makeARandomMove(),1000);
 
           window.addEventListener('resize', changeLayoutOfMovesList);
     
@@ -95,7 +104,7 @@ const Computer = () => {
     
                     <div className='computer-buttons'>
                         <button className='computer-back-button'  onClick={() => setNavigate('back')}></button>
-                        <button className='computer-restart-button'></button>
+                        <button ref={restartRef} className='computer-restart-button' onClick={handleRestartBtn}></button>
                     </div>
                 </div>
     
@@ -107,8 +116,6 @@ const Computer = () => {
                             setGame={setGame}
                             myColor={myColor}
                             arePiecesDraggable={true}
-                            onDropCallback={moveCallback}
-                            onSquareClickCallback={moveCallback}
                         />    
                     </div>
     

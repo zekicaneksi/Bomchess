@@ -37,6 +37,7 @@
     - react-router-dom@6 (for routing)
 	- chess.js (chess engine)
 	- react-chessboard (chess UI for react)
+	- async-mutex
   - Nodejs
     - express
     - express-http-proxy
