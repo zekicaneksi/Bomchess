@@ -1,16 +1,19 @@
 
 import * as dotenv from "dotenv";
 import express from "express";
+import URL from 'node:url';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import {dbConnect} from "./config/database.js";
 import bcrypt from "bcryptjs";
 import {User} from "./model/user.js";
+import {Match} from "./model/match.js"
 import {Session} from "./model/session.js";
 import {auth} from './middleware/auth.js';
 import mongoose from "mongoose";
 
 import {Games} from './websocketservers/Share.js';
+import { createRequire } from "node:module";
 
 const config = dotenv.config().parsed;
 const app = express();
@@ -156,6 +159,61 @@ app.get("/api/checkSession", auth, async (req, res) => {
       });    
   } catch (error) {
       console.log(error);
+  }
+
+  return res.status(200).send(JSON.stringify(toSend));
+
+});
+
+// Get an user's profile
+app.get("/api/profile", auth, async (req, res) => {
+
+  const myUrl = new URL.parse(req.url,true);
+  const username = myUrl.query.username;
+
+  const user = await User.findOne({ 'username' : username });
+
+  if(user === null) return res.status(404).send();
+
+  const matches = await Match.find({ $or: [{ white: user._id }, { black: user._id }] });
+  let usernamesInMatches = new Map();
+
+  // Get the usernames for matches
+  for(const match in matches){
+    if(!usernamesInMatches.get(matches[match].black.toString())){
+      let holdUser = await User.findOne({'_id' : matches[match].black});
+      usernamesInMatches.set(holdUser._id.toString(), holdUser.username);
+    }
+    if(!usernamesInMatches.get(matches[match].white.toString())){
+      let holdUser = await User.findOne({'_id' : matches[match].white});
+      usernamesInMatches.set(holdUser._id.toString(), holdUser.username);
+    }
+  }
+
+  let toSend = {};
+  toSend.userIsMe = (req.session.userID === user._id.toString());
+  toSend.username = user.username;
+  toSend.bio = user.bio;
+  toSend.matches = [];
+  toSend.messages=[];
+
+  matches.forEach(match => {
+    toSend.matches.push({
+      id : match._id.toString(),
+      date : match.date,
+      length : match.length,
+      white : usernamesInMatches.get(match.white.toString()),
+      black : usernamesInMatches.get(match.black.toString()),
+      endedBy : match.endedBy,
+      winner : match.winner
+    })
+  });
+
+  // Send the private messages as well if the user is visiting his own profile page
+  if(toSend.userIsMe){
+    toSend.messages.push('test123');
+    toSend.messages.push('test124124');
+    toSend.messages.push('test1252353');
   }
 
   return res.status(200).send(JSON.stringify(toSend));
