@@ -1,0 +1,54 @@
+.notfoundpopup{
+    height: 25%;
+    width: 25%;
+    top: 50%;
+    left: 50%;
+    position: relative;
+    transform: translate(-50%,-50%);
+    background-color: gainsboro;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.notfoundpopup p{
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.notfoundpopup button{
+    width: 50%;
+    font-size: 1em;
+}
+
+@media only screen and (max-width: 1567px) {
+    .notfoundpopup{
+        font-size: 1.2rem;
+    }
+}
+
+@media only screen and (max-width: 1367px) {
+    .notfoundpopup{
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .notfoundpopup{
+        font-size: 0.8rem;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .notfoundpopup{
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width: 361px) {
+    .notfoundpopup{
+        font-size: 0.7rem;
+    }
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import * as HelperFunctions from '../components/HelperFunctions';
 import './Profile.css';
 
@@ -9,6 +9,21 @@ const Profile = () => {
     let routerParams = useParams();
 
     const [profileInfo, setProfileInfo] = useState();
+
+    const NotFoundPopup = () => {
+
+        const [navigate, setNavigate] = useState(false);
+
+        if(navigate) return(<Navigate to='/' />);
+        else{
+            return(
+                <div className='notfoundpopup'>
+                    <p>The user couldn't be found</p>
+                    <button onClick={ () => setNavigate(true)}>OK</button>
+                </div>
+            );
+        }
+    }
 
     useEffect(() => {
         // ComponentDidMount
@@ -49,7 +64,7 @@ const Profile = () => {
     if(profileInfo === undefined){
         return(<p>Loading...</p>);
     } else if( profileInfo === 'notFound'){
-        return(<p>User couldn't be found</p>);
+        return(<NotFoundPopup />);
     } else {
         if(profileInfo.userIsMe){
             console.log(profileInfo.messages);
