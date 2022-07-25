@@ -66,12 +66,25 @@ const Profile = () => {
     } else if( profileInfo === 'notFound'){
         return(<NotFoundPopup />);
     } else {
-        if(profileInfo.userIsMe){
-            console.log(profileInfo.messages);
-            return(<p>Found and the user is me! {profileInfo.username}</p>);
-        } else {
-            return(<p>Found! user is {profileInfo.username}</p>);
-        }
+        
+        if(profileInfo.userIsMe) console.log(profileInfo.messages);
+        
+        return(
+            <div className='profile-container'>
+                <div className='profile-bio-container'>
+                    <h2>{profileInfo.username}</h2>
+                    <div>
+                        <p>{profileInfo.bio}</p>
+                    </div>
+                    <button>Edit</button>
+                </div>
+                <div className='profile-bottom-container'>
+                    <div className='profile-messages-container'></div>
+                    <div className='profile-match-history-container'></div>
+                </div>
+            </div>
+        );
+        
     }
 
 };

@@ -52,3 +52,60 @@
         font-size: 0.7rem;
     }
 }
+
+.profile-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    background-color: gainsboro;
+    width: 80%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    left: 10%;
+    padding: 2%;
+    box-sizing: border-box;
+    font-size: 1.5rem;
+}
+
+.profile-bio-container{
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    overflow-y: auto;
+}
+
+.profile-bio-container h2{
+    text-align: center;
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.profile-bio-container > div{
+    flex: 1 1 auto;
+    background-color: rgb(144, 139, 139);
+    margin: 2%;
+    padding: 1% 2% 2% 1%;
+    overflow-y: auto;
+}
+
+.profile-bio-container p{
+    margin: 0;
+    word-break: break-word;
+}
+
+.profile-bio-container button{
+    font-size: 1em;
+    width: 10%;
+    height: 10%;
+    margin-left: auto;
+    margin-right: 2%;
+    margin-bottom: 2%;
+}
+
+
+.profile-bottom-container{
+    flex: 1 1 55%;
+    background-color: rgb(99, 99, 107);
+}
