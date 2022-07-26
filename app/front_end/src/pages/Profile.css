@@ -74,6 +74,7 @@
     flex-direction: column;
     justify-content: space-evenly;
     overflow-y: auto;
+    position: relative;
 }
 
 .profile-bio-container h2{
@@ -104,8 +105,71 @@
     margin-bottom: 2%;
 }
 
+.profile-bio-container .profile-bio-report-btn{
+    position: absolute;
+    top:0;
+    right: 0;
+    background-image: url(../../public/report.svg);
+    background-size: 100% 100%;
+    width: 2em;
+    height: 2em;
+}
+
 
 .profile-bottom-container{
     flex: 1 1 55%;
-    background-color: rgb(99, 99, 107);
+    display: flex;
+    flex-direction: row;
+}
+
+.profile-messages-container{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-messages-container button{
+    font-size: 1.2em;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2%;
+}
+
+.profile-messages-container p{
+    font-size: 1.2em;
+    text-align: center;
+    margin:0;
+}
+
+.profile-messages-container > div{
+    flex: 1 1 auto;
+    background-color: brown;
+    margin: 2%;
+}
+
+.profile-messages-container > textarea{
+    flex: 1 1 auto;
+    margin: 2%;
+    font-size: 1em;
+}
+
+.profile-match-history-container{
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-match-history-container > div{
+    flex: 1 1 auto;
+    background-color: brown;
+    margin: 2%;
+}
+
+.profile-match-history-container p{
+    font-size: 1.2em;
+    text-align: center;
+    margin:0;
 }

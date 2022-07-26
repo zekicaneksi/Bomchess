@@ -8,6 +8,7 @@ import {dbConnect} from "./config/database.js";
 import bcrypt from "bcryptjs";
 import {User} from "./model/user.js";
 import {Match} from "./model/match.js"
+import {Message} from "./model/message.js"
 import {Session} from "./model/session.js";
 import {auth} from './middleware/auth.js';
 import mongoose from "mongoose";
@@ -217,6 +218,26 @@ app.get("/api/profile", auth, async (req, res) => {
   }
 
   return res.status(200).send(JSON.stringify(toSend));
+
+});
+
+app.post("/api/message", auth, async (req, res) => {
+  let id = mongoose.Types.ObjectId(req.session.userID);
+  const user = await User.findOne({ '_id' : id });
+
+  const receiver = await User.findOne({'username': req.body.receiver});
+  // If the receiver is not found, return 404
+  if(!(receiver)) return res.status(404).send();
+  
+  const message = await Message.create({
+    sender: user.username,
+    receiver: receiver.username,
+    content: req.body.message,
+    date: new Date().getTime(),
+    isRead: false
+  });
+
+  return res.status(200).send();
 
 });
 

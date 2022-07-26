@@ -93,7 +93,8 @@ privateMessages
 	sender: String,
 	reciever: String,
 	content: String,
-	date: String		
+	date: Number,
+	isRead: Boolean		
 }
 
 sessions

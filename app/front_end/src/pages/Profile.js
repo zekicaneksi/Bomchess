@@ -10,6 +10,9 @@ const Profile = () => {
 
     const [profileInfo, setProfileInfo] = useState();
 
+    const messageTextareaRef = useRef();
+    const sendMessageBtnRef = useRef();
+
     const NotFoundPopup = () => {
 
         const [navigate, setNavigate] = useState(false);
@@ -23,6 +26,31 @@ const Profile = () => {
                 </div>
             );
         }
+    }
+
+    function handleSendMsgBtn(){
+
+        let toSend = {};
+        toSend.message = messageTextareaRef.current.value;
+        toSend.receiver = profileInfo.username;
+
+        sendMessageBtnRef.current.disabled = true;
+        messageTextareaRef.current.value = 'Sending...';
+
+        let responseFunction = (httpRequest) => {
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+              if (httpRequest.status === 200) {
+                messageTextareaRef.current.value = '';
+                messageTextareaRef.current.placeholder = 'Message is sent!';
+                sendMessageBtnRef.current.disabled = false;
+              } else {
+                alert("unknown error from server");
+              }
+            }
+        }
+
+        HelperFunctions.ajax('/message','POST',responseFunction,toSend);
+        
     }
 
     useEffect(() => {
@@ -73,14 +101,22 @@ const Profile = () => {
             <div className='profile-container'>
                 <div className='profile-bio-container'>
                     <h2>{profileInfo.username}</h2>
+                    {!profileInfo.userIsMe && <button className='profile-bio-report-btn'></button>}
                     <div>
                         <p>{profileInfo.bio}</p>
                     </div>
-                    <button>Edit</button>
+                    {profileInfo.userIsMe && <button>Edit</button>}
                 </div>
                 <div className='profile-bottom-container'>
-                    <div className='profile-messages-container'></div>
-                    <div className='profile-match-history-container'></div>
+                    <div className='profile-messages-container'>
+                        <p>{profileInfo.userIsMe ? 'Messages' : 'Send a message'}</p>
+                        {profileInfo.userIsMe ? <div></div> : <textarea placeholder='your message...'maxLength="250" ref={messageTextareaRef}></textarea>}
+                        <button onClick={handleSendMsgBtn} ref={sendMessageBtnRef} >send message</button>
+                    </div>
+                    <div className='profile-match-history-container'>
+                        <p>Match History</p>
+                        <div></div>
+                    </div>
                 </div>
             </div>
         );
