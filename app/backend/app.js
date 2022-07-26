@@ -212,9 +212,10 @@ app.get("/api/profile", auth, async (req, res) => {
 
   // Send the private messages as well if the user is visiting his own profile page
   if(toSend.userIsMe){
-    toSend.messages.push('test123');
-    toSend.messages.push('test124124');
-    toSend.messages.push('test1252353');
+    const messages = await Message.find({ $or: [{ 'receiver' : user.username }, { 'sender': user.username }] }); 
+    for(const message in messages){
+      toSend.messages.push(messages[message]);
+    }
   }
 
   return res.status(200).send(JSON.stringify(toSend));
