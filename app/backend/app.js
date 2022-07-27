@@ -227,6 +227,8 @@ app.post("/api/message", auth, async (req, res) => {
   const user = await User.findOne({ '_id' : id });
 
   const receiver = await User.findOne({'username': req.body.receiver});
+  
+  if(user === receiver) return res.status(406).send();
   // If the receiver is not found, return 404
   if(!(receiver)) return res.status(404).send();
   
@@ -238,7 +240,7 @@ app.post("/api/message", auth, async (req, res) => {
     isRead: false
   });
 
-  return res.status(200).send();
+  return res.status(200).send(JSON.stringify(message));
 
 });
 
