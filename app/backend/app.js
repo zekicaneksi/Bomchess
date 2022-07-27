@@ -242,5 +242,19 @@ app.post("/api/message", auth, async (req, res) => {
 
 });
 
+app.post("/api/message/read", auth, async (req, res) => {
+  let id = mongoose.Types.ObjectId(req.session.userID);
+  const user = await User.findOne({ '_id' : id });
+
+  for(let i = 0; i < req.body.messageIDs.length; i++){
+    req.body.messageIDs[i] = mongoose.Types.ObjectId(req.body.messageIDs[i]);
+  }
+  
+  await Message.updateMany({ '_id' : {$in: req.body.messageIDs}, 'sender' : {$ne: user.username}}, { $set: { 'isRead': true } });
+
+  return res.status(200).send();
+
+});
+
 
 export {app, sessionConfig};

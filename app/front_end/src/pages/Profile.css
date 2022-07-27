@@ -115,7 +115,6 @@
     height: 2em;
 }
 
-
 .profile-bottom-container{
     flex: 1 1 55%;
     display: flex;
@@ -126,40 +125,31 @@
 .profile-messages-container{
     width: 50%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.profile-messages-container button{
-    font-size: 1.2em;
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 2%;
-}
-
-.profile-messages-container > p{
-    font-size: 1.2em;
-    text-align: center;
-    margin:0;
-}
-
-.profile-messages-container > div{
-    flex: 1 1 auto;
-    margin: 2%;
-    overflow: auto;
-}
-
-.profile-messages-container > textarea{
-    flex: 1 1 auto;
-    margin: 2%;
-    font-size: 1em;
 }
 
 .profile-messagebox-container{
     width: 100%;
     height: 100%;
-    background-color: rgb(144, 139, 139);
+    overflow: auto;
+}
+
+.profile-mymessages-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-messagesbox-navbar p{
+    font-size: 1.2em;
+    margin: 0;
+    text-align: center;
+}
+
+.profile-mymessages-content-container{
+    flex: 1 1 auto;
+    overflow: auto;
+    margin:2%;
 }
 
 .profile-messagebox-user{
@@ -198,6 +188,34 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.profile-sendmessage-container{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-sendmessage-container button{
+    font-size: 1.2em;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2%;
+}
+
+.profile-sendmessage-container textarea{
+    flex: 1 1 auto;
+    margin: 2%;
+    font-size: 1em;
+}
+
+.profile-sendmessage-container > p{
+    font-size: 1.2em;
+    text-align: center;
+    margin:0;
+}
+
 
 
 
