@@ -3,18 +3,18 @@ import { Navigate, useParams } from "react-router-dom";
 import * as HelperFunctions from '../components/HelperFunctions';
 import './Profile.css';
 
+
+// Component, used in the Profile.js
 const MessagesBox = (props) => {
 
     const [messageBoxNav, setMessageBoxNav] = useState('main');
 
 
-    let sendersAndMessages = []; // Sorted array of profileInfo.messages IF messageBoxNav is 'main'
+    const sendersAndMessages = useRef([]); // Sorted array of profileInfo.messages IF messageBoxNav is 'main'
 
 
     function userDivOnclick(event, key){
-        console.log(key);
-        let index = sendersAndMessages.findIndex(item => item.sender === key);
-        console.log(sendersAndMessages[index]);
+        setMessageBoxNav(key);
     }
 
     function sortMessagesForEachUser(array) {
@@ -46,22 +46,22 @@ const MessagesBox = (props) => {
         for(let message in props.profileInfo.messages){
             let sender = props.profileInfo.messages[message].sender;
             sender = (sender === props.profileInfo.username ? props.profileInfo.messages[message].receiver : sender);
-            if(!sendersAndMessages.some(item => item.sender === sender)) sendersAndMessages.push({sender: sender, messages: []});
-            let index = sendersAndMessages.findIndex(item => item.sender === sender);
-            sendersAndMessages[index].messages.push(props.profileInfo.messages[message]);
+            if(!sendersAndMessages.current.some(item => item.sender === sender)) sendersAndMessages.current.push({sender: sender, messages: []});
+            let index = sendersAndMessages.current.findIndex(item => item.sender === sender);
+            sendersAndMessages.current[index].messages.push(props.profileInfo.messages[message]);
         }
 
         // Order the messages by different senders by date
-        for(let sender in sendersAndMessages){
-            sortMessagesForEachUser(sendersAndMessages[sender].messages);
+        for(let sender in sendersAndMessages.current){
+            sortMessagesForEachUser(sendersAndMessages.current[sender].messages);
         }
 
-        sortUsers(sendersAndMessages);
+        sortUsers(sendersAndMessages.current);
 
-        const messageboxUsers= sendersAndMessages.map((user, index) => {
+        const messageboxUsers= sendersAndMessages.current.map((user, index) => {
             let lastMessage = user.messages[user.messages.length-1];
             let date = new Date(lastMessage.date);
-            date = date.getUTCDay() + "/" + date.getUTCMonth() + "/" + date.getUTCFullYear() + " " + date.getUTCHours() + ':' + date.getUTCMinutes()
+            date = date.getUTCDay() + "/" + date.getUTCMonth() + "/" + date.getUTCFullYear() + " " + date.getUTCHours() + ':' + date.getUTCMinutes();
             return(
             <div key={user.sender} onClick={(event) => userDivOnclick(event,user.sender)} className='profile-messagebox-user' style={{backgroundColor: (!lastMessage.isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
                 <p>{user.sender}</p>
@@ -76,6 +76,34 @@ const MessagesBox = (props) => {
                 {messageboxUsers}
             </div>
         );
+    } else {
+
+        let messages = [];
+        let index = sendersAndMessages.current.findIndex(item => item.sender === messageBoxNav);
+
+        for(let i = sendersAndMessages.current[index].messages.length-1; i>=0; i--){
+            let message = sendersAndMessages.current[index].messages[i];
+            let date = new Date(message.date);
+            date = date.getUTCDay() + "/" + date.getUTCMonth() + "/" + date.getUTCFullYear() + " " + date.getUTCHours() + ':' + date.getUTCMinutes();
+            messages.push(
+                <div key={message._id} className="profile-messagebox-message-container">
+                    <div>
+                        <p>{message.sender}</p>
+                        <p>{date}</p>
+                    </div>
+                    <div>
+                        <p>{message.content}</p>
+                    </div>
+                </div>
+            );
+        }
+
+        return(
+            <div className='profile-messagebox-container'>
+                {messages}
+            </div>
+        )
+
     }
 }
 

@@ -178,6 +178,28 @@
     font-size: 1.1em;
 }
 
+.profile-messagebox-message-container{
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+    border-style: solid;
+    border-width: 0px;
+    border-bottom-width: 2px;
+    border-color: rgb(95, 89, 89);
+    background-color: rgb(120 115 115);
+}
+
+.profile-messagebox-message-container p{
+    margin: 0.2em
+}
+
+.profile-messagebox-message-container > div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
 
 
 .profile-match-history-container{
