@@ -6,6 +6,7 @@
     background-color: grey;
     border-radius: 3%;
     padding: 3%;
+    text-align: center;
 }
 
 #sign-container h1{
@@ -32,4 +33,10 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+@media only screen and (max-width: 601px) {
+    #sign-container{
+        font-size: 0.6rem;
+    }
 }

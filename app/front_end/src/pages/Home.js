@@ -195,7 +195,7 @@ class Home extends React.Component{
 
               <div className='home-right-middle'>
                 <div>
-                  <p>Online Users: {this.state.lobbyUser.length}</p>
+                  <p>Users in room: {this.state.lobbyUser.length}</p>
                   {LobbyUserListItems}
                 </div>
               </div>
