@@ -319,3 +319,23 @@
 .profile-lose-background{
     background-color: rgb(137 94 94);
 }
+
+.profile-report-popup-container{
+    position: absolute;
+    top:30%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    visibility: hidden;
+    z-index: 2;
+    background-color: gainsboro;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 1em;
+    border-radius: 5%;
+}
+
+.profile-report-popup-container button{
+    font-size: 1em;
+}

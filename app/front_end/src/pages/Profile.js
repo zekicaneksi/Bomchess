@@ -47,7 +47,7 @@ const MatchHistoryBox = (props) => {
     useEffect(() => {
         // --- ComponentWillUnmount
         return () => {
-            historyBoxContainerRef.current.removeEventListener('scroll',handleScroll);
+            historyBoxContainerRef.current?.removeEventListener('scroll',handleScroll);
             window.removeEventListener('resize', handleResize);
         }
     },[]);
@@ -341,6 +341,7 @@ const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
 
     const bioTextareaRef = useRef();
+    const reportPopupRef = useRef();
 
     const NotFoundPopup = () => {
 
@@ -381,6 +382,14 @@ const Profile = () => {
             HelperFunctions.ajax('/bio','POST',responseFunction, toSend);
 
         }
+    }
+
+    function handleReportBtn(){
+        reportPopupRef.current.style.visibility="visible";
+
+        console.log('im reporting you to the polaayiicee');
+
+
     }
 
     useEffect(() => {
@@ -426,10 +435,19 @@ const Profile = () => {
     } else {
         
         return(
+
             <div className='profile-container'>
+
+                <div 
+                ref={reportPopupRef}
+                className='profile-report-popup-container'>
+                    <p>User's biography is reported</p>
+                    <button onClick={() => reportPopupRef.current.style.visibility="hidden"}>OK</button>
+                </div>
+
                 <div className='profile-bio-container'>
                     <h2>{profileInfo.username}</h2>
-                    {!profileInfo.userIsMe && <button className='profile-bio-report-btn'></button>}
+                    {!profileInfo.userIsMe && <button className='profile-bio-report-btn' onClick={handleReportBtn}></button>}
                     <div>
                         {isEditing ? <textarea ref={bioTextareaRef} defaultValue={profileInfo.bio}></textarea> : <p>{profileInfo.bio}</p>}
                     </div>
