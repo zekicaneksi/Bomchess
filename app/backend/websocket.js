@@ -29,12 +29,6 @@ const upgrade = async (request, socket, head) => {
     const pathname = myUrl.pathname;
 
     if (pathname === '/api/lobby') {
-      // Check if user has a ban on chat
-      if(user.bans.chat == true){
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        socket.destroy();
-        return;
-      }
 
       // Check if user already has a WebSocket connection
       WSSLobby.clients.forEach( (ws) => {
@@ -51,13 +45,6 @@ const upgrade = async (request, socket, head) => {
         WSSLobby.emit('connection', ws, request);
       });
     } else if (pathname === '/api/queue') {
-      
-      // Check if user has a ban on playing
-      if(user.bans.playing == true){
-        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
-        socket.destroy();
-        return;
-      }
 
       // Check if user already has a WebSocket connection
       WSSQueue.clients.forEach( (ws) => {

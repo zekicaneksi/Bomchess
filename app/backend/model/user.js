@@ -7,9 +7,9 @@ const userSchema = new mongoose.Schema({
   password: { type: String, maxLength:150 },
   bio:{type: String, maxLength:1000},
   bans:{
-    playing:{type:Boolean, default:"no"},
-    chat:{type:Boolean, default:"no"},
-    message:{type:Boolean, default:"no"}
+    playing:{type:Number, default:"0"},
+    chat:{type:Number, default:"0"},
+    message:{type:Number, default:"0"}
   }
 });
 

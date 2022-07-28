@@ -64,7 +64,7 @@ users
 	username: String,
 	password: String,
 	bio: String,
-	bans:{playing: Boolean, chat: Boolean, message: Boolean}
+	bans:{playing: Number, chat: Number, message: Number}
 }
 
 matches
