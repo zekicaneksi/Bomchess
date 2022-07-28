@@ -222,6 +222,15 @@ app.get("/api/profile", auth, async (req, res) => {
 
 });
 
+app.post("/api/bio", auth, async (req, res) => {
+  let id = mongoose.Types.ObjectId(req.session.userID);
+
+  await User.findOneAndUpdate({'_id' : id}, {'bio' : req.body.bio});
+
+  return res.status(200).send();
+
+});
+
 app.post("/api/message", auth, async (req, res) => {
   let id = mongoose.Types.ObjectId(req.session.userID);
   const user = await User.findOne({ '_id' : id });

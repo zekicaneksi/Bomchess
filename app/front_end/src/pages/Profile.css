@@ -96,6 +96,12 @@
     word-break: break-word;
 }
 
+.profile-bio-container textarea{
+    height: 100%;
+    width: 100%;
+    font-size: 1em;
+}
+
 .profile-bio-container button{
     font-size: 1em;
     width: 10%;

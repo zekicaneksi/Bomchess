@@ -338,6 +338,9 @@ const Profile = () => {
     let routerParams = useParams();
 
     const [profileInfo, setProfileInfo] = useState();
+    const [isEditing, setIsEditing] = useState(false);
+
+    const bioTextareaRef = useRef();
 
     const NotFoundPopup = () => {
 
@@ -351,6 +354,32 @@ const Profile = () => {
                     <button onClick={ () => setNavigate(true)}>OK</button>
                 </div>
             );
+        }
+    }
+
+    function handleEditBtn(){
+        if(isEditing === false){
+            setIsEditing(true);
+        }
+        else{
+            let toSend={};
+            toSend.bio = bioTextareaRef.current.value;
+
+            bioTextareaRef.current.value = 'Sending...';
+
+            let responseFunction = (httpRequest) => {
+                if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                  if (httpRequest.status === 200) {
+                    profileInfo.bio = toSend.bio;
+                    setIsEditing(false);
+                  } else {
+                    alert("unknown error from server");
+                  }
+                }
+            }
+
+            HelperFunctions.ajax('/bio','POST',responseFunction, toSend);
+
         }
     }
 
@@ -402,9 +431,9 @@ const Profile = () => {
                     <h2>{profileInfo.username}</h2>
                     {!profileInfo.userIsMe && <button className='profile-bio-report-btn'></button>}
                     <div>
-                        <p>{profileInfo.bio}</p>
+                        {isEditing ? <textarea ref={bioTextareaRef} defaultValue={profileInfo.bio}></textarea> : <p>{profileInfo.bio}</p>}
                     </div>
-                    {profileInfo.userIsMe && <button>Edit</button>}
+                    {profileInfo.userIsMe && <button onClick={handleEditBtn}>{(isEditing === false ? 'Edit' : 'Save')}</button>}
                 </div>
                 <div className='profile-bottom-container'>
                     <div className='profile-messages-container'>
