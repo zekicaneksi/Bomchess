@@ -4,7 +4,95 @@ import * as HelperFunctions from '../components/HelperFunctions';
 import './Profile.css';
 
 
-// Component, used in the Profile.js
+const MatchHistoryBox = (props) => {
+
+    const isInitialMount = useRef(true);
+    
+    const [matchCountToShow, setMatchCountToShow] = useState(10);
+    const historyBoxContainerRef = useRef();
+
+    function handleMatchElementDivClick(key){
+        console.log('navigate me to ' + key + ' homie');
+    }
+
+    function handleScroll(){
+        if(historyBoxContainerRef.current.scrollTop + historyBoxContainerRef.current.offsetHeight +1 >= historyBoxContainerRef.current.scrollHeight){
+            setMatchCountToShow(old => old+10);
+        }
+    }
+
+    function handleResize(){
+        if(historyBoxContainerRef.current.scrollHeight <= historyBoxContainerRef.current.clientHeight){
+            setMatchCountToShow(old => old+10);
+        }
+    }
+
+    useEffect(() => {
+
+        // ComponentDidMount
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            
+            historyBoxContainerRef.current.addEventListener('scroll',handleScroll);
+            window.addEventListener('resize', handleResize);
+
+            handleResize();
+        } else {
+            // ComponentDidUpdate
+            handleResize();
+        }
+        
+    });
+
+    useEffect(() => {
+        // --- ComponentWillUnmount
+        return () => {
+            historyBoxContainerRef.current.removeEventListener('scroll',handleScroll);
+            window.removeEventListener('resize', handleResize);
+        }
+    },[]);
+
+    let matchElements = [];
+
+    let matchCount = props.profileInfo.matches.length;
+    for(let i= matchCount -1 ; i >= 0 && i >= matchCount - matchCountToShow; i--){
+        let match = props.profileInfo.matches[i];
+        let matchResult;
+        if(match.endedBy === 'abort') matchResult = 'Abort';
+        else if(match.winner === '-') matchResult = 'Draw';
+        else{
+            let userColor = (props.profileInfo.username === match.black ? 'b' : 'w');
+            if(userColor === match.winner) matchResult = 'Won';
+            else matchResult = 'Lost';
+        }
+        matchElements.push(
+            <div 
+            className={'profile-matchhistory-element-container '+ (matchResult === 'Won' ? 'profile-win-background' : (matchResult === 'Lost' ? 'profile-lose-background' : ''))}
+            key={match.id}
+            onClick={() => handleMatchElementDivClick(match.id)}>
+                <div>
+                    <p>{matchResult}</p>
+                </div>
+                <div className='profile-matchhistory-middle-div'>
+                    <p>{match.white}</p>
+                    <p>{match.length}</p>
+                    <p>{match.black}</p>
+                </div>
+                <div>
+                    <p>{HelperFunctions.epochToDate(match.date)}</p>
+                </div>
+            </div>
+        );
+    }
+
+    return(
+        <div className="profile-matchhisotrybox-container" ref={historyBoxContainerRef}>
+            {matchElements}
+        </div>
+    );
+}
+
+
 const MessagesBox = (props) => {
 
     const [messageBoxNav, setMessageBoxNav] = useState('main');
@@ -102,17 +190,6 @@ const MessagesBox = (props) => {
 
     }
 
-    function epochToDate(epoch){
-        let date = new Date(epoch);
-        let toReturn = date.getUTCDay() + "/" + date.getUTCMonth() + "/" + date.getUTCFullYear() + " ";
-        let hour= date.getUTCHours();
-        let minute = date.getUTCMinutes();
-        if(hour < 10) hour = '0' + hour;
-        if(minute < 10) minute = '0' + minute;
-        toReturn += hour + ':' + minute;
-        return toReturn;
-    }
-
     function handleSendMsgBtn(){
 
         let toSend = {};
@@ -187,7 +264,7 @@ const MessagesBox = (props) => {
     
             const messageboxUsers= sendersAndMessages.current.map((user, index) => {
                 let lastMessage = user.messages[user.messages.length-1];
-                let date = epochToDate(lastMessage.date);
+                let date = HelperFunctions.epochToDate(lastMessage.date);
                 return(
                 <div key={user.sender} onClick={(event) => userDivOnclick(event,user.sender)} className='profile-messagebox-user' style={{backgroundColor: (!lastMessage.isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
                     <p>{user.sender}</p>
@@ -206,7 +283,7 @@ const MessagesBox = (props) => {
     
             for(let i = sendersAndMessages.current[index].messages.length-1; i>=0; i--){
                 let message = sendersAndMessages.current[index].messages[i];
-                let date = epochToDate(message.date);
+                let date = HelperFunctions.epochToDate(message.date);
                 messages.push(
                     <div key={message._id} className="profile-messagebox-message-container">
                         <div>
@@ -335,7 +412,7 @@ const Profile = () => {
                     </div>
                     <div className='profile-match-history-container'>
                         <p>Match History</p>
-                        <div></div>
+                        <MatchHistoryBox profileInfo={profileInfo} />
                     </div>
                 </div>
             </div>

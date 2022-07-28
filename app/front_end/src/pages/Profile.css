@@ -248,10 +248,6 @@
     margin:0;
 }
 
-
-
-
-
 .profile-match-history-container{
     width: 50%;
     height: 100%;
@@ -259,14 +255,61 @@
     flex-direction: column;
 }
 
-.profile-match-history-container > div{
-    flex: 1 1 auto;
-    background-color: brown;
-    margin: 2%;
-}
-
-.profile-match-history-container p{
+.profile-match-history-container > p{
     font-size: 1.2em;
     text-align: center;
     margin:0;
+}
+
+.profile-matchhisotrybox-container{
+    flex: 1 1 auto;
+    margin: 2%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-matchhisotrybox-container p{
+    margin:0;
+}
+
+.profile-matchhistory-element-container{
+    display: flex;
+    flex-direction: column;
+    font-size: 1.1em;
+    background-color: rgb(120, 115, 115);
+    border-style: solid;
+    border-width: 0px;
+    border-bottom-width: 2px;
+    border-color: rgb(95, 89, 89);
+}
+
+.profile-matchhistory-element-container:hover{
+    font-size: 1.2em;
+}
+
+.profile-matchhistory-element-container div{
+    text-align: center;
+    margin:1%;
+}
+
+.profile-matchhistory-middle-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding-left: 3%;
+    padding-right: 4%;
+}
+
+.profile-matchhistory-middle-div p:first-of-type{
+    color: white;
+}
+
+.profile-win-background{
+    background-color: rgb(101 118 94);
+}
+
+.profile-lose-background{
+    background-color: rgb(137 94 94);
 }
