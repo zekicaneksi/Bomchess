@@ -230,6 +230,9 @@ app.get("/api/profile", auth, async (req, res) => {
 
 app.post("/api/bio", auth, async (req, res) => {
   let id = mongoose.Types.ObjectId(req.session.userID);
+  const user = await User.findOne({ '_id' : id });
+
+  if(user.bans.message > new Date().getTime()) return res.status(403).send();
 
   await User.findOneAndUpdate({'_id' : id}, {'bio' : req.body.bio});
 
@@ -240,6 +243,8 @@ app.post("/api/bio", auth, async (req, res) => {
 app.post("/api/message", auth, async (req, res) => {
   let id = mongoose.Types.ObjectId(req.session.userID);
   const user = await User.findOne({ '_id' : id });
+
+  if(user.bans.message > new Date().getTime()) return res.status(403).send();
 
   const receiver = await User.findOne({'username': req.body.receiver});
   

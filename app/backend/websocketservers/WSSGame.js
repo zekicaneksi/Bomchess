@@ -252,13 +252,18 @@ function createWSSGame(WSSGame_initialData){
 
                 
             } else if (dataJson.type == 'message'){
-                let toSend={};
-                toSend.type = 'message';
-                toSend.username = ws.user.username;
-                toSend.message = dataJson.msg;
-                WSSGame.clients.forEach((webSocket) => {
-                    webSocket.send(JSON.stringify(toSend));
-                });
+                if(ws.user.bans.chat > new Date().getTime()){
+
+                }
+                else{
+                    let toSend={};
+                    toSend.type = 'message';
+                    toSend.username = ws.user.username;
+                    toSend.message = dataJson.msg;
+                    WSSGame.clients.forEach((webSocket) => {
+                        webSocket.send(JSON.stringify(toSend));
+                    });
+                }
             }
         });
     

@@ -46,6 +46,13 @@ const upgrade = async (request, socket, head) => {
       });
     } else if (pathname === '/api/queue') {
 
+      // Check if the user is banned from playing
+      if(user.bans.playing > new Date().getTime()){
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
+      }
+
       // Check if user already has a WebSocket connection
       WSSQueue.clients.forEach( (ws) => {
         if(ws.sessionId == request.session.id){

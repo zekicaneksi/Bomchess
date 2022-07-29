@@ -31,13 +31,19 @@ WSSLobby.on('connection', (ws,req) => {
 
   // Broadcast messages
   ws.on('message', (data) => {
-    let toSend={};
-    toSend.type = 'message';
-    toSend.username = ws.user.username;
-    toSend.message = data.toString();
-    WSSLobby.clients.forEach((webSocket) => {
-      webSocket.send(JSON.stringify(toSend));
-    });
+    if(ws.user.bans.chat > new Date().getTime()){
+
+    }
+    else{
+      let toSend={};
+      toSend.type = 'message';
+      toSend.username = ws.user.username;
+      toSend.message = data.toString();
+      WSSLobby.clients.forEach((webSocket) => {
+        webSocket.send(JSON.stringify(toSend));
+      });
+    }
+    
   });
 
   // Broadcast the leaver
