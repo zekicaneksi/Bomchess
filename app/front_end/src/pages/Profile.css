@@ -109,6 +109,10 @@
     margin-bottom: 2%;
 }
 
+.profile-bio-container > p {
+    text-align: center;
+}
+
 .profile-bio-container .profile-bio-report-btn{
     position: absolute;
     top:0;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, useLocation } from "react-router-dom";
 import * as HelperFunctions from '../components/HelperFunctions';
 import './Profile.css';
 
@@ -309,19 +309,32 @@ const MessagesBox = (props) => {
             </div>
             {messageBoxNav != 'main' &&
             <div className='profile-reply-div'>
-                <textarea ref={replyTextArea} placeholder={"message..."}></textarea>
-                <button onClick={handleReplyBtn} ref={replyBtn}>reply</button>
+                <textarea
+                disabled={(props.profileInfo.bans.message > new Date().getTime() ? true : false)}
+                placeholder={(props.profileInfo.bans.message > new Date().getTime() ? 'banned until '+ HelperFunctions.epochToDate(props.profileInfo.bans.message) : "message...")}
+                ref={replyTextArea}
+                maxLength="250"
+                ></textarea>
+                <button 
+                disabled={(props.profileInfo.bans.message > new Date().getTime() ? true : false)}
+                onClick={handleReplyBtn} ref={replyBtn}>reply</button>
             </div>
             }
         </div>;
 
 
     } else{
+
         elementToRender = 
         <div className='profile-sendmessage-container'>
             <p>Send a message</p>
-            <textarea placeholder='your message...'maxLength="250" ref={messageTextareaRef}></textarea>
-            <button onClick={handleSendMsgBtn} ref={sendMessageBtnRef} >send message</button>
+            <textarea 
+            disabled={(props.profileInfo.bans.message > new Date().getTime() ? true : false)}
+            placeholder={(props.profileInfo.bans.message > new Date().getTime() ? 'banned until '+ HelperFunctions.epochToDate(props.profileInfo.bans.message) : "your message...")}
+            maxLength="250" ref={messageTextareaRef}></textarea>
+            <button 
+            disabled={(props.profileInfo.bans.message > new Date().getTime() ? true : false)}
+            onClick={handleSendMsgBtn} ref={sendMessageBtnRef} >send message</button>
         </div>
     }
 
@@ -343,6 +356,8 @@ const Profile = () => {
 
     const bioTextareaRef = useRef();
     const reportPopupRef = useRef();
+
+    let location = useLocation();
 
     const NotFoundPopup = () => {
 
@@ -393,30 +408,33 @@ const Profile = () => {
 
     }
 
+    function getAndSetProfile(){
+        let responseFunction = (httpRequest) => {
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+              if (httpRequest.status === 200) {
+                setProfileInfo(JSON.parse(httpRequest.response));
+              } else if (httpRequest.status === 404) {
+                setProfileInfo('notFound');
+              } else {
+                alert("unknown error from server");
+              }
+            }
+        }
+
+        HelperFunctions.ajax('/profile?username='+routerParams.username,'GET',responseFunction);
+    }
+
     useEffect(() => {
         // ComponentDidMount
         if (isInitialMount.current) {
             isInitialMount.current = false;
 
-            
-
-            let responseFunction = (httpRequest) => {
-                if (httpRequest.readyState === XMLHttpRequest.DONE) {
-                  if (httpRequest.status === 200) {
-                    setProfileInfo(JSON.parse(httpRequest.response));
-                  } else if (httpRequest.status === 404) {
-                    setProfileInfo('notFound');
-                  } else {
-                    alert("unknown error from server");
-                  }
-                }
-            }
-
-            HelperFunctions.ajax('/profile?username='+routerParams.username,'GET',responseFunction);
+            getAndSetProfile();
 
         } else {
             // ComponentDidUpdate
-
+            let profileName = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
+            if(profileInfo !== undefined && profileName !== profileInfo.username) getAndSetProfile();
         }
         
     });
@@ -452,7 +470,7 @@ const Profile = () => {
                     <div>
                         {isEditing ? <textarea ref={bioTextareaRef} defaultValue={profileInfo.bio}></textarea> : <p>{profileInfo.bio}</p>}
                     </div>
-                    {profileInfo.userIsMe && <button onClick={handleEditBtn}>{(isEditing === false ? 'Edit' : 'Save')}</button>}
+                    {profileInfo.userIsMe && (profileInfo.bans?.message > new Date().getTime() ? <p>You are banned until {HelperFunctions.epochToDate(profileInfo.bans.message)}, can't edit biography.</p> : <button onClick={handleEditBtn}>{(isEditing === false ? 'Edit' : 'Save')}</button>)}
                 </div>
                 <div className='profile-bottom-container'>
                     <div className='profile-messages-container'>

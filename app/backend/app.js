@@ -170,6 +170,9 @@ app.get("/api/checkSession", auth, async (req, res) => {
 // Get an user's profile
 app.get("/api/profile", auth, async (req, res) => {
 
+  let id = mongoose.Types.ObjectId(req.session.userID);
+  const requestingUser = await User.findOne({ '_id' : id });
+
   const myUrl = new URL.parse(req.url,true);
   const username = myUrl.query.username;
 
@@ -198,6 +201,8 @@ app.get("/api/profile", auth, async (req, res) => {
   toSend.bio = user.bio;
   toSend.matches = [];
   toSend.messages=[];
+
+  toSend.bans = requestingUser.bans;
 
   matches.forEach(match => {
     toSend.matches.push({
