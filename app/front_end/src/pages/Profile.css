@@ -176,6 +176,10 @@
     margin:2%;
 }
 
+.profile-mymessages-content-container > p {
+    text-align: center;
+}
+
 .profile-messagebox-user{
     display: flex;
     flex-direction: row;
@@ -275,6 +279,10 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+}
+
+.profile-matchhisotrybox-container > p {
+    text-align: center;
 }
 
 .profile-matchhisotrybox-container p{

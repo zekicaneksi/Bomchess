@@ -56,6 +56,7 @@ const MatchHistoryBox = (props) => {
     let matchElements = [];
 
     let matchCount = props.profileInfo.matches.length;
+    if(matchCount === 0) matchElements.push(<p key={-1}>You haven't played a match yet.</p>);
     for(let i= matchCount -1 ; i >= 0 && i >= matchCount - matchCountToShow; i--){
         let match = props.profileInfo.matches[i];
         let matchResult;
@@ -276,6 +277,7 @@ const MessagesBox = (props) => {
     
     
             messagesBoxInner = messageboxUsers;
+            if(messagesBoxInner.length === 0) messagesBoxInner = <p>You have no messages :(</p>
 
         } else {
     
