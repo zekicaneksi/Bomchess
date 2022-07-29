@@ -22,7 +22,8 @@ const MatchHistoryBox = (props) => {
     }
 
     function handleResize(){
-        if(historyBoxContainerRef.current.scrollHeight <= historyBoxContainerRef.current.clientHeight){
+        if(historyBoxContainerRef.current.scrollHeight <= historyBoxContainerRef.current.clientHeight
+            && props.profileInfo.matches.length > matchCountToShow){
             setMatchCountToShow(old => old+10);
         }
     }

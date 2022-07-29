@@ -29,7 +29,6 @@ const Navbar = (props) => {
   } else {
     
     return(
-      <div className="fill">
       <div id="navbar">
         <div><a onClick={homepageBtnHandle}><p>Bomchess</p></a></div>
         <div className="dropdown">
@@ -40,10 +39,6 @@ const Navbar = (props) => {
           </div>
         </div>
       </div>
-      <div id='content-div'>
-        <Outlet />
-      </div>
-    </div>
     );
   }
 
@@ -52,8 +47,7 @@ const Navbar = (props) => {
 const Layout = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState("");
-  const [username, setUsername] = useState("");
-  const [hasGame, setHasGame] = useState("");
+  const [userInfo, setUserInfo] = useState({});
 
   let location = useLocation();
 
@@ -65,8 +59,7 @@ const Layout = () => {
 
           let responseJson = JSON.parse(httpRequest.responseText);
           
-          setUsername(responseJson.username);
-          setHasGame(responseJson.hasGame);
+          setUserInfo(responseJson);
           setIsLoggedIn("true");
 
         } else if(httpRequest.status === 401) {
@@ -112,13 +105,18 @@ const Layout = () => {
   else if (isLoggedIn == "true")
   {
 
-    if(hasGame == "yes" && location.pathname != '/game'){
+    if(userInfo.hasGame == "yes" && location.pathname != '/game'){
       return (<Navigate to='/game' />);
-    } else if (hasGame == "no" && location.pathname == '/game'){
+    } else if (userInfo.hasGame == "no" && location.pathname == '/game'){
       return (<Navigate to='/' />);
     } else{
       return (
-        <Navbar username={username} logoutBtnHandle={logoutBtnHandle}/>
+        <div className="fill">
+          <Navbar username={userInfo.username} logoutBtnHandle={logoutBtnHandle}/>
+          <div id='content-div'>
+            <Outlet context={userInfo}/>
+          </div>
+        </div>
       );
     }
   }

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
 import Chat from '../components/Chat.js';
-import { Navigate } from "react-router-dom";
+import { Navigate , useOutletContext} from "react-router-dom";
 import './Home.css';
 
 const Home = (props) => {
@@ -16,6 +16,7 @@ const Home = (props) => {
   const chatSocket = useRef();
   const queueSocket = useRef();
 
+  const userInfo = useOutletContext();
 
   function handleSendMessage(msg){
     chatSocket.current.send(msg);
@@ -135,14 +136,16 @@ const Home = (props) => {
             <h1>{inQueue ? 'Searching for a game...' : 'Quick Play'}</h1>
           </div>
   
-          {inQueue ? 
+          {userInfo.bans.playing > new Date().getTime()
+          ?
+          <p style={{textAlign:'center'}}>You are banned until {HelperFunctions.epochToDate(userInfo.bans.playing)}</p>
+          :
+          (inQueue ? 
           
             <div id="home-left-middle">
               <button className='queue-cancel-btn' onClick={cancelQueue}>Cancel</button>
             </div>
-          
           : 
-
             <div id="home-left-middle">
 
               <div className='home-quickplay'>
@@ -156,6 +159,7 @@ const Home = (props) => {
               </div>
             
             </div>
+          )
           }
           
   

@@ -146,7 +146,8 @@ app.get("/api/checkSession", auth, async (req, res) => {
 
   let toSend={
     username: user.username,
-    hasGame: "no"
+    hasGame: "no",
+    bans: user.bans
   }
 
   // Check if the player already has a game going on
