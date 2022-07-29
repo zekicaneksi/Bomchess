@@ -45,7 +45,7 @@ const Chat = (props) => {
 
             <div className='chat-input'>
                 <input ref={inputRef}></input>
-                <button onClick={() => {props.handleSendMessage(inputRef.current.value);}}>Send</button>
+                <button onClick={() => {props.handleSendMessage(inputRef.current.value); inputRef.current.value='';}}>Send</button>
             </div>
 
         </div>

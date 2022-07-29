@@ -1,232 +1,237 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
 import Chat from '../components/Chat.js';
 import { Navigate } from "react-router-dom";
 import './Home.css';
 
-class Home extends React.Component{
-  constructor(props){
-    super(props);
+const Home = (props) => {
+  
+  const [lobbyUser, setLobbyUser] = useState([]);
+  const [lobbyMessages, setLobbyMessages] = useState([]);
+  const [navigate, setNavigate] = useState('home');
+  const [inQueue, setInQueue] = useState(false);
 
-    this.handleSendMessage = this.handleSendMessage.bind(this);
-    this.duelOnChange = this.duelOnChange.bind(this);
-    this.setUpChatSocket = this.setUpChatSocket.bind(this);
-    this.setUpQueueSocket = this.setUpQueueSocket.bind(this);
-    this.joinQueue = this.joinQueue.bind(this);
-    this.cancelQueue = this.cancelQueue.bind(this);
-    
-    this.state = {lobbyUser:[], lobbyMessages:[], navigate : 'home', inQueue : false};
+  const isInitialMount = useRef(true);
 
-    this.lobbyUser = [];
-    this.lobbyMessages=[];
+  const chatSocket = useRef();
+  const queueSocket = useRef();
 
-    this.chatSocket = null;
-    this.queueSocket = null;
 
+  function handleSendMessage(msg){
+    chatSocket.current.send(msg);
   }
 
-  handleSendMessage(msg){
-    this.chatSocket.send(msg);
-  }
-
-  duelOnChange(event){
+  function duelOnChange(event){
     console.log(event.target.value);
   }
 
-  setUpChatSocket(){
-    this.chatSocket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
-
-
-    let holdThis = this;
+  function setUpChatSocket(){
+    chatSocket.current = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
     
     // Listen for messages
-    this.chatSocket.addEventListener('message', function (event) {
+    chatSocket.current.addEventListener('message', function (event) {
 
       let dataJson = JSON.parse(event.data);
 
       if(dataJson.type == 'connected'){
-        if(!holdThis.lobbyUser.includes(dataJson.username))
-          holdThis.lobbyUser.push(dataJson.username);
-        holdThis.setState({lobbyUser: holdThis.lobbyUser});
+        setLobbyUser((old) => {
+          if(old.includes(dataJson.username)) return old;
+          let toReturn = [...old];
+          toReturn.push(dataJson.username);
+          return toReturn;
+        });
       }
       else if(dataJson.type == 'disconnected'){
-        holdThis.lobbyUser = holdThis.lobbyUser.filter(item => item !== dataJson.username);
-        holdThis.setState({lobbyUser: holdThis.lobbyUser});
+        setLobbyUser((old) => {
+          let toReturn = [...old];
+          toReturn = toReturn.filter(item => item !== dataJson.username);
+          return toReturn;
+        });
       }
       else if(dataJson.type == 'message'){
-        holdThis.lobbyMessages.push(dataJson.username + ': '+ dataJson.message);
-        if(holdThis.lobbyMessages.length >= 50) holdThis.lobbyMessages.splice(0,8);
-        holdThis.setState({lobbyMessages: holdThis.lobbyMessages});
+        setLobbyMessages((old) => {
+          let toReturn = [...old];
+          toReturn.push(dataJson.username + ': '+ dataJson.message);
+          if(toReturn.length >= 50) toReturn.splice(0,8);
+          return toReturn;
+        });
       }
 
     });
 
-
-    this.chatSocket.addEventListener('error', function (event) {
+    chatSocket.current.addEventListener('error', function (event) {
       console.log("can't connect");
     });
   }
 
-  setUpQueueSocket(matchLength){
+  function setUpQueueSocket(matchLength){
 
-    this.queueSocket = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/queue?matchLength='+matchLength);
-
-    let holdThis = this;
+    queueSocket.current = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/queue?matchLength='+matchLength);
     
     // Listen for messages
-    this.queueSocket.addEventListener('message', function (event) {
+    queueSocket.current.addEventListener('message', function (event) {
         if(event.data == 'matched'){
-            holdThis.setState({navigate: 'game'});
+          setNavigate('game');
         } else {
-            console.log(event.data);
+          console.log(event.data);
         }
     });
 
-    this.queueSocket.addEventListener('error', function (event) {
+    queueSocket.current.addEventListener('error', function (event) {
       console.log("unknown error");
     });
-
   }
 
-  joinQueue(matchLength){
-    this.setUpQueueSocket(matchLength);
-
-    this.setState({inQueue : true});
+  function joinQueue(matchLength){
+    setUpQueueSocket(matchLength);
+    setInQueue(true);
   }
 
-  cancelQueue(){
-    this.queueSocket.close();
-    this.setState({inQueue : false});
+  function cancelQueue(){
+    queueSocket.current.close();
+    setInQueue(false);
   }
 
-  componentDidMount(){
-    this.setUpChatSocket();
-  }
 
-  componentWillUnmount(){
-    try {
-      this.chatSocket?.close();
-      this.queueSocket?.close(); 
-    } catch (error) {
-      console.log(error);
+  useEffect(() => {
+
+    // ComponentDidMount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      setUpChatSocket();
+        
+    } else {
+      // ComponentDidUpdate
+        
     }
-  }
+    
+  });
 
-  render(){
+  useEffect(() => {
+    // --- ComponentWillUnmount
+    return () => {
+      try{
+        chatSocket.current?.close();
+        queueSocket.current?.close();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  },[]);
 
-    const LobbyUserListItems = this.state.lobbyUser.map((username,index) =>
-      <p key={index}>{username}</p>
-    );
 
-    if(this.state.navigate == 'home'){
+  const LobbyUserListItems = lobbyUser.map((username,index) =>
+    <p key={index}>{username}</p>
+  );
 
-      return (
-        <div className="home-content-container">
+  if(navigate == 'home'){
 
-          <div className='home-left-div'>
+    return (
+      <div className="home-content-container">
 
-            <div id="home-left-top">
-              <h1>{this.state.inQueue ? 'Searching for a game...' : 'Quick Play'}</h1>
+        <div className='home-left-div'>
+
+          <div id="home-left-top">
+            <h1>{inQueue ? 'Searching for a game...' : 'Quick Play'}</h1>
+          </div>
+  
+          {inQueue ? 
+          
+            <div id="home-left-middle">
+              <button className='queue-cancel-btn' onClick={cancelQueue}>Cancel</button>
             </div>
-    
-            {this.state.inQueue ? 
-            
-              <div id="home-left-middle">
-                <button className='queue-cancel-btn' onClick={this.cancelQueue}>Cancel</button>
+          
+          : 
+
+            <div id="home-left-middle">
+
+              <div className='home-quickplay'>
+                <button onClick={() => {joinQueue(5)}}>5 min</button>
+                <button onClick={() => {joinQueue(10)}}>10 min</button>
+                <button onClick={() => {joinQueue(15)}}>15 min</button>
+              </div>
+
+              <div className='againstComputer'>
+                <button onClick={() => {setNavigate('computer')}}>Play against computer</button>
               </div>
             
-            : 
-
-              <div id="home-left-middle">
-
-                <div className='home-quickplay'>
-                  <button onClick={() => {this.joinQueue(5)}}>5 min</button>
-                  <button onClick={() => {this.joinQueue(10)}}>10 min</button>
-                  <button onClick={() => {this.joinQueue(15)}}>15 min</button>
-                </div>
-
-                <div className='againstComputer'>
-                  <button onClick={() => {this.setState({navigate: 'computer'});}}>Play against computer</button>
-                </div>
-              
-              </div>
-            }
-            
-    
-            <div id="home-left-bottom">
-    
-              <div id="home-duel-container">
-                <h2>Duel</h2>
-                <div id="home-duel-top" onChange={this.duelOnChange}>
-                  
-                  <label>
-                    <input type="radio" value="5" name="length"></input>
-                    5 Min
-                  </label>
-                  
-                  <label>
-                    <input type="radio" value="10" name="length"></input>
-                    10 Min
-                  </label>
-
-                  <label>
-                    <input type="radio" value="15" name="length"></input>
-                    15 Min
-                  </label>
-                  
-                </div>
-                <div id="home-duel-bottom">
-                  <input placeholder='Username'></input>
-                  <button>Duel</button>
-                </div>
-              </div>
-    
             </div>
+          }
+          
+  
+          <div id="home-left-bottom">
+  
+            <div id="home-duel-container">
+              <h2>Duel</h2>
+              <div id="home-duel-top" onChange={duelOnChange}>
+                
+                <label>
+                  <input type="radio" value="5" name="length"></input>
+                  5 Min
+                </label>
+                
+                <label>
+                  <input type="radio" value="10" name="length"></input>
+                  10 Min
+                </label>
 
+                <label>
+                  <input type="radio" value="15" name="length"></input>
+                  15 Min
+                </label>
+                
+              </div>
+              <div id="home-duel-bottom">
+                <input placeholder='Username'></input>
+                <button>Duel</button>
+              </div>
+            </div>
+  
           </div>
 
-          <div className='home-right-div'>
+        </div>
 
-            <div id="home-chat">
+        <div className='home-right-div'>
 
-              <div className='home-right-top'>
-                <h1>Lobby Chat</h1>
+          <div id="home-chat">
+
+            <div className='home-right-top'>
+              <h1>Lobby Chat</h1>
+            </div>
+
+            <div className='home-right-middle'>
+              <div>
+                <p>Users in room: {lobbyUser.length}</p>
+                {LobbyUserListItems}
               </div>
+            </div>
 
-              <div className='home-right-middle'>
-                <div>
-                  <p>Users in room: {this.state.lobbyUser.length}</p>
-                  {LobbyUserListItems}
-                </div>
-              </div>
-
-              <div className='home-right-bottom'>
-                <Chat Messages={this.lobbyMessages} handleSendMessage={this.handleSendMessage}/>
-              </div>
-
+            <div className='home-right-bottom'>
+              <Chat Messages={lobbyMessages} handleSendMessage={handleSendMessage}/>
             </div>
 
           </div>
 
         </div>
-      );
-    } else if (this.state.navigate == 'game') {
-      return (
-        <Navigate to='/game' />
-      );
-    } else if (this.state.navigate == 'computer') {
-      return (
-        <Navigate to='/computer' />
-      );
-    } else {
-      return(
-        <p>Loading...</p>
-      );
-    }
 
+      </div>
+    );
+  } else if (navigate == 'game') {
+    return (
+      <Navigate to='/game' />
+    );
+  } else if (navigate == 'computer') {
+    return (
+      <Navigate to='/computer' />
+    );
+  } else {
+    return(
+      <p>Loading...</p>
+    );
   }
   
-}
+
+};
 
 export default Home;
   
