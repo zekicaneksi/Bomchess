@@ -1,15 +1,16 @@
 import React, {useEffect, useState, useRef} from 'react';
 import * as HelperFunctions from '../components/HelperFunctions';
-import { Navigate, renderMatches } from "react-router-dom";
+import { Navigate, useOutletContext } from "react-router-dom";
 import {Chess} from "chess.js";
 import GameBoard from "../components/GameBoard";
 import MovesList from '../components/MovesList';
 import Chat from '../components/Chat.js';
 import './Game.css';
 
-const Game = () => {
+const Game = (props) => {
 
   const isInitialMount = useRef(true);
+  const userInfo = useOutletContext();
 
   const [game, setGame] = useState(new Chess());
   const [moves, setMoves] = useState([]);
@@ -303,7 +304,7 @@ const Game = () => {
           </div>
 
           <div className='chat-div'>
-            <Chat Messages={chatMessages} handleSendMessage={handleSendMessage}/>
+            <Chat Messages={chatMessages} handleSendMessage={handleSendMessage} banDate={userInfo.bans.chat}/>
           </div>
 
         </div>

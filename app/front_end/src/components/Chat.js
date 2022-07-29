@@ -1,4 +1,5 @@
 import React, {useEffect, useRef} from 'react';
+import * as HelperFunctions from './HelperFunctions.js';
 import './Chat.css';
 
 const Chat = (props) => {
@@ -14,6 +15,10 @@ const Chat = (props) => {
     if (!isMounted.current) {
         // ComponentDidMount
         isMounted.current = true;
+        if(props.banDate > new Date().getTime()){
+            inputRef.current.disabled=true;
+            inputRef.current.placeholder="You are banned until " + HelperFunctions.epochToDate(props.banDate);
+        }
     } else {
         // ComponentDidUpdate
 
@@ -45,7 +50,7 @@ const Chat = (props) => {
 
             <div className='chat-input'>
                 <input ref={inputRef}></input>
-                <button onClick={() => {props.handleSendMessage(inputRef.current.value); inputRef.current.value='';}}>Send</button>
+                {!(props.banDate > new Date().getTime()) && <button onClick={() => {props.handleSendMessage(inputRef.current.value); inputRef.current.value='';}}>Send</button>}
             </div>
 
         </div>

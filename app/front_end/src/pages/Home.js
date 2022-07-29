@@ -164,7 +164,9 @@ const Home = (props) => {
           
   
           <div id="home-left-bottom">
-  
+
+            
+          {userInfo.bans.playing > new Date().getTime() ? null : 
             <div id="home-duel-container">
               <h2>Duel</h2>
               <div id="home-duel-top" onChange={duelOnChange}>
@@ -190,7 +192,7 @@ const Home = (props) => {
                 <button>Duel</button>
               </div>
             </div>
-  
+          }
           </div>
 
         </div>
@@ -211,7 +213,7 @@ const Home = (props) => {
             </div>
 
             <div className='home-right-bottom'>
-              <Chat Messages={lobbyMessages} handleSendMessage={handleSendMessage}/>
+              <Chat Messages={lobbyMessages} handleSendMessage={handleSendMessage} banDate={userInfo.bans.chat}/>
             </div>
 
           </div>
