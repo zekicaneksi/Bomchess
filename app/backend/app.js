@@ -278,5 +278,23 @@ app.post("/api/message/read", auth, async (req, res) => {
 
 });
 
+app.get("/api/replay", auth, async (req, res) => {
+
+  const myUrl = new URL.parse(req.url,true);
+  let matchId;
+
+  try {
+    matchId = mongoose.Types.ObjectId(myUrl.query.matchId);
+  } catch (error) {
+    return res.status(404).send();
+  }
+
+  const match = await Match.findOne({'_id' : mongoose.Types.ObjectId(matchId)});
+
+  if(match === null) return res.status(404).send();
+
+  return res.status(200).send(JSON.stringify(match));
+
+});
 
 export {app, sessionConfig};
