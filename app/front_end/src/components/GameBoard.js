@@ -9,10 +9,12 @@ import './GameBoard.css';
  * setGame: chess.js,
  * myColor: string, 
  * arePiecesDraggable: Boolean,
+ * onSquareClick: Boolean,
  * onSquareClickCallback: function,
  * onDropCallback: function }} props
  * myColor is 'w' or 'b' 
  * 
+ * onSquareClick is optional. If true, it ables you to move by clicking. If false, nothing happens when you click.
  * Callback funcions are functions to be called on valid moves and are optional
  */
 const GameBoard = (props) => {
@@ -234,7 +236,7 @@ const GameBoard = (props) => {
                 boardWidth={boardWidth}
                 position={props.game.fen()}
                 onPieceDrop={onDrop}
-                onSquareClick={onSquareClick}
+                onSquareClick={(props.disableSquareClick) ? () => {} : onSquareClick}
                 boardOrientation={(props.myColor == 'w' ? 'white' : 'black')}
                 isDraggablePiece={isDraggablePiece}
                 arePiecesDraggable={props.arePiecesDraggable}

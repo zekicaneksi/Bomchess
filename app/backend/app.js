@@ -293,7 +293,17 @@ app.get("/api/replay", auth, async (req, res) => {
 
   if(match === null) return res.status(404).send();
 
-  return res.status(200).send(JSON.stringify(match));
+  let toSend = {};
+  toSend.id = match._id.toString();
+  toSend.white = (await User.findOne({'_id' : match.white})).username;
+  toSend.black = (await User.findOne({'_id' : match.black})).username;
+  toSend.moves = match.moves;
+  toSend.length = match.length;
+  toSend.date = match.date;
+  toSend.endedBy = match.endedBy;
+  toSend.winner = match.winner;
+
+  return res.status(200).send(JSON.stringify(toSend));
 
 });
 

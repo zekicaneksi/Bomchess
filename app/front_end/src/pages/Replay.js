@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Navigate, useParams } from "react-router-dom";
+import {Chess} from "chess.js";
+import GameBoard from "../components/GameBoard";
+import MovesList from '../components/MovesList';
 import * as HelperFunctions from '../components/HelperFunctions';
 import './Replay.css';
 
@@ -10,15 +13,87 @@ const Replay = (props) => {
 
     let routerParams = useParams();
 
+    const [game, setGame] = useState(new Chess());
     const [matchInfo, setMatchInfo] = useState();
+    const [remainingTimes, setRemainingTimes] = useState({white: 0, black: 0});
 
+
+    function movesListOnClickHandle(moveNumber){
+        let whiteRemainingTime, blackRemainingTime;
+        if(moveNumber % 2 === 0){
+            let whiteMove = matchInfo.fenArrayWithRemainingTimes.whiteMoves[moveNumber/2];
+            whiteRemainingTime = whiteMove.remainingTime;
+            blackRemainingTime = (moveNumber === 0 ? remainingTimes.black : matchInfo.fenArrayWithRemainingTimes.blackMoves[(moveNumber/2)-1].remainingTime);
+            game.load(whiteMove.fen);
+        } else {
+            let blackMove = matchInfo.fenArrayWithRemainingTimes.blackMoves[parseInt(moveNumber/2)];
+            blackRemainingTime = blackMove.remainingTime;
+            whiteRemainingTime = matchInfo.fenArrayWithRemainingTimes.whiteMoves[(moveNumber-1)/2].remainingTime;
+            game.load(blackMove.fen);
+        }
+        setRemainingTimes({
+            white: whiteRemainingTime,
+            black: blackRemainingTime
+        });
+
+    }
+
+    function crateFenForMovesWithRemainingTimes(moves, gameLength, gameDate){
+
+        gameLength = parseInt(gameLength)*60000; // Minute to milisecond
+
+        let toReturn = {};
+        toReturn.whiteMoves = [];
+        toReturn.blackMoves = [];
+
+        const chess = new Chess();
+
+        for(let i = 0; i < moves.length; i++){
+
+            let toPush = {};
+            
+            if(chess.turn() === 'w'){
+                if(toReturn.whiteMoves.length === 0){
+                    toPush.remainingTime = gameLength - (moves[i].timestamp - gameDate);
+                }
+                else{
+                    toPush.remainingTime = toReturn.whiteMoves.at(-1).remainingTime - (moves[i].timestamp - moves[i-1].timestamp);
+                }
+            }
+            else {
+                if(toReturn.blackMoves.length === 0){
+                    toPush.remainingTime = gameLength - (moves[i].timestamp - (gameDate + (moves[i-1].timestamp - gameDate)));
+                }else{
+                    toPush.remainingTime = toReturn.blackMoves.at(-1).remainingTime - (moves[i].timestamp - moves[i-1].timestamp);
+                }
+            }
+
+            chess.move(moves[i]);
+            toPush.fen = chess.fen();
+
+            (chess.turn() === "w" ? toReturn.blackMoves.push(toPush) : toReturn.whiteMoves.push(toPush));
+        }
+
+        for(let i = 0; i < toReturn.whiteMoves.length; i++){
+            toReturn.whiteMoves[i].remainingTime = HelperFunctions.milisecondsToChessCountDown(toReturn.whiteMoves[i].remainingTime);
+            if(toReturn.blackMoves[i] !== undefined) toReturn.blackMoves[i].remainingTime = HelperFunctions.milisecondsToChessCountDown(toReturn.blackMoves[i].remainingTime);
+        }
+
+        return toReturn;
+    }
 
     function getMatchInfo(){
 
         let responseFunction = (httpRequest) => {
             if (httpRequest.readyState === XMLHttpRequest.DONE) {
               if (httpRequest.status === 200) {
-                setMatchInfo(JSON.parse(httpRequest.response));
+                let match = JSON.parse(httpRequest.response);
+                match.fenArrayWithRemainingTimes = crateFenForMovesWithRemainingTimes(match.moves, match.length, match.date);
+                let initialRemainingTime = HelperFunctions.milisecondsToChessCountDown(parseInt(match.length)*60000);
+                setRemainingTimes({
+                    white: initialRemainingTime,
+                    black: initialRemainingTime});
+                setMatchInfo(match);
               } else if (httpRequest.status === 404) {
                 setMatchInfo('notFound');
               } else {
@@ -69,7 +144,36 @@ const Replay = (props) => {
     }
     else {
         return(
-            <p>{JSON.stringify(matchInfo)}</p>
+            <div className='replay-container'>
+                <div className='replay-left-div-container'>
+                    <MovesList
+                    moves={matchInfo.moves}
+                    orientation={'v'}
+                    onClickHandle={movesListOnClickHandle}/>
+                    <button>Next</button>
+                    <button>Previous</button>
+                    <button>switch side</button>
+                </div>
+                <div className='replay-middle-div-container'>
+                    <GameBoard
+                    game={game}
+                    setGame={setGame}
+                    myColor='w'
+                    arePiecesDraggable={false}
+                    disableSquareClick={true}
+                    />
+                </div>
+                <div className='replay-right-div-container'>
+                    <div>
+                        <p>{matchInfo.white}</p>
+                        <p>{remainingTimes.white}</p>
+                    </div>
+                    <div>
+                        <p>{matchInfo.black}</p>
+                        <p>{remainingTimes.black}</p>
+                    </div>
+                </div>
+            </div>
         );
     }
 };

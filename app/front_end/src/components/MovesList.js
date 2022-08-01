@@ -4,10 +4,13 @@ import './MovesList.css';
 /**
  * 
  * @param {{moves: Array,
- * orientation: String }} props
+ * orientation: String,
+ * onClickHandle: Function }} props
  * moves is the array of moves to list
  * 
  * orientation is either 'h' (horizontal) or 'v' (vertical)
+ * 
+ * onClickHandle is optional. Give it if you want moves to be clickable.
  */
 
 const MovesList = (props) => {
@@ -21,7 +24,6 @@ const MovesList = (props) => {
   useEffect(() => {
     if (!isMounted.current) {
       // ComponentDidMount
-
       isMounted.current = true;
     } else {
       // ComponentDidUpdate
@@ -53,13 +55,19 @@ const MovesList = (props) => {
   let listBlackMove = [];
 
   for (let i = 0; i < props.moves.length; i++) {
-      let toPush = <p key={"moveNumber"+i} className="moveslist-row-move-item">{props.moves[i].from + props.moves[i].to}</p>;
+    let key = "moveNumber"+i;
+    let toPush = <p
+    key={key}
+    onClick={(props.onClickHandle === undefined ? undefined : () => {props.onClickHandle(i)})}
+    className={("moveslist-row-move-item " + (props.onClickHandle === undefined ? '' : 'moveslist-clickable'))}>
+      {props.moves[i].from + props.moves[i].to}
+    </p>;
     if(i%2==0) listWhiteMove.push(toPush);
     else listBlackMove.push(toPush);
   }
 
   for (let i = 0; i < listWhiteMove.length; i++) {
-    listRowNumber.push(<p key={"rowNumber"+i} className='moveslist-row-number-item'>{i}</p>);
+    listRowNumber.push(<p key={"rowNumber"+i} className='moveslist-row-number-item'>{i+1}</p>);
   }
 
   if(props.orientation=='v'){
