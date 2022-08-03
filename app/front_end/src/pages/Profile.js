@@ -164,18 +164,23 @@ const MessagesBox = (props) => {
         }
     
         function sortUsers(array){
-            array = array.sort(function (a,b) {
-                var x = a.messages[a.messages.length-1];
-                var y = b.messages[b.messages.length-1];
-    
-                if(props.profileInfo.username === x.sender) x.isRead = true;
-                if(props.profileInfo.username === y.sender) y.isRead = true;
-    
-                if(!x.isRead && y.isRead) return -1;
-                if(x.isRead && !y.isRead) return 1;
-                
-                return (x.date > y.date ? -1 : ((x.date < y.date ? 1 : 0)));
-            });
+            if(array.length === 1) {
+                if(props.profileInfo.username === array[0].messages.at(-1).sender) array[0].messages.at(-1).isRead = true;
+            }
+            else{
+                array = array.sort(function (a,b) {
+                    var x = a.messages[a.messages.length-1];
+                    var y = b.messages[b.messages.length-1];
+        
+                    if(props.profileInfo.username === x.sender) x.isRead = true;
+                    if(props.profileInfo.username === y.sender) y.isRead = true;
+        
+                    if(!x.isRead && y.isRead) return -1;
+                    if(x.isRead && !y.isRead) return 1;
+                    
+                    return (x.date > y.date ? -1 : ((x.date < y.date ? 1 : 0)));
+                });
+            }
         }
 
         // Group the senders and their messages
@@ -272,7 +277,10 @@ const MessagesBox = (props) => {
                 let lastMessage = user.messages[user.messages.length-1];
                 let date = HelperFunctions.epochToDate(lastMessage.date);
                 return(
-                <div key={user.sender} onClick={(event) => userDivOnclick(event,user.sender)} className='profile-messagebox-user' style={{backgroundColor: (!lastMessage.isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
+                <div key={user.sender}
+                onClick={(event) => userDivOnclick(event,user.sender)}
+                className='profile-messagebox-user'
+                style={{backgroundColor: (!lastMessage.isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
                     <p>{user.sender}</p>
                     <p>{date}</p>
                 </div>
