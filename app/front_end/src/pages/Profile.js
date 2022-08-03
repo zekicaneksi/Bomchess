@@ -10,9 +10,10 @@ const MatchHistoryBox = (props) => {
     
     const [matchCountToShow, setMatchCountToShow] = useState(10);
     const historyBoxContainerRef = useRef();
+    const [navigate, setNavigate] = useState();
 
     function handleMatchElementDivClick(key){
-        console.log('navigate me to ' + key + ' homie');
+        setNavigate(key);
     }
 
     function handleScroll(){
@@ -40,7 +41,7 @@ const MatchHistoryBox = (props) => {
             handleResize();
         } else {
             // ComponentDidUpdate
-            handleResize();
+            if(navigate===undefined) handleResize();
         }
         
     });
@@ -87,6 +88,9 @@ const MatchHistoryBox = (props) => {
         );
     }
 
+    if(navigate!==undefined){
+        return(<Navigate to={'/replay/'+navigate} />);
+    }
     return(
         <div className="profile-matchhisotrybox-container" ref={historyBoxContainerRef}>
             {matchElements}
