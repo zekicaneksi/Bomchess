@@ -181,12 +181,30 @@ const Replay = (props) => {
                 </div>
                 <div className='replay-right-div-container'>
                     <div>
-                        <p>{matchInfo.white}</p>
-                        <p>{remainingTimes.white}</p>
-                    </div>
-                    <div>
+                    {(orientation === 'w' ? 
+                        <React.Fragment>
                         <p>{matchInfo.black}</p>
                         <p>{remainingTimes.black}</p>
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
+                        <p>{matchInfo.white}</p>
+                        <p>{remainingTimes.white}</p>
+                        </React.Fragment> 
+                        )}
+                    </div>
+                    <div>
+                        {(orientation === 'w' ? 
+                        <React.Fragment>
+                        <p>{matchInfo.white}</p>
+                        <p>{remainingTimes.white}</p>
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
+                        <p>{matchInfo.black}</p>
+                        <p>{remainingTimes.black}</p>
+                        </React.Fragment> 
+                        )}
                     </div>
                 </div>
             </div>
