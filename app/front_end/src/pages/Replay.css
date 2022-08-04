@@ -1,0 +1,63 @@
+.replay-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: gainsboro;
+    width: 80%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    left: 10%;
+}
+
+.replay-left-div-container{
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+.replay-middle-div-container{
+    height: 100%;
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.replay-right-div-container{
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    box-sizing: border-box;
+}
+
+.replay-moveslist-container{
+    width: 100%;
+    height: 80%;
+    box-sizing: border-box;
+    padding-bottom: 5%;
+}
+
+.replay-previous-btn, .replay-next-btn{
+    background-image: url(../../public/back.svg);
+    background-size: 100% 100%;
+    position: relative;
+    width: 3em;
+    height: 3em;
+}
+
+.replay-next-btn{
+    transform: rotate(180deg);
+}
+
+.replay-switch-btn{
+    background-image: url(../../public/restart.svg);
+    background-size: 100% 100%;
+    position: relative;
+    width: 3em;
+    height: 3em;
+}

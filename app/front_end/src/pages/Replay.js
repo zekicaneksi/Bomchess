@@ -20,7 +20,16 @@ const Replay = (props) => {
     const [orientation, setOrientation] = useState('w');
 
     useEffect(() => {
-        if(moveNumber!==undefined){
+        if(moveNumber === undefined){}
+        else if(moveNumber === -1){
+            let remainingTime = HelperFunctions.milisecondsToChessCountDown(matchInfo.length*60000);
+            game.reset();
+            setRemainingTimes({
+                white: remainingTime,
+                black: remainingTime
+            });
+        }
+        else {
             let whiteRemainingTime, blackRemainingTime;
             if(moveNumber % 2 === 0){
                 let whiteMove = matchInfo.fenArrayWithRemainingTimes.whiteMoves[moveNumber/2];
@@ -51,7 +60,7 @@ const Replay = (props) => {
     }
 
     function previousBtnHandle(){
-        if(moveNumber!==0 && moveNumber !== undefined) setMoveNumber(old => old-1);
+        if(moveNumber!==-1 && moveNumber !== undefined) setMoveNumber(old => old-1);
     }
 
     function crateFenForMovesWithRemainingTimes(moves, gameLength, gameDate){
@@ -162,13 +171,15 @@ const Replay = (props) => {
         return(
             <div className='replay-container'>
                 <div className='replay-left-div-container'>
-                    <MovesList
-                    moves={matchInfo.moves}
-                    orientation={'v'}
-                    onClickHandle={movesListOnClickHandle}/>
-                    <button onClick={previousBtnHandle}>Previous</button>
-                    <button onClick={nextBtnHandle}>Next</button>
-                    <button onClick={() => {setOrientation(old => (old === 'w' ? 'b' : 'w'))}}>switch side</button>
+                    <div className='replay-moveslist-container'>
+                        <MovesList
+                        moves={matchInfo.moves}
+                        orientation={'v'}
+                        onClickHandle={movesListOnClickHandle}/>
+                    </div>
+                    <button onClick={previousBtnHandle} className="replay-previous-btn"></button>
+                    <button onClick={nextBtnHandle} className="replay-next-btn"></button>
+                    <button onClick={() => {setOrientation(old => (old === 'w' ? 'b' : 'w'))}} className="replay-switch-btn"></button>
                 </div>
                 <div className='replay-middle-div-container'>
                     <GameBoard
