@@ -201,7 +201,7 @@ const GameBoard = (props) => {
     }
 
     useEffect(() => {
-        inCheckBackground();
+      inCheckBackground();
     }, [props.game]);
 
     useEffect(() => {

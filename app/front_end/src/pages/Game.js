@@ -225,6 +225,7 @@ const Game = (props) => {
   function showGameResultDiv(dataJson){
 
     let matchResult;
+    let endedBy = (dataJson.endedBy === 'drawOffer' ? 'draw' : dataJson.endedBy);
 
     switch(dataJson.winner) {
       case '-':
@@ -238,7 +239,7 @@ const Game = (props) => {
       <div className='game-result-div'>
 
         <h2>{matchResult}</h2>
-        <p>{'Ended By: ' + dataJson.endedBy}</p>
+        <p>{'Ended By: ' + endedBy}</p>
         
         <p>To see the replay of this game, please visit your profile.</p>
 

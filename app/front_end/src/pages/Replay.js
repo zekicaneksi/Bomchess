@@ -23,7 +23,11 @@ const Replay = (props) => {
         if(moveNumber === undefined){}
         else if(moveNumber === -1){
             let remainingTime = HelperFunctions.milisecondsToChessCountDown(matchInfo.length*60000);
-            game.reset();
+            setGame((old) => {
+                let toReturn = {...old};
+                toReturn.reset();
+                return toReturn;
+            });
             setRemainingTimes({
                 white: remainingTime,
                 black: remainingTime
@@ -35,12 +39,20 @@ const Replay = (props) => {
                 let whiteMove = matchInfo.fenArrayWithRemainingTimes.whiteMoves[moveNumber/2];
                 whiteRemainingTime = whiteMove.remainingTime;
                 blackRemainingTime = (moveNumber === 0 ? remainingTimes.black : matchInfo.fenArrayWithRemainingTimes.blackMoves[(moveNumber/2)-1].remainingTime);
-                game.load(whiteMove.fen);
+                setGame((old) => {
+                    let toReturn = {...old};
+                    toReturn.load(whiteMove.fen);
+                    return toReturn;
+                });
             } else {
                 let blackMove = matchInfo.fenArrayWithRemainingTimes.blackMoves[parseInt(moveNumber/2)];
                 blackRemainingTime = blackMove.remainingTime;
                 whiteRemainingTime = matchInfo.fenArrayWithRemainingTimes.whiteMoves[(moveNumber-1)/2].remainingTime;
-                game.load(blackMove.fen);
+                setGame((old) => {
+                    let toReturn = {...old};
+                    toReturn.load(blackMove.fen);
+                    return toReturn;
+                });
             }
             setRemainingTimes({
                 white: whiteRemainingTime,
@@ -55,11 +67,13 @@ const Replay = (props) => {
     }
 
     function nextBtnHandle(){
+        if(matchInfo.moves.length === 0) return;
         if(moveNumber === undefined) setMoveNumber(0)
         else if(moveNumber!==matchInfo.moves.length-1) setMoveNumber(old => old+1);
     }
 
     function previousBtnHandle(){
+        if(matchInfo.moves.length === 0) return;
         if(moveNumber!==-1 && moveNumber !== undefined) setMoveNumber(old => old-1);
     }
 
@@ -212,7 +226,11 @@ const Replay = (props) => {
 
                     <div className="replay-messages">
 
-                        <p>some kinda message</p>
+                        {((matchInfo.moves.length-1 === moveNumber) || (matchInfo.moves.length === 0)) && 
+                        <React.Fragment>
+                        <p>Ended by: {(matchInfo.endedBy === 'drawOffer' ? 'draw' : matchInfo.endedBy)}</p>
+                        <p>Winner: {(matchInfo.winner === 'b' ? 'black' : 'white')}</p>
+                        </React.Fragment>}
 
                     </div>
 
