@@ -33,6 +33,7 @@
     flex-direction: column;
     padding: 1%;
     box-sizing: border-box;
+    justify-content: space-around;
 }
 
 .replay-moveslist-container{
@@ -42,11 +43,20 @@
     padding-bottom: 5%;
 }
 
+.replay-moveslist-btn-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.replay-moveslist-btn-container button{
+    width: 45%;
+}
+
 .replay-previous-btn, .replay-next-btn{
     background-image: url(../../public/back.svg);
     background-size: 100% 100%;
     position: relative;
-    width: 3em;
     height: 3em;
 }
 
@@ -58,6 +68,58 @@
     background-image: url(../../public/restart.svg);
     background-size: 100% 100%;
     position: relative;
-    width: 3em;
-    height: 3em;
+    width: 4em;
+    height: 4em;
+    margin-top: 10%;
+    left:50%;
+    transform: translateX(-50%);
+}
+
+.replay-right-div-container p{
+    font-size: 3em;
+    margin:0;
+    padding:0;
+}
+
+.replay-user-timer-top{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 30%;
+    box-sizing: border-box;
+}
+
+.replay-user-timer-top p{
+    padding-top: 10%;
+}
+
+.replay-user-timer-bottom{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 30%;
+    box-sizing: border-box;
+}
+
+.replay-user-timer-bottom p{
+    padding-bottom: 10%;
+}
+
+.replay-messages{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 20%;
+}
+
+.replay-messages p{
+    font-size: 2em;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+    position: relative;
 }

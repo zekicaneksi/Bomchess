@@ -177,8 +177,10 @@ const Replay = (props) => {
                         orientation={'v'}
                         onClickHandle={movesListOnClickHandle}/>
                     </div>
-                    <button onClick={previousBtnHandle} className="replay-previous-btn"></button>
-                    <button onClick={nextBtnHandle} className="replay-next-btn"></button>
+                    <div className='replay-moveslist-btn-container'>
+                        <button onClick={previousBtnHandle} className="replay-previous-btn"></button>
+                        <button onClick={nextBtnHandle} className="replay-next-btn"></button>
+                    </div>
                     <button onClick={() => {setOrientation(old => (old === 'w' ? 'b' : 'w'))}} className="replay-switch-btn"></button>
                 </div>
                 <div className='replay-middle-div-container'>
@@ -191,32 +193,45 @@ const Replay = (props) => {
                     />
                 </div>
                 <div className='replay-right-div-container'>
-                    <div>
-                    {(orientation === 'w' ? 
-                        <React.Fragment>
-                        <p>{matchInfo.black}</p>
-                        <p>{remainingTimes.black}</p>
-                        </React.Fragment>
-                        :
-                        <React.Fragment>
-                        <p>{matchInfo.white}</p>
-                        <p>{remainingTimes.white}</p>
-                        </React.Fragment> 
-                        )}
-                    </div>
-                    <div>
+
+                    <div className="replay-user-timer-top">
+                
                         {(orientation === 'w' ? 
-                        <React.Fragment>
-                        <p>{matchInfo.white}</p>
-                        <p>{remainingTimes.white}</p>
-                        </React.Fragment>
-                        :
-                        <React.Fragment>
-                        <p>{matchInfo.black}</p>
-                        <p>{remainingTimes.black}</p>
-                        </React.Fragment> 
-                        )}
+                            <React.Fragment>
+                            <p>{matchInfo.black}</p>
+                            <p>{remainingTimes.black}</p>
+                            </React.Fragment>
+                            :
+                            <React.Fragment>
+                            <p>{matchInfo.white}</p>
+                            <p>{remainingTimes.white}</p>
+                            </React.Fragment> 
+                        )}  
+
                     </div>
+
+                    <div className="replay-messages">
+
+                        <p>some kinda message</p>
+
+                    </div>
+
+                    <div className='replay-user-timer-bottom'>
+
+                        {(orientation === 'w' ? 
+                            <React.Fragment>
+                            <p>{matchInfo.white}</p>
+                            <p>{remainingTimes.white}</p>
+                            </React.Fragment>
+                            :
+                            <React.Fragment>
+                            <p>{matchInfo.black}</p>
+                            <p>{remainingTimes.black}</p>
+                            </React.Fragment> 
+                        )}
+
+                    </div>
+
                 </div>
             </div>
         );
