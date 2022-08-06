@@ -121,12 +121,41 @@
     font-size: 1.8em;
 }
 
+@media only screen and (max-width: 1537px) {
+    .replay-left-div-container div button{
+        height: 3em;
+    }
+    .replay-left-div-container > button{
+        height: 3em;
+        width: 3em;
+    }
+
+    .replay-right-div-container p{
+        font-size: 2.5em;
+    }
+
+    .replay-messages p{
+        font-size: 1.3em;
+    }
+
+}
+
+@media only screen and (max-width: 1360px) {
+    .replay-messages p{
+        font-size: 1.1em;
+    }
+}
+
 @media only screen and (max-width: 1200px) {
     .replay-left-div-container{
         order:0;
     }
     .replay-middle-div-container{
         order:1;
+        width: 70%;
+    }
+    .replay-left-div-container{
+        width: 30%;
     }
     .replay-right-div-container{
         order:2;
@@ -148,7 +177,44 @@
     }
 }
 
+@media only screen and (max-width: 1000px) {
+    .replay-left-div-container div button{
+        height: 2.5em;
+    }
+    .replay-left-div-container > button{
+        height: 3em;
+        width: 3em;
+    }
+    .replay-right-div-container{
+        height: 30%;
+    }
+    .replay-right-div-container p{
+        font-size: 2em;
+    }
+
+    .replay-messages p{
+        font-size: 1.2em;
+    }
+}
+
 @media only screen and (max-width: 800px) {
+    .replay-left-div-container div button{
+        height: 2.5em;
+    }
+    .replay-left-div-container > button{
+        height: 3em;
+        width: 3em;
+    }
+    .replay-right-div-container{
+        height: 20%;
+    }
+    .replay-right-div-container p{
+        font-size: 1.2em;
+    }
+    .replay-messages p{
+        font-size: 0.8em;
+    }
+
     .replay-container{
         width: 100%;
         left: 0;
@@ -160,7 +226,7 @@
     .replay-left-div-container{
         width: 100%;
         order:1;
-        height: 40%;
+        height: 30%;
         background-color: gainsboro;
     }
     .replay-moveslist-container{
@@ -171,5 +237,27 @@
     }
     .replay-switch-btn{
         margin-top:2%;
+    }
+}
+
+@media only screen and (max-width: 461px) {
+    .replay-middle-div-container{
+        height: 80%;
+    }
+    .replay-left-div-container div button{
+        height: 2em;
+    }
+    .replay-left-div-container > button{
+        height: 2em;
+        width: 2em;
+    }
+    .replay-right-div-container{
+        height: 15%;
+    }
+    .replay-right-div-container p{
+        font-size: 1em;
+    }
+    .replay-messages p{
+        font-size: 0.7em;
     }
 }
