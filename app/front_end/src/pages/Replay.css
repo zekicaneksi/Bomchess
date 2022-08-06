@@ -120,3 +120,56 @@
 .replay-messages p{
     font-size: 1.8em;
 }
+
+@media only screen and (max-width: 1200px) {
+    .replay-left-div-container{
+        order:0;
+    }
+    .replay-middle-div-container{
+        order:1;
+    }
+    .replay-right-div-container{
+        order:2;
+        height: 40%;
+        width: 100%;
+        flex-direction: row;
+        text-align: center;
+        background-color: gainsboro;
+        align-items: center;
+    }
+    .replay-user-timer-top p:first-child{
+        order:1;
+    }
+    .replay-user-timer-top p{
+        padding:0;
+    }
+    .replay-user-timer-bottom p{
+        padding: 0;
+    }
+}
+
+@media only screen and (max-width: 800px) {
+    .replay-container{
+        width: 100%;
+        left: 0;
+    }
+    .replay-middle-div-container{
+        width: 100%;
+        order: 0;
+    }
+    .replay-left-div-container{
+        width: 100%;
+        order:1;
+        height: 40%;
+        background-color: gainsboro;
+    }
+    .replay-moveslist-container{
+        padding: 0;
+    }
+    .replay-moveslist-btn-container{
+        margin-top:2%;
+    }
+    .replay-switch-btn{
+        margin-top:2%;
+    }
+}

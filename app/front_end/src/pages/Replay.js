@@ -18,6 +18,7 @@ const Replay = (props) => {
     const [remainingTimes, setRemainingTimes] = useState({white: 0, black: 0});
     const [moveNumber, setMoveNumber] = useState();
     const [orientation, setOrientation] = useState('w');
+    const [movesListOrientation, setMovesListOrientation] = useState('v');
 
     useEffect(() => {
         if(moveNumber === undefined){}
@@ -121,6 +122,14 @@ const Replay = (props) => {
         return toReturn;
     }
 
+    function changeLayoutOfMovesList(){
+        if(window.innerWidth <= 800){
+            setMovesListOrientation('h');
+        } else{
+            setMovesListOrientation('v');
+        }
+    }
+
     function getMatchInfo(){
 
         let responseFunction = (httpRequest) => {
@@ -151,6 +160,9 @@ const Replay = (props) => {
             isInitialMount.current = false;
 
             getMatchInfo();
+            changeLayoutOfMovesList();
+
+            window.addEventListener('resize', changeLayoutOfMovesList);
 
         } else {
             // ComponentDidUpdate
@@ -162,7 +174,7 @@ const Replay = (props) => {
     useEffect(() => {
         // --- ComponentWillUnmount
         return () => {
-          
+            window.removeEventListener('resize', changeLayoutOfMovesList);
         }
     },[]);
 
@@ -188,7 +200,7 @@ const Replay = (props) => {
                     <div className='replay-moveslist-container'>
                         <MovesList
                         moves={matchInfo.moves}
-                        orientation={'v'}
+                        orientation={movesListOrientation}
                         onClickHandle={movesListOnClickHandle}/>
                     </div>
                     <div className='replay-moveslist-btn-container'>
@@ -212,13 +224,13 @@ const Replay = (props) => {
                 
                         {(orientation === 'w' ? 
                             <React.Fragment>
-                            <p>{matchInfo.black}</p>
                             <p>{remainingTimes.black}</p>
+                            <p>{matchInfo.black}</p>
                             </React.Fragment>
                             :
                             <React.Fragment>
-                            <p>{matchInfo.white}</p>
                             <p>{remainingTimes.white}</p>
+                            <p>{matchInfo.white}</p>
                             </React.Fragment> 
                         )}  
 
