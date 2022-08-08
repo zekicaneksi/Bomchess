@@ -1,4 +1,4 @@
-import {React, useEffect, useState} from 'react'
+import {React, useEffect, useState, useRef} from 'react'
 import './Layout.css';
 import {Outlet, Navigate, useLocation} from "react-router-dom";
 import * as HelperFunctions from './../components/HelperFunctions.js';
@@ -32,9 +32,9 @@ const Navbar = (props) => {
       <div id="navbar">
         <div><a onClick={homepageBtnHandle}><p>Bomchess</p></a></div>
         <div className="dropdown">
-          <a><p>{props.username}</p></a>
+          <a><p>{props.username}&nbsp;{props.unreadMessage && <span className='unreadBadge'>!</span>}</p></a>
           <div className="dropdown-content">
-            <a onClick={profileBtnHandle}>Profile</a>
+            <a onClick={profileBtnHandle}>Profile&nbsp;{props.unreadMessage && <span className='unreadBadge'>!</span>}</a>
             <a onClick={props.logoutBtnHandle}>Logout</a>
           </div>
         </div>
@@ -48,9 +48,33 @@ const Layout = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState("");
   const [userInfo, setUserInfo] = useState({});
+  const [unreadMessage, setUnreadMessage] = useState(false);
 
   let location = useLocation();
 
+  const layoutSocket = useRef();
+
+
+  function setUpLayoutSocket(){
+    layoutSocket.current = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/layout');
+    
+    // Listen for messages
+    layoutSocket.current.addEventListener('message', function (event) {
+
+      let dataJson = JSON.parse(event.data);
+
+      if(dataJson.type == 'connected'){
+        if(dataJson.unreadMessage === 'yes') setUnreadMessage(true);
+      } else if (dataJson.type === 'newMessage'){
+        setUnreadMessage(true);
+      }
+
+    });
+
+    layoutSocket.current.addEventListener('error', function (event) {
+      console.log("can't connect");
+    });
+  }
   
   function checkSession(){
     let responseFunction = (httpRequest) => {
@@ -61,6 +85,7 @@ const Layout = () => {
           
           setUserInfo(responseJson);
           setIsLoggedIn("true");
+          setUpLayoutSocket();
 
         } else if(httpRequest.status === 401) {
           setIsLoggedIn("false");
@@ -96,6 +121,17 @@ const Layout = () => {
     checkSession();
   }, [location]);
 
+  useEffect(() => {
+    // --- ComponentWillUnmount
+    return () => {
+      try{
+        layoutSocket.current?.close();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  },[]);
+
   // Render
 
   if(isLoggedIn == "false")
@@ -112,9 +148,13 @@ const Layout = () => {
     } else{
       return (
         <div className="fill">
-          <Navbar username={userInfo.username} logoutBtnHandle={logoutBtnHandle}/>
+          <Navbar
+          username={userInfo.username}
+          logoutBtnHandle={logoutBtnHandle}
+          unreadMessage={unreadMessage}
+          setUnreadMessage={setUnreadMessage}/>
           <div id='content-div'>
-            <Outlet context={userInfo}/>
+            <Outlet context={{userInfo: userInfo, setUnreadMessage:setUnreadMessage, unreadMessage:unreadMessage}}/>
           </div>
         </div>
       );

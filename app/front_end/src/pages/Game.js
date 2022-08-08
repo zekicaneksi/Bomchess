@@ -10,7 +10,7 @@ import './Game.css';
 const Game = (props) => {
 
   const isInitialMount = useRef(true);
-  const userInfo = useOutletContext();
+  const userInfo = useOutletContext().userInfo;
 
   const [game, setGame] = useState(new Chess());
   const [moves, setMoves] = useState([]);

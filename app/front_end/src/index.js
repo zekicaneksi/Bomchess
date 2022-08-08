@@ -9,7 +9,7 @@ import Profile from './pages/Profile'
 import Replay from './pages/Replay'
 import Layout from './components/Layout'
 import reportWebVitals from './reportWebVitals';
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useOutletContext } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 import {
@@ -20,8 +20,9 @@ import {
 
 const NavigationToHome = (props) => {
   let location = useLocation();
+  const context = useOutletContext();
   if(location.pathname === props.route) return(<Navigate to='/' />);
-  else return(<Outlet />);
+  else return(<Outlet context={context}/>);
 };
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

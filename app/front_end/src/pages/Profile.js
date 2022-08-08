@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Navigate, useParams, useLocation } from "react-router-dom";
+import { Navigate, useParams, useLocation, useOutletContext } from "react-router-dom";
 import * as HelperFunctions from '../components/HelperFunctions';
 import './Profile.css';
 
@@ -112,6 +112,10 @@ const MessagesBox = (props) => {
     const initialUnsortedMessages = useRef(props.profileInfo.messages);
     const sendersAndMessages = useRef([]); // Sorted array of props.profileInfo.messages
 
+    const outletContext = useOutletContext();
+    const setUnreadMessage = outletContext.setUnreadMessage;
+    const unreadMessage = outletContext.unreadMessage;
+
     function reRenderComponent(){
         setForceRender((old) => {
             if(old === 100) return 0;
@@ -120,36 +124,50 @@ const MessagesBox = (props) => {
     }
 
     function userDivOnclick(event, key){
+        
         setMessageBoxNav(key);
-        let index = sendersAndMessages.current.findIndex(item => item.sender === key);
-        let msg = sendersAndMessages.current[index].messages.at(-1);
+        let index = sendersAndMessages.current.findIndex(item => item.sender === key);  
 
-        // Let the server know that i read the message
-        if(msg.isRead === false && msg.sender !== props.profileInfo.username){
+        // Let the server know that i read the unread messages
 
-            let toSend = {};
-            toSend.messageIDs = [];
+        let toSend = {};
+        toSend.messageIDs = [];
 
-            // Put the read messages into toSend.messageIDs
-            for(let i=sendersAndMessages.current[index].messages.length-1; i >= 0; i--){
-                let holdMsg = sendersAndMessages.current[index].messages[i];
-                if(holdMsg.isRead === true) break;
-                toSend.messageIDs.push(holdMsg._id);
-            }
-
-            // Update the initialUnsortedMessages
-            for(let i=0; i < initialUnsortedMessages.current.length; i++){
-                for(let msgId in toSend.messageIDs){
-                    if(initialUnsortedMessages.current[i]._id === toSend.messageIDs[msgId]) {
-                        initialUnsortedMessages.current[i].isRead = true;
-                    }
-                }
-            }
-    
-            HelperFunctions.ajax('/message/read','POST',() => {},toSend);
+        // Put the read messages into toSend.messageIDs
+        for(let i=sendersAndMessages.current[index].messages.length-1; i >= 0; i--){
+            let holdMsg = sendersAndMessages.current[index].messages[i];
+            if (holdMsg.isRead === true && holdMsg.sender !== props.profileInfo.username) break;
+            else toSend.messageIDs.push(holdMsg._id);
         }
 
+        // Update the initialUnsortedMessages
+        for(let i=0; i < initialUnsortedMessages.current.length; i++){
+            for(let msgId in toSend.messageIDs){
+                if(initialUnsortedMessages.current[i]._id === toSend.messageIDs[msgId]) {
+                    initialUnsortedMessages.current[i].isRead = true;
+                }
+            }
+        }
+
+        // Remove the notification if there are no more unread messages
+        let removeNotification = true;
+        for(let i = 0; (i < sendersAndMessages.current.length && removeNotification); i++){
+            if(i === index) continue;
+            for(let j = sendersAndMessages.current[i].messages.length -1 ; j >= 0; j--){
+                let holdMsg = sendersAndMessages.current[i].messages[j];
+                if(holdMsg.sender !== props.profileInfo.username && holdMsg.isRead === false) {
+                    removeNotification = false;
+                    break;
+                }
+            }
+        }
+        if(removeNotification) setUnreadMessage();
+
+        HelperFunctions.ajax('/message/read','POST',() => {},toSend);
+
     }
+
+    useEffect(() => {props.getAndSetProfile();},[unreadMessage]);
 
     function sortMessages(){
 
@@ -275,12 +293,17 @@ const MessagesBox = (props) => {
     
             const messageboxUsers= sendersAndMessages.current.map((user, index) => {
                 let lastMessage = user.messages[user.messages.length-1];
+                let isRead = true;
+                for(let i=user.messages.length-1; i>=0; i--){
+                    if(user.messages[i].sender === user.sender && user.messages[i].isRead === false) isRead = false; 
+                }
+                
                 let date = HelperFunctions.epochToDate(lastMessage.date);
                 return(
                 <div key={user.sender}
                 onClick={(event) => userDivOnclick(event,user.sender)}
                 className='profile-messagebox-user'
-                style={{backgroundColor: (!lastMessage.isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
+                style={{backgroundColor: (!isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
                     <p>{user.sender}</p>
                     <p>{date}</p>
                 </div>
@@ -488,7 +511,7 @@ const Profile = () => {
                 </div>
                 <div className='profile-bottom-container'>
                     <div className='profile-messages-container'>
-                        <MessagesBox profileInfo={profileInfo}/>
+                        <MessagesBox profileInfo={profileInfo} getAndSetProfile={getAndSetProfile}/>
                     </div>
                     <div className='profile-match-history-container'>
                         <p>Match History</p>

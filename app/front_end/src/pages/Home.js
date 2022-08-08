@@ -16,7 +16,7 @@ const Home = (props) => {
   const chatSocket = useRef();
   const queueSocket = useRef();
 
-  const userInfo = useOutletContext();
+  const userInfo = useOutletContext().userInfo;
 
   function handleSendMessage(msg){
     chatSocket.current.send(msg);

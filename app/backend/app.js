@@ -14,6 +14,7 @@ import {auth} from './middleware/auth.js';
 import mongoose from "mongoose";
 
 import {Games} from './websocketservers/Share.js';
+import {newMessage} from './websocketservers/WSSLayout.js';
 import { createRequire } from "node:module";
 
 const config = dotenv.config().parsed;
@@ -259,6 +260,8 @@ app.post("/api/message", auth, async (req, res) => {
     date: new Date().getTime(),
     isRead: false
   });
+
+  newMessage(receiver.username);
 
   return res.status(200).send(JSON.stringify(message));
 

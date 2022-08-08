@@ -6,6 +6,7 @@ import {User} from "./model/user.js";
 
 import {WSSLobby} from './websocketservers/WSSLobby.js';
 import {WSSQueue} from './websocketservers/WSSQueue.js';
+import {WSSLayout} from './websocketservers/WSSLayout.js';
 
 import {Games} from './websocketservers/Share.js'; // Array of WSSGame's.
 
@@ -85,6 +86,21 @@ const upgrade = async (request, socket, head) => {
           });
           return;
         }
+      });
+    } else if (pathname === '/api/layout'){
+      // Check if user already has a WebSocket connection
+      WSSLayout.clients.forEach( (ws) => {
+        if(ws.sessionId == request.session.id){
+          ws.terminate();
+          return;
+        }
+      });
+
+      // Connect the user
+      WSSLayout.handleUpgrade(request, socket, head, function done(ws) {
+        ws.sessionId = request.session.id;
+        ws.user = user;
+        WSSLayout.emit('connection', ws, request);
       });
     } else {
       socket.destroy();

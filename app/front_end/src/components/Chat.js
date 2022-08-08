@@ -55,7 +55,7 @@ const Chat = (props) => {
     useEffect(() => {
         // --- ComponentWillUnmount
         return () => {
-            inputRef.current.removeEventListener('keypress', keyPress);
+            inputRef.current?.removeEventListener('keypress', keyPress);
         }
     },[]);
 
