@@ -10,11 +10,26 @@ const Chat = (props) => {
 
     const enableAutoScroll = useRef(true);
     const holdScrollValue = useRef(0);
+    
+    function handleSendMessage(){
+        props.handleSendMessage(inputRef.current.value);
+        inputRef.current.value='';
+    }
+
+    function keyPress(event){
+        if (event.key === "Enter") {
+            event.preventDefault();
+            handleSendMessage();
+        }
+    }
 
     useEffect(() => {
     if (!isMounted.current) {
         // ComponentDidMount
         isMounted.current = true;
+
+        inputRef.current.addEventListener("keypress", keyPress);
+
         if(props.banDate > new Date().getTime()){
             inputRef.current.disabled=true;
             inputRef.current.placeholder="You are banned until " + HelperFunctions.epochToDate(props.banDate);
@@ -37,6 +52,13 @@ const Chat = (props) => {
     }
     });
 
+    useEffect(() => {
+        // --- ComponentWillUnmount
+        return () => {
+            inputRef.current.removeEventListener('keypress', keyPress);
+        }
+    },[]);
+
     const MessageItems = props.Messages.map((message,index) =>
     <p key={index}>{message}</p>
     );
@@ -50,7 +72,7 @@ const Chat = (props) => {
 
             <div className='chat-input'>
                 <input ref={inputRef}></input>
-                {!(props.banDate > new Date().getTime()) && <button onClick={() => {props.handleSendMessage(inputRef.current.value); inputRef.current.value='';}}>Send</button>}
+                {!(props.banDate > new Date().getTime()) && <button onClick={handleSendMessage}>Send</button>}
             </div>
 
         </div>
