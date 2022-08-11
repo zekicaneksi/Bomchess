@@ -22,10 +22,6 @@ const Home = (props) => {
     chatSocket.current.send(msg);
   }
 
-  function duelOnChange(event){
-    console.log(event.target.value);
-  }
-
   function setUpChatSocket(){
     chatSocket.current = new WebSocket('ws://localhost:'+ HelperFunctions.apiPort + '/api/lobby');
     
@@ -161,39 +157,6 @@ const Home = (props) => {
             </div>
           )
           }
-          
-  
-          <div id="home-left-bottom">
-
-            
-          {userInfo.bans.playing > new Date().getTime() ? null : 
-            <div id="home-duel-container">
-              <h2>Duel</h2>
-              <div id="home-duel-top" onChange={duelOnChange}>
-                
-                <label>
-                  <input type="radio" value="5" name="length"></input>
-                  5 Min
-                </label>
-                
-                <label>
-                  <input type="radio" value="10" name="length"></input>
-                  10 Min
-                </label>
-
-                <label>
-                  <input type="radio" value="15" name="length"></input>
-                  15 Min
-                </label>
-                
-              </div>
-              <div id="home-duel-bottom">
-                <input placeholder='Username'></input>
-                <button>Duel</button>
-              </div>
-            </div>
-          }
-          </div>
 
         </div>
 

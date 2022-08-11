@@ -40,20 +40,21 @@
     display:flex;
     flex-direction: column;
     width: 100%;
-    height: 35%;
+    height: 75%;
 }
 
 .home-quickplay{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    align-items: center;
     width: 100%;
     height: 70%;
 }
 
 .home-quickplay button{
-    height: 100%;
-    width: 25%;
+    height: 75%;
+    width: 30%;
     font-size: 1em;
 }
 
@@ -79,65 +80,6 @@
     position: relative;
     transform: translate(-50%,-50%);
     top: 50%;
-    font-size: 1em;
-}
-
-#home-left-bottom{
-    display:flex;
-    flex-direction: row;
-    justify-content: center;
-    position: relative;
-    width: 100%;
-    height: 40%;
-}
-
-#home-duel-container{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-#home-duel-container h2{
-    text-align: center;
-    margin: 0;
-    font-size:1.7em;
-}
-
-#home-duel-top{
-    display:flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-}
-
-#home-duel-top label{
-    font-size: 1.2em;
-}
-
-#home-duel-top button{
-    width: 5em;
-    height: 5em;
-}
-
-#home-duel-bottom{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-#home-duel-bottom input{
-    position: relative;
-    top:50%;
-    transform: translateY(-50%);
-    padding:0;
-    min-width: 0;
-    width: 50%;
-    font-size: 1em;
-}
-
-#home-duel-bottom button{
     font-size: 1em;
 }
 
