@@ -35,9 +35,9 @@ export function milisecondsToChessCountDown(miliseconds) {
 
 export function epochToDate(epoch){
     let date = new Date(epoch);
-    let toReturn = date.getUTCDay() + "/" + (date.getUTCMonth()+1) + "/" + date.getUTCFullYear() + " ";
-    let hour= date.getUTCHours();
-    let minute = date.getUTCMinutes();
+    let toReturn = date.getDay() + "/" + (date.getMonth()+1) + "/" + date.getFullYear() + " ";
+    let hour= date.getHours();
+    let minute = date.getMinutes();
     if(hour < 10) hour = '0' + hour;
     if(minute < 10) minute = '0' + minute;
     toReturn += hour + ':' + minute;
