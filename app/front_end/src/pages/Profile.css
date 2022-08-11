@@ -176,6 +176,14 @@
     margin:2%;
 }
 
+.profile-mymessages-content-container a{
+    font-weight: bold;
+}
+
+.profile-mymessages-content-container a:link, .profile-mymessages-content-container a:visited{
+    color: black;
+}
+
 .profile-mymessages-content-container > p {
     text-align: center;
 }
@@ -190,6 +198,11 @@
     border-width: 0px;
     border-bottom-width: 2px;
     border-color: rgb(95, 89, 89);
+}
+
+.profile-messagebox-user > a{
+    margin-block-start: 1em;
+    margin-block-end: 1em;
 }
 
 .profile-messagebox-user:hover{
@@ -207,7 +220,7 @@
     background-color: rgb(120 115 115);
 }
 
-.profile-messagebox-message-container p{
+.profile-messagebox-message-container p, .profile-messagebox-message-container a{
     margin: 0.2em
 }
 
@@ -318,7 +331,11 @@
     padding-right: 4%;
 }
 
-.profile-matchhistory-middle-div p:first-of-type{
+.profile-matchhistory-middle-div a{
+    color:black;
+}
+
+.profile-matchhistory-middle-div a:first-of-type{
     color: white;
 }
 

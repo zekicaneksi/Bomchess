@@ -194,6 +194,10 @@ const Replay = (props) => {
         return(<Navigate to='/' />);
     }
     else {
+
+        let whiteUsername = <a href={"/profile/"+matchInfo.white} target={'_blank'}>{matchInfo.white}</a>
+        let blackUsername = <a href={"/profile/"+matchInfo.black} target={'_blank'}>{matchInfo.black}</a>    
+
         return(
             <div className='replay-container'>
                 <div className='replay-left-div-container'>
@@ -225,12 +229,12 @@ const Replay = (props) => {
                         {(orientation === 'w' ? 
                             <React.Fragment>
                             <p>{remainingTimes.black}</p>
-                            <p>{matchInfo.black}</p>
+                            {blackUsername}
                             </React.Fragment>
                             :
                             <React.Fragment>
                             <p>{remainingTimes.white}</p>
-                            <p>{matchInfo.white}</p>
+                            {whiteUsername}
                             </React.Fragment> 
                         )}  
 
@@ -250,12 +254,12 @@ const Replay = (props) => {
 
                         {(orientation === 'w' ? 
                             <React.Fragment>
-                            <p>{matchInfo.white}</p>
+                            {whiteUsername}
                             <p>{remainingTimes.white}</p>
                             </React.Fragment>
                             :
                             <React.Fragment>
-                            <p>{matchInfo.black}</p>
+                            {blackUsername}
                             <p>{remainingTimes.black}</p>
                             </React.Fragment> 
                         )}

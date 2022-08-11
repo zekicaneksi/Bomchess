@@ -39,6 +39,15 @@
     box-sizing: border-box;
 }
 
+.game-right-column a{
+    display:inline-block;
+    font-weight: bold;
+}
+
+.game-right-column a:link, .game-right-column a:visited{
+    color: black;
+}
+
 .game-left-column .moves-div{
     width: 100%;
     height: 50%;

@@ -122,7 +122,7 @@ const Home = (props) => {
 
 
   const LobbyUserListItems = lobbyUser.map((username,index) =>
-    <p key={index}>{username}</p>
+    <a key={index} href={"/profile/"+username} target={'_blank'}>{username}</a>
   );
 
   if(navigate == 'home'){

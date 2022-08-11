@@ -175,6 +175,16 @@
     padding-left: 10%;
 }
 
+.home-right-middle a{
+    font-weight: bold;
+    display: block;
+    margin-top:0.3em;
+}
+
+.home-right-middle a:link, .home-right-middle a:visited{
+    color: black;
+}
+
 .home-right-bottom{
     margin-top: 5%;
     margin-bottom: 5%;

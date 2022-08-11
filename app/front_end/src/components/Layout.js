@@ -141,7 +141,7 @@ const Layout = () => {
   else if (isLoggedIn == "true")
   {
 
-    if(userInfo.hasGame == "yes" && location.pathname != '/game'){
+    if(userInfo.hasGame == "yes" && location.pathname == '/'){
       return (<Navigate to='/game' />);
     } else if (userInfo.hasGame == "no" && location.pathname == '/game'){
       return (<Navigate to='/' />);

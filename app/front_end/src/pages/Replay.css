@@ -75,10 +75,18 @@
     transform: translateX(-50%);
 }
 
-.replay-right-div-container p{
+.replay-right-div-container p, .replay-right-div-container a{
     font-size: 3em;
     margin:0;
     padding:0;
+}
+
+.replay-right-div-container a{
+    font-weight: bold;
+}
+
+.replay-right-div-container a:link, .replay-right-div-container a:visited{
+    color: black;
 }
 
 .replay-user-timer-top{
@@ -91,7 +99,7 @@
     box-sizing: border-box;
 }
 
-.replay-user-timer-top p{
+.replay-user-timer-top p, .replay-user-timer-top a{
     padding-top: 10%;
 }
 
@@ -130,7 +138,7 @@
         width: 3em;
     }
 
-    .replay-right-div-container p{
+    .replay-right-div-container p, .replay-right-div-container a{
         font-size: 2.5em;
     }
 
@@ -169,7 +177,7 @@
     .replay-user-timer-top p:first-child{
         order:1;
     }
-    .replay-user-timer-top p{
+    .replay-user-timer-top p, .replay-user-timer-top a{
         padding:0;
     }
     .replay-user-timer-bottom p{
@@ -188,7 +196,7 @@
     .replay-right-div-container{
         height: 30%;
     }
-    .replay-right-div-container p{
+    .replay-right-div-container p, .replay-right-div-container a{
         font-size: 2em;
     }
 
@@ -208,7 +216,7 @@
     .replay-right-div-container{
         height: 20%;
     }
-    .replay-right-div-container p{
+    .replay-right-div-container p, .replay-right-div-container a{
         font-size: 1.2em;
     }
     .replay-messages p{
@@ -254,7 +262,7 @@
     .replay-right-div-container{
         height: 15%;
     }
-    .replay-right-div-container p{
+    .replay-right-div-container p, .replay-right-div-container a{
         font-size: 1em;
     }
     .replay-messages p{

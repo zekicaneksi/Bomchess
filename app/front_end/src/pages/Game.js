@@ -286,6 +286,9 @@ const Game = (props) => {
     let toShow_blackTime = HelperFunctions.milisecondsToChessCountDown(blackRemainingTime);
     let toShow_whiteTime = HelperFunctions.milisecondsToChessCountDown(whiteRemainingTime);
 
+    let whiteUsername = <a href={"/profile/"+initials.current.white.username} target={'_blank'}>{initials.current.white.username}</a>
+    let blackUsername = <a href={"/profile/"+initials.current.black.username} target={'_blank'}>{initials.current.black.username}</a>
+
     let showAbortMessage = ((moves.length < 1 && (parseInt(whiteRemainingTime / 1000) < (initials.current.matchLength * 60 - 10))
                             ||
                             moves.length < 2 && (parseInt(blackRemainingTime / 1000) < (initials.current.matchLength * 60 - 10))) 
@@ -332,7 +335,7 @@ const Game = (props) => {
           <div className="game-user-timer-top">
             
             <p>{(initials.current.orientation == "white") ? toShow_blackTime : toShow_whiteTime}</p>
-            <p>{(initials.current.orientation == "white") ? initials.current.black.username : initials.current.white.username}</p>
+            <p>{(initials.current.orientation == "white") ? blackUsername : whiteUsername}</p>
 
           </div>
 
@@ -345,7 +348,7 @@ const Game = (props) => {
 
           <div className='game-user-timer-bottom'>
 
-            <p>{(initials.current.orientation == "white") ? initials.current.white.username : initials.current.black.username}</p>
+            <p>{(initials.current.orientation == "white") ? whiteUsername : blackUsername}</p>
             <p>{(initials.current.orientation == "white") ? toShow_whiteTime : toShow_blackTime}</p> 
 
           </div>

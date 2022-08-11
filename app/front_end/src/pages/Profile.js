@@ -12,8 +12,8 @@ const MatchHistoryBox = (props) => {
     const historyBoxContainerRef = useRef();
     const [navigate, setNavigate] = useState();
 
-    function handleMatchElementDivClick(key){
-        setNavigate(key);
+    function handleMatchElementDivClick(event,key){
+        if(!(event.target.tagName.toLowerCase() === 'a')) setNavigate(key);
     }
 
     function handleScroll(){
@@ -72,14 +72,14 @@ const MatchHistoryBox = (props) => {
             <div 
             className={'profile-matchhistory-element-container '+ (matchResult === 'Won' ? 'profile-win-background' : (matchResult === 'Lost' ? 'profile-lose-background' : ''))}
             key={match.id}
-            onClick={() => handleMatchElementDivClick(match.id)}>
+            onClick={(event) => handleMatchElementDivClick(event,match.id)}>
                 <div>
                     <p>{matchResult}</p>
                 </div>
                 <div className='profile-matchhistory-middle-div'>
-                    <p>{match.white}</p>
+                    <a href={"/profile/"+match.white} target={'_blank'}>{match.white}</a>
                     <p>{match.length}</p>
-                    <p>{match.black}</p>
+                    <a href={"/profile/"+match.black} target={'_blank'}>{match.black}</a>
                 </div>
                 <div>
                     <p>{HelperFunctions.epochToDate(match.date)}</p>
@@ -124,6 +124,8 @@ const MessagesBox = (props) => {
     }
 
     function userDivOnclick(event, key){
+
+        if(event.target.tagName.toLowerCase() === 'a') return;
         
         setMessageBoxNav(key);
         let index = sendersAndMessages.current.findIndex(item => item.sender === key);  
@@ -167,7 +169,8 @@ const MessagesBox = (props) => {
 
     }
 
-    useEffect(() => {props.getAndSetProfile();},[unreadMessage]);
+    useEffect(() => {props.getAndSetProfile();}, [unreadMessage]);
+    useEffect(() => {initialUnsortedMessages.current = props.profileInfo.messages; sortMessages(); reRenderComponent();}, [props.profileInfo.messages]);
 
     function sortMessages(){
 
@@ -202,12 +205,12 @@ const MessagesBox = (props) => {
         }
 
         // Group the senders and their messages
-        for(let message in props.profileInfo.messages){
-            let sender = props.profileInfo.messages[message].sender;
-            sender = (sender === props.profileInfo.username ? props.profileInfo.messages[message].receiver : sender);
+        for(let message in initialUnsortedMessages.current){
+            let sender = initialUnsortedMessages.current[message].sender;
+            sender = (sender === props.profileInfo.username ? initialUnsortedMessages.current[message].receiver : sender);
             if(!sendersAndMessages.current.some(item => item.sender === sender)) sendersAndMessages.current.push({sender: sender, messages: []});
             let index = sendersAndMessages.current.findIndex(item => item.sender === sender);
-            sendersAndMessages.current[index].messages.push(props.profileInfo.messages[message]);
+            sendersAndMessages.current[index].messages.push(initialUnsortedMessages.current[message]);
         }
 
         // Order the messages by different senders by date
@@ -304,7 +307,7 @@ const MessagesBox = (props) => {
                 onClick={(event) => userDivOnclick(event,user.sender)}
                 className='profile-messagebox-user'
                 style={{backgroundColor: (!isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
-                    <p>{user.sender}</p>
+                    <a href={"/profile/"+user.sender} target={'_blank'}>{user.sender}</a>
                     <p>{date}</p>
                 </div>
                 );
@@ -325,7 +328,7 @@ const MessagesBox = (props) => {
                 messages.push(
                     <div key={message._id} className="profile-messagebox-message-container">
                         <div>
-                            <p>{message.sender}</p>
+                            <a href={"/profile/"+message.sender} target={'_blank'}>{message.sender}</a>
                             <p>{date}</p>
                         </div>
                         <div>

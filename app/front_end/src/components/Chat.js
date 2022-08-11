@@ -59,8 +59,15 @@ const Chat = (props) => {
         }
     },[]);
 
-    const MessageItems = props.Messages.map((message,index) =>
-    <p key={index}>{message}</p>
+    const MessageItems = props.Messages.map((message,index) => {
+        let indexSeperator = message.indexOf(':');
+        let username = message.substr(0,indexSeperator);
+        let msg = message.substr(indexSeperator+1);
+        return(<div key={index}>
+            <a href={"/profile/"+username} target={'_blank'}>{username}:</a>
+            <p> {msg}</p>
+        </div>);
+    }
     );
 
     return(
@@ -71,7 +78,7 @@ const Chat = (props) => {
             </div>
 
             <div className='chat-input'>
-                <input ref={inputRef}></input>
+                <input ref={inputRef} maxLength={100}></input>
                 {!(props.banDate > new Date().getTime()) && <button onClick={handleSendMessage}>Send</button>}
             </div>
 

@@ -13,6 +13,21 @@
     overflow-y: auto;
     overflow-wrap: break-word;
     font-size: 1em;
+    padding: 2%;
+}
+
+.chat-messages > div p{
+    margin:0;
+    display:inline;
+}
+
+.chat-messages > div a{
+    display:inline-block;
+    font-weight: bold;
+}
+
+.chat-messages > div a:link, .chat-messages > div a:visited{
+    color: black;
 }
 
 .chat-input{
