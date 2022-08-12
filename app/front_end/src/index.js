@@ -7,6 +7,7 @@ import Game from './pages/Game'
 import Computer from './pages/Computer'
 import Profile from './pages/Profile'
 import Replay from './pages/Replay'
+import Admin from './pages/Admin'
 import Layout from './components/Layout'
 import reportWebVitals from './reportWebVitals';
 import { Navigate, Outlet, useOutletContext } from "react-router-dom";
@@ -39,6 +40,7 @@ root.render(
           <Route path="replay" element={<NavigationToHome route={"/replay"} />}>
             <Route path=":matchId" element={<Replay />} />
           </Route>
+          <Route path="admin" element={<Admin />} />
         </Route>
         <Route path="/sign" element={<Sign />} />
         <Route path="*" element={<Navigate to="/" />} />

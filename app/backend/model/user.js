@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
     playing:{type:Number, default:"0.1"},
     chat:{type:Number, default:"0.1"},
     message:{type:Number, default:"0.1"}
-  }
+  },
+  type:{type:String, default:"normal"}
 });
 
 const User = mongoose.model("user", userSchema, 'users'); 

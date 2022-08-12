@@ -144,6 +144,7 @@ function createWSSGame(WSSGame_initialData){
         // JSON object to hold information about the game
         let initials ={};
         initials.type="initials";
+        initials.gameDate = WSSGame.date;
     
         // Orientation
         if(WSSGame.initialData.orientation.white._id.toString() == ws.user._id.toString()){

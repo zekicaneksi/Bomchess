@@ -177,14 +177,43 @@ const Game = (props) => {
     socket.current.send(JSON.stringify(toSend));
   }
 
-  function showReportDiv(){
+  function showReportDiv(jsonData){
 
     const handleSubmit = (e) => {
       // don't send anything if neither checkboxes are checked
-      console.log(e);
-      console.log(e.target[0].checked);
-      console.log(e.target[1].checked);
-      console.log(e.target[2].value);
+
+      function report(jsonData){
+        let responseFunction = (httpRequest) => {
+          if (httpRequest.readyState === XMLHttpRequest.DONE) {
+            if (httpRequest.status === 200) {
+              setPopupDiv('-');
+            } else {
+              alert("unknown error from server");
+            }
+          }
+      }
+
+      HelperFunctions.ajax('/report','POST',responseFunction,jsonData);
+      }
+
+      if(e.target[0].checked){
+        report({
+          sourceUsername: initials.current.orientation === 'black' ? initials.current.black.username : initials.current.white.username,
+          targetUsername: initials.current.orientation === 'white' ? initials.current.black.username : initials.current.white.username,
+          type:"chat",
+          content: chatMessages
+        });
+      }
+
+      if(e.target[1].checked){
+        report({
+          sourceUsername: initials.current.orientation === 'black' ? initials.current.black.username : initials.current.white.username,
+          targetUsername: initials.current.orientation === 'white' ? initials.current.black.username : initials.current.white.username,
+          type:"game",
+          content: initials.current.gameDate
+        });
+      }
+
       e.preventDefault();
     }
 
@@ -209,9 +238,8 @@ const Game = (props) => {
 
           </div>
 
-          <textarea name="description" placeholder='description'></textarea>
           <div>
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Submit"/>
             <button onClick={() => {setPopupDiv('-')}}>Cancel</button>  
           </div>
           

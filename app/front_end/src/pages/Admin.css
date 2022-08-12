@@ -1,0 +1,154 @@
+.admin-container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    background-color: gainsboro;
+    width: 70%;
+    height: 80%;
+    position: relative;
+    top: 10%;
+    left: 15%;
+    font-size: 1.5rem;
+}
+
+.admin-container p{
+    margin:0;
+}
+
+.admin-tab-container{
+    width: 30%;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 0.2em;
+    border-right-width: 0;
+}
+
+.admin-content-container{
+    width: 70%;
+    height:100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 0.2em;
+}
+
+.admin-tab-div{
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 0.1em;
+    border-top-width: 0;
+    width: 100%;
+}
+
+.admin-tab-div{
+    padding: 10%;
+    background-color: rgb(181, 179, 179);
+}
+
+.admin-tab-div:hover{
+    padding: 14%;
+    background-color: rgb(181, 179, 179);
+    cursor: pointer;
+}
+
+.admin-tab-div p{
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.admin-user-div{
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 0.1em;
+    border-top-width: 0;
+    border-right-width: 0;
+    border-left-width: 0;
+    padding: 2%;
+    width: 100%;
+    overflow-x: auto;
+    position: relative;
+}
+
+.admin-user-div button {
+    font-size: 1em;
+}
+
+.admin-user-div p{
+    margin-top: 0.1em;
+    white-space: nowrap;
+}
+
+.admin-user-div > div * {
+    font-size: 1em;
+}
+
+.admin-disabled-div{
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.admin-refresh-btn{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 4em;
+    height: 4em;
+    background-image: url(../../public/restart.svg);
+    background-size: 100% 100%;
+    z-index: 2;
+}
+
+.admin-user-div .admin-resolve-btn{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 4em;
+    height: 4em;
+    background-image: url(../../public/cross.svg);
+    background-size: 100% 100%;
+    z-index: 2;
+    font-size: initial;
+}
+
+.admin-user-div * {
+    margin: 0.5% !important;
+}
+
+.admin-user-div .admin-tick-bgimage{
+    background-image: url(../../public/tick.svg);
+}
+
+@media only screen and (max-width: 1600px) {
+    .admin-container{
+        font-size: 1rem;
+    }
+    .admin-refresh-btn, .admin-resolve-btn{
+        width: 3.5em;
+        height: 3.5em;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .admin-container{
+        left:0;
+        top:0;
+        width: 100%;
+        font-size: 1rem;
+    }
+    .admin-refresh-btn, .admin-resolve-btn{
+        width: 3em;
+        height: 3em;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .admin-container{
+        font-size: 0.6rem;
+    }
+    .admin-refresh-btn, .admin-resolve-btn{
+        width: 2em;
+        height: 2em;
+    }
+}

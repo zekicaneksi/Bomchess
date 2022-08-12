@@ -398,6 +398,7 @@ const Profile = () => {
     const reportPopupRef = useRef();
 
     let location = useLocation();
+    const outletContext = useOutletContext();
 
     const NotFoundPopup = () => {
 
@@ -441,11 +442,23 @@ const Profile = () => {
     }
 
     function handleReportBtn(){
-        reportPopupRef.current.style.visibility="visible";
 
-        console.log('im reporting you to the polaayiicee');
+        let responseFunction = (httpRequest) => {
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+              if (httpRequest.status === 200) {
+                reportPopupRef.current.style.visibility="visible";
+              } else {
+                alert("unknown error from server");
+              }
+            }
+        }
 
-
+        HelperFunctions.ajax('/report','POST',responseFunction,{
+            sourceUsername: outletContext.userInfo.username,
+            targetUsername:routerParams.username,
+            type:"bio",
+            content:profileInfo.bio
+        });
     }
 
     function getAndSetProfile(){

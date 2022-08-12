@@ -8,6 +8,7 @@ import {dbConnect} from "./config/database.js";
 import bcrypt from "bcryptjs";
 import {User} from "./model/user.js";
 import {Match} from "./model/match.js"
+import {Report} from "./model/report.js";
 import {Message} from "./model/message.js"
 import {Session} from "./model/session.js";
 import {auth} from './middleware/auth.js';
@@ -148,7 +149,8 @@ app.get("/api/checkSession", auth, async (req, res) => {
   let toSend={
     username: user.username,
     hasGame: "no",
-    bans: user.bans
+    bans: user.bans,
+    type: user.type
   }
 
   // Check if the player already has a game going on
@@ -307,6 +309,136 @@ app.get("/api/replay", auth, async (req, res) => {
   toSend.winner = match.winner;
 
   return res.status(200).send(JSON.stringify(toSend));
+
+});
+
+app.get("/api/admin/tabsInfo", auth, async (req, res) => {
+  let toSend={
+    AllUsers : [],
+    ReportedUsers : [],
+    ReportedMessages : undefined,
+    ReportedMatches : undefined
+  };
+
+  // -- All Users
+
+  const users = await User.find();
+
+  for(const user in users){
+    toSend.AllUsers.push({
+      id: users[user]._id.toString(),
+      username: users[user].username,
+      email: users[user].email,
+      type: users[user].type,
+      bans: users[user].bans
+    });
+  }
+
+
+  async function getReports(type){
+
+    let toReturn = [];
+    
+    const reports = await Report.find({"type" : type});
+
+    for(const report in reports){
+      let toPush = {};
+
+      toPush.id = reports[report]._id.toString();
+      toPush.sourceUsername = reports[report].sourceUsername;
+      toPush.targetUsername = reports[report].targetUsername;
+      toPush.targetID = reports[report].targetID;
+
+      if(type === 'game'){
+        const sourceUser = await User.findOne({"username" : reports[report].sourceUsername});
+        const targetUser = await User.findOne({"username" : reports[report].targetUsername});
+        const filterArray = [sourceUser._id, targetUser._id];
+        const match = await Match.findOne({"date" : reports[report].content, $in: ["white", filterArray], $in: ["black", filterArray]});
+        if(match === null) continue;
+        toPush.content = match._id.toString();
+      } else {
+        toPush.content = reports[report].content;
+      }
+
+      toReturn.push(toPush);
+    }
+
+    return [...toReturn];
+  }
+
+  toSend.ReportedUsers = await getReports("bio");
+  toSend.ReportedMessages = await getReports("chat");
+  toSend.ReportedMatches = await getReports("game");
+
+  return res.status(200).send(JSON.stringify(toSend));
+});
+
+app.post("/api/admin/ban", auth, async (req, res) => {
+
+  const banType = req.body.banType;
+  const banLength = parseInt(req.body.banLength);
+  const userID = req.body.userID;
+
+  const banTypes = ['playing', 'message', 'chat'];
+  const banLengths = [7,15,30];
+
+  // Checking the values
+  if(!(banTypes.includes(banType)) || !(banLengths.includes(banLength))) return res.status(400).send();
+
+  // Check if user exists
+  const user = await User.findOne({'_id' : mongoose.Types.ObjectId(userID)});
+  if(user === null) return res.status(400).send();
+
+  // Ban the user
+  let currentDate = new Date();
+  let banDate = new Date(currentDate.setDate(currentDate.getDate() + banLength));
+  user.bans[banType] = banDate.getTime();
+
+  if(banType === 'message') user.bio = " ";
+
+  await user.save();
+  return res.status(200).send();
+});
+
+app.post("/api/report", auth, async (req, res) => {
+
+  const reportTypes=["bio","chat","game"];
+
+  // Check report type
+  if(!(reportTypes.includes(req.body.type))) return res.status(400).send();
+
+  const sourceUser = await User.findOne({'username' : req.body.sourceUsername});
+  const targetUser = await User.findOne({'username' : req.body.targetUsername});
+  if(sourceUser === null || targetUser === null) return res.status(400).send();
+
+  if(req.body.type === "chat"){
+    let toSet = '';
+    for(let msg in req.body.content){
+      toSet+="\n"+req.body.content[msg];
+    }
+    req.body.content = toSet;
+  }
+
+  try{
+    const report = await Report.create({
+      type: req.body.type,
+      sourceUsername: sourceUser.username,
+      targetUsername: targetUser.username,
+      targetID : targetUser._id.toString(),
+      content: req.body.content
+    });
+    return res.status(200).send();
+  } catch(error){
+    return res.status(400).send();
+  }
+
+});
+
+app.post("/api/admin/resolveReport", auth, async (req, res) => {
+
+  await Report.findOneAndDelete({'_id' : mongoose.Types.ObjectId(req.body.id)});
+
+  return res.status(200).send();
 
 });
 
