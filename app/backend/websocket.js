@@ -95,7 +95,7 @@ const upgrade = async (request, socket, head) => {
           return;
         }
       });
-
+      
       // Connect the user
       WSSLayout.handleUpgrade(request, socket, head, function done(ws) {
         ws.sessionId = request.session.id;
