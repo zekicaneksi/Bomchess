@@ -1,7 +1,21 @@
 # Bomchess
 
+| Home Page  | Playing a Game  |  An other user's profile | 
+| ------------- | ------------- | ------------- |
+| ![image](https://user-images.githubusercontent.com/59491631/185667456-3e00b4e4-919b-4ed3-9331-b8d642af1de4.png)| ![image](https://user-images.githubusercontent.com/59491631/185667514-e19d6e0c-4a14-41b5-824f-c2e4b7cefab3.png) | ![image](https://user-images.githubusercontent.com/59491631/185667557-b73a35f4-3e47-4047-a24a-6ec82366bd8d.png) |
 
+| Notification  | Viewing user's own profile  | 
+| ------------- | ------------- |
+| ![image](https://user-images.githubusercontent.com/59491631/185668220-33911d7f-b97b-4778-b9af-3db7a046bb16.png) | ![image](https://user-images.githubusercontent.com/59491631/185668290-3cce5ba0-5735-4fb5-841d-2359c01806f0.png) |
 
+| Reporting a player  | Admin panel  | 
+| ------------- | ------------- |
+| ![image](https://user-images.githubusercontent.com/59491631/185668461-d827ba43-677c-472d-9709-5e67f9405729.png) | ![image](https://user-images.githubusercontent.com/59491631/185668541-8b22fae5-654c-4031-8716-0fd4ce85512a.png) |
+
+| Signin  | Login  | Register  | 
+| ------------- | ------------- | ------------- |
+| ![image](https://user-images.githubusercontent.com/59491631/185667042-ef30b6e3-0934-4911-8ed9-c6ede97c1d5d.png)|  ![image](https://user-images.githubusercontent.com/59491631/185667078-76542ad4-9fba-4f03-88bf-d8cb940d0a4f.png)| ![image](https://user-images.githubusercontent.com/59491631/185667112-fe62a2bf-2e48-4589-b008-f2e9ae13cc21.png)|
+ 
 ### About the BomchessBot
 
 It is made for testing the private message system. If you send a private message to it, it will send your message back but in reverse in about 5 seconds.
