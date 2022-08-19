@@ -3,7 +3,7 @@
     flex-direction: row;
     justify-content: space-evenly;
     position: relative;
-    background-color: gainsboro;
+    background-color: peru;
     width: 80%;
     height: 80%;
     top:10%;
@@ -12,6 +12,7 @@
 }
 
 .home-left-div, .home-right-div{
+    background-color: peru;
     flex-direction: column;
     justify-content: center;
     width: 45%;
@@ -56,6 +57,7 @@
     height: 75%;
     width: 30%;
     font-size: 1em;
+    background-color: burlywood;
 }
 
 .againstComputer{
@@ -65,6 +67,7 @@
 }
 
 .againstComputer button{
+    background-color: burlywood;
     height: 80%;
     position: relative;
     top: 50%;
@@ -74,6 +77,7 @@
 }
 
 .queue-cancel-btn{
+    background-color: burlywood;
     width: 50%;
     height: 20%;
     left: 50%;
@@ -107,12 +111,12 @@
 }
 
 .home-right-middle{
+    background-color: burlywood;
     height: 35%;
     width: 80%;
     position: relative;
     left:10%;
     overflow: auto;
-    background-color: rgb(195, 194, 194);
     box-sizing: border-box;
     padding-left: 10%;
 }
@@ -144,7 +148,7 @@
     .home-left-div, .home-right-div{
         flex-shrink: 0;
         width: 100%;
-        background-color: gainsboro;
+        background-color: peru;
         height: 50%;
     }
 }

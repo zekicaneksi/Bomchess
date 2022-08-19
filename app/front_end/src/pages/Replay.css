@@ -2,12 +2,16 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: gainsboro;
+    background-color: peru;
     width: 80%;
     height: 80%;
     position: relative;
     top: 10%;
     left: 10%;
+}
+
+.replay-moveslist-btn-container button, .replay-switch-btn{
+    background-color: burlywood;
 }
 
 .replay-left-div-container{
@@ -171,7 +175,7 @@
         width: 100%;
         flex-direction: row;
         text-align: center;
-        background-color: gainsboro;
+        background-color: peru;
         align-items: center;
     }
     .replay-user-timer-top p:first-child{
@@ -235,7 +239,7 @@
         width: 100%;
         order:1;
         height: 30%;
-        background-color: gainsboro;
+        background-color: peru;
     }
     .replay-moveslist-container{
         padding: 0;

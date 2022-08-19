@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    background-color: gainsboro;
+    background-color: peru;
     width: 80%;
     height: 80%;
     position: relative;
@@ -11,7 +11,7 @@
 }
 
 .game-left-column, .game-middle-column, .game-right-column{
-    background-color: gainsboro;
+    background-color: peru;
 }
 
 .game-left-column{
@@ -158,6 +158,7 @@
 }
 
 .game-draw-btn, .game-surrender-btn, .report-chat-div > button{
+    background-color: burlywood;
     height: 4em;
     width: 4em;
 }

@@ -306,7 +306,7 @@ const MessagesBox = (props) => {
                 <div key={user.sender}
                 onClick={(event) => userDivOnclick(event,user.sender)}
                 className='profile-messagebox-user'
-                style={{backgroundColor: (!isRead ? 'rgb(115 118 134)' : 'rgb(120 115 115)')}}>
+                style={{backgroundColor: (!isRead ? 'burlywood' : '#ba9a71')}}>
                     <a href={"/profile/"+user.sender} target={'_blank'}>{user.sender}</a>
                     <p>{date}</p>
                 </div>

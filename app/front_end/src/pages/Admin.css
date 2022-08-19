@@ -16,6 +16,7 @@
 }
 
 .admin-tab-container{
+    background-color: #b17234;
     width: 30%;
     height: 100%;
     overflow-y: auto;
@@ -26,6 +27,7 @@
 }
 
 .admin-content-container{
+    background-color: #b17234;
     width: 70%;
     height:100%;
     overflow-y: auto;
@@ -43,14 +45,14 @@
 }
 
 .admin-tab-div{
+    background-color: peru;
     padding: 10%;
-    background-color: rgb(181, 179, 179);
 }
 
 .admin-tab-div:hover{
     padding: 14%;
-    background-color: rgb(181, 179, 179);
     cursor: pointer;
+    background-color: rgb(187, 122, 57);
 }
 
 .admin-tab-div p{
@@ -59,6 +61,7 @@
 }
 
 .admin-user-div{
+    background-color: burlywood;
     box-sizing: border-box;
     border-style: solid;
     border-width: 0.1em;
@@ -90,6 +93,7 @@
 }
 
 .admin-refresh-btn{
+    background-color: peru;
     position: absolute;
     right: 0;
     top: 0;

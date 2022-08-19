@@ -5,7 +5,7 @@
     left: 50%;
     position: relative;
     transform: translate(-50%,-50%);
-    background-color: gainsboro;
+    background-color: peru;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -57,7 +57,7 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    background-color: gainsboro;
+    background-color: peru;
     width: 80%;
     height: 80%;
     position: relative;
@@ -85,7 +85,7 @@
 
 .profile-bio-container > div{
     flex: 1 1 auto;
-    background-color: rgb(144, 139, 139);
+    background-color: burlywood;
     margin: 2%;
     padding: 1% 2% 2% 1%;
     overflow-y: auto;
@@ -103,6 +103,7 @@
 }
 
 .profile-bio-container button{
+    background-color: burlywood;
     font-size: 1.1em;
     margin-left: auto;
     margin-right: 2%;
@@ -217,7 +218,7 @@
     border-width: 0px;
     border-bottom-width: 2px;
     border-color: rgb(95, 89, 89);
-    background-color: rgb(120 115 115);
+    background-color: burlywood;
 }
 
 .profile-messagebox-message-container p, .profile-messagebox-message-container a{
@@ -238,6 +239,7 @@
 }
 
 .profile-reply-div textarea{
+    background-color: burlywood;
     flex: 1 1 auto;
     font-size: 1em;
 }
@@ -265,6 +267,7 @@
     flex: 1 1 auto;
     margin: 2%;
     font-size: 1em;
+    background-color: burlywood;
 }
 
 .profile-sendmessage-container > p{
@@ -354,7 +357,7 @@
     transform: translate(-50%,-50%);
     visibility: hidden;
     z-index: 2;
-    background-color: gainsboro;
+    background-color: peru;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -406,11 +409,11 @@
     }
     .profile-messages-container{
         width: 100%;
-        background: gainsboro;
+        background: peru;
     }
     .profile-match-history-container{
         width: 100%;
-        background: gainsboro;
+        background: peru;
     }
     .profile-messagesbox-navbar button{
         width: 1.7em;

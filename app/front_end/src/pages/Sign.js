@@ -12,6 +12,8 @@ class Sign extends React.Component{
     this.handleLogin = this.handleLogin.bind(this);
     this.handleRegister = this.handleRegister.bind(this);
     this.handleGoBack = this.handleGoBack.bind(this);
+    this.handleInitialKeyUp = this.handleInitialKeyUp.bind(this);
+    this.handleLoginKeyUp = this.handleLoginKeyUp.bind(this);
     this.state = {phase:"initial", email:"", isLoggedIn:""};
   }
 
@@ -112,6 +114,18 @@ class Sign extends React.Component{
     { "email": this.state.email, "password": password});
 
   }
+
+  handleInitialKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      this.handleInitial();
+    }
+  }
+
+  handleLoginKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      this.handleLogin();
+    }
+  }
   
   handleGoBack(){
     this.setState({phase:"initial"});
@@ -136,9 +150,9 @@ class Sign extends React.Component{
     else{
 
       if(phase == 'initial'){
-        content = <Initial onClick={this.handleInitial}/>;
+        content = <Initial onClick={this.handleInitial} onKeyUp={this.handleInitialKeyUp}/>;
       }else if(phase == 'login'){
-        content = <Login email={this.state.email} onClick={this.handleLogin}/>;
+        content = <Login email={this.state.email} onClick={this.handleLogin} onKeyUp={this.handleLoginKeyUp}/>;
       }else if(phase == 'navigate') {
         return(<Navigate to='/' />);
       } else {
@@ -147,10 +161,10 @@ class Sign extends React.Component{
   
       return (
         <div id="sign-container">
-          {content}
           {this.state.phase != 'initial' &&
-            <button onClick={this.handleGoBack}>Go Back</button>
+            <button onClick={this.handleGoBack} className='go-back-btn'></button>
           }
+          {content}
         </div>
       );
       
@@ -164,7 +178,7 @@ function Initial(props){
   return(
     <div id="sign-initial">
       <h1>Enter your email</h1>
-      <input type="email"></input>
+      <input type="email" onKeyUp={props.onKeyUp}></input>
       <button onClick={props.onClick}>continue</button>
     </div>
   );
@@ -174,8 +188,10 @@ function Login(props){
   return(
     <div id="sign-login">
       <h1>Please enter your password for <br></br> <b>{props.email}</b></h1>
-      <input type="password"></input>
-      <button onClick={props.onClick}>Login</button>
+      <div>
+        <input type="password" onKeyUp={props.onKeyUp}></input>
+        <button onClick={props.onClick}>Login</button>
+      </div>
     </div>
   );
 }

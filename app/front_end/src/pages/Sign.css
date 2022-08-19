@@ -1,38 +1,78 @@
+#root{
+    background-color: darkslategray;
+}
+
 #sign-container{
     position: absolute;
     top: 50%;
     left:50%;
     transform: translate(-50%,-50%);
-    background-color: grey;
+    background-color: peru;
     border-radius: 3%;
     padding: 3%;
     text-align: center;
+    display: flex;
+    flex-direction: column;
 }
 
 #sign-container h1{
+    color: dimgray;
     font-size:2em;
     margin:0;
     margin-bottom: 1em;
 }
 
 #sign-container p{
+    color: dimgray;
     font-size:2em;
     margin:0;
 }
 
 #sign-container button{
+    color: dimgray;
+    background-color: burlywood;
     font-size:1.3em;
 }
 
 #sign-container input{
     line-height: 2em;
-    margin-bottom:1em;
+    margin-bottom:0.5em;
+    background-color: #ecc38f;
 }
 
 #sign-initial, #sign-register{
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+#sign-register h1{
+    margin-bottom: 0;
+}
+
+#sign-register p{
+    margin-bottom: 0.1em;
+}
+
+#sign-login > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sign-login input{
+    margin-bottom: 0;
+    margin-right: 0.5em;
+}
+
+.go-back-btn{
+    font-size: 1em;
+    float: left;
+    background-image: url(../../public/back.svg);
+    width: 2em;
+    height: 2em;
+    background-size: 100% 100%;
+    background-color: burlywood;
 }
 
 @media only screen and (max-width: 601px) {

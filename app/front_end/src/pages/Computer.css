@@ -11,7 +11,7 @@
 }
 
 .computer-left-column, .computer-right-column{
-    background-color: gainsboro;
+    background-color: peru;
 }
 
 .computer-left-column{
@@ -45,6 +45,7 @@
 }
 
 .computer-buttons button{
+    background-color: burlywood;
     width: 5em;
     height: 5em;
     background-size: 100% 100%;
