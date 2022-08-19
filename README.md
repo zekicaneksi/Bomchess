@@ -16,7 +16,7 @@
 | ------------- | ------------- | ------------- |
 | ![image](https://user-images.githubusercontent.com/59491631/185667042-ef30b6e3-0934-4911-8ed9-c6ede97c1d5d.png)|  ![image](https://user-images.githubusercontent.com/59491631/185667078-76542ad4-9fba-4f03-88bf-d8cb940d0a4f.png)| ![image](https://user-images.githubusercontent.com/59491631/185667112-fe62a2bf-2e48-4589-b008-f2e9ae13cc21.png)|
  
-### About the BomchessBot
+### About the BomchessBot that lurks in the Lobby Chat
 
 It is made for testing the private message system. If you send a private message to it, it will send your message back but in reverse in about 5 seconds.
 
