@@ -1,4 +1,4 @@
-export let apiPort = process.env.REACT_APP_BACKEND_API_PORT;
+export let apiPort = (process.env.NODE_ENV === "development" ? process.env.REACT_APP_BACKEND_API_PORT_DEV : process.env.REACT_APP_BACKEND_API_PORT_PRD)
 
 
 /**
