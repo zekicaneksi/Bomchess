@@ -119,8 +119,7 @@ sessions
 
 ## Regarding Development
 
-Considering required technologies; Node.js (npm) and MongoDB are installed and running, <br>
-and collections (users, matches, reports, ...) in MongoDB are created,
+Considering required technologies (Node.js (npm) and MongoDB) are installed and running
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
 
