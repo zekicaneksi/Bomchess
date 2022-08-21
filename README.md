@@ -130,11 +130,11 @@ the `SECRET` for sessions in the backend's .env file must be changed.
 
 The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
 
-#### Notes
-
 Because backend listen on a different port, when making AJAX requests from the create-react-app those requests need to be proxied.<br>
 To proxy them, this line is added to the create-react-app's package.json file (`app/front_end/package.json`); <br>
 `"proxy": "http://localhost:4001"` The port, must be the backend api's port.
+
+#### Notes
 
 Admin panel is accessible at `/admin`. Only an user with `admin` type can access there. For that, an user's type must be manually changed in database from `normal` to `admin`
 
