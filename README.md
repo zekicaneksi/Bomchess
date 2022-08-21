@@ -138,9 +138,6 @@ To proxy them, this line is added to the create-react-app's package.json file (`
 
 Admin panel is accessible at `/admin`. Only an user with `admin` type can access there. For that, an user's type must be manually changed in database from `normal` to `admin`
 
-For the bot to work (`app/backend/BomchessBot.js`) to work, an user must be created (can be created from the site like a normal user), then the `email` and `username` fields in `BomchessBot.js` must be changed accordingly.<br>
-(Providing a descriptive bio for the bot would be appropriate.)
-
 If the bot is not wanted, simply delete the `BomchessBot.js` file, also the `Bomchessbot()` line and the import within the `app/backend/index.js` file.<br>
 
 ## Regarding Building/Deployment
