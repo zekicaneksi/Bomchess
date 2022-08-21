@@ -144,7 +144,7 @@ For the bot to work (`app/backend/BomchessBot.js`) to work, an user must be crea
 
 If the bot is not wanted, simply delete the `BomchessBot.js` file, also the `Bomchessbot()` line and the import within the `app/backend/index.js` file.<br>
 
-## Regarding Building
+## Regarding Building/Deployment
 
 Considering required technologies and libraries are installed and running as described in `Regarding Development` section,
 
