@@ -29,7 +29,7 @@ const upgrade = async (request, socket, head) => {
     const myUrl = new URL.parse(request.url,true);
     const pathname = myUrl.pathname;
 
-    if (pathname === '/api/lobby') {
+    if (pathname === '/ws/lobby') {
 
       // Check if user already has a WebSocket connection
       WSSLobby.clients.forEach( (ws) => {
@@ -45,7 +45,7 @@ const upgrade = async (request, socket, head) => {
         ws.user = user;
         WSSLobby.emit('connection', ws, request);
       });
-    } else if (pathname === '/api/queue') {
+    } else if (pathname === '/ws/queue') {
 
       // Check if the user is banned from playing
       if(user.bans.playing > new Date().getTime()){
@@ -68,7 +68,7 @@ const upgrade = async (request, socket, head) => {
         ws.user = user;
         WSSQueue.emit('connection', ws, request);
       });
-    } else if (pathname === '/api/game') {
+    } else if (pathname === '/ws/game') {
       // Get the WSSGame WebSocketServer
       Games.forEach((WSSGame, key) => {
         if(key.includes(user._id.toString())){
@@ -87,7 +87,7 @@ const upgrade = async (request, socket, head) => {
           return;
         }
       });
-    } else if (pathname === '/api/layout'){
+    } else if (pathname === '/ws/layout'){
       // Check if user already has a WebSocket connection
       WSSLayout.clients.forEach( (ws) => {
         if(ws.sessionId == request.session.id){

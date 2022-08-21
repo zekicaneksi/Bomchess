@@ -132,7 +132,7 @@ The ports of backend, frontend and database can be changed in `app/front_end/.en
 
 Because backend listen on a different port, when making AJAX requests from the create-react-app those requests need to be proxied.<br>
 To proxy them, this line is added to the create-react-app's package.json file (`app/front_end/package.json`); <br>
-`"proxy": "http://localhost:4001"` The port, must be the backend api's port.
+`"proxy": "http://localhost:4001"` The port, must be the backend's ```API_PORT``` port.
 
 #### Notes
 

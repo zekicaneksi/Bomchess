@@ -57,7 +57,7 @@ const Layout = () => {
 
   function setUpLayoutSocket(){
     
-    layoutSocket.current = new WebSocket('ws://'+document.location.hostname+':'+ HelperFunctions.apiPort + '/api/layout');
+    layoutSocket.current = new WebSocket('ws://'+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/layout');
     
     // Listen for messages
     layoutSocket.current.addEventListener('message', function (event) {
