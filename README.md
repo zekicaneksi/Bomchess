@@ -1,5 +1,7 @@
 # Bomchess
 
+[To test live: Click me](bomchess.zekicaneksi.com) (Sorry, you'll have to register first though)
+
 | Home Page  | Playing a Game  |  An other user's profile | 
 | ------------- | ------------- | ------------- |
 | ![image](https://user-images.githubusercontent.com/59491631/185667456-3e00b4e4-919b-4ed3-9331-b8d642af1de4.png)| ![image](https://user-images.githubusercontent.com/59491631/185667514-e19d6e0c-4a14-41b5-824f-c2e4b7cefab3.png) | ![image](https://user-images.githubusercontent.com/59491631/185667557-b73a35f4-3e47-4047-a24a-6ec82366bd8d.png) |
