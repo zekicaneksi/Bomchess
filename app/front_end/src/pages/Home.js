@@ -19,6 +19,7 @@ const Home = (props) => {
   const userInfo = useOutletContext().userInfo;
 
   function handleSendMessage(msg){
+    if(chatSocket.current.readyState === 2 || chatSocket.current.readyState === 3) return(-1);
     chatSocket.current.send(msg);
   }
 
@@ -32,7 +33,7 @@ const Home = (props) => {
 
       if(dataJson.type == 'connected'){
         setLobbyUser((old) => {
-          if(old.includes(dataJson.username)) return old;
+          if(dataJson.username === userInfo.username && old.includes(dataJson.username)) return old;
           let toReturn = [...old];
           toReturn.push(dataJson.username);
           return toReturn;
@@ -41,7 +42,11 @@ const Home = (props) => {
       else if(dataJson.type == 'disconnected'){
         setLobbyUser((old) => {
           let toReturn = [...old];
-          toReturn = toReturn.filter(item => item !== dataJson.username);
+          if(dataJson.username === userInfo.username) return old;
+          const index = toReturn.indexOf(dataJson.username);
+          if (index > -1) {
+            toReturn.splice(index, 1);
+          }
           return toReturn;
         });
       }

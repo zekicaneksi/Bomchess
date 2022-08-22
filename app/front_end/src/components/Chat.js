@@ -12,7 +12,11 @@ const Chat = (props) => {
     const holdScrollValue = useRef(0);
     
     function handleSendMessage(){
-        props.handleSendMessage(inputRef.current.value);
+        if(props.handleSendMessage(inputRef.current.value)){
+            inputRef.current.disabled = true;
+            inputRef.current.value = "Please use only one tab";
+            return;
+        }
         inputRef.current.value='';
     }
 

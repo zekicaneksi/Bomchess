@@ -20,6 +20,7 @@ const Game = (props) => {
 
   const [navigateBack, setNavigateBack] = useState(false);
   const [popupDiv, setPopupDiv] = useState('-');
+  const [switchTabDiv, setSwitchTabDiv] = useState('-');
 
   const [chatMessages, setChatMessages] = useState([]);
 
@@ -84,6 +85,7 @@ const Game = (props) => {
 
   // Chat send message button handle
   function handleSendMessage(msg){
+    if(socket.current.readyState === 2 || socket.current.readyState === 3) return(-1);
     let toSend={};
     toSend.type = 'message';
     toSend.msg = msg;
@@ -155,6 +157,16 @@ const Game = (props) => {
         });
       }
 
+    });
+
+    socket.current.addEventListener('close', function (event) {
+      setSwitchTabDiv(
+        <div className='game-report-div'>
+
+        <p className='game-report-div-middle'>Please switch to your recently opened tab, or refreshed page</p>
+
+      </div>
+      )
     });
 
     // Connection failed
@@ -395,6 +407,7 @@ const Game = (props) => {
         </div>    
 
         {(popupDiv != '-' && popupDiv)}
+        {(switchTabDiv != '-' && switchTabDiv)}
 
       </div>
     
