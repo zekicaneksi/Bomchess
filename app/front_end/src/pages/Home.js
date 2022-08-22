@@ -23,7 +23,7 @@ const Home = (props) => {
   }
 
   function setUpChatSocket(){
-    chatSocket.current = new WebSocket('ws://'+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/lobby');
+    chatSocket.current = new WebSocket((document.location.protocol === 'http:' ? 'ws://' : 'wss://')+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/lobby');
     
     // Listen for messages
     chatSocket.current.addEventListener('message', function (event) {
@@ -63,7 +63,7 @@ const Home = (props) => {
 
   function setUpQueueSocket(matchLength){
 
-    queueSocket.current = new WebSocket('ws://'+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/queue?matchLength='+matchLength);
+    queueSocket.current = new WebSocket((document.location.protocol === 'http:' ? 'ws://' : 'wss://')+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/queue?matchLength='+matchLength);
     
     // Listen for messages
     queueSocket.current.addEventListener('message', function (event) {
