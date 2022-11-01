@@ -1,6 +1,6 @@
 # Bomchess
 
-[To test live: Click me](bomchess.zekicaneksi.com) (Sorry, you'll have to register first though)
+[To test live: Click me](https://bomchess.zekicaneksi.com) (Sorry, you'll have to register first though)
 
 | Home Page  | Playing a Game  |  An other user's profile | 
 | ------------- | ------------- | ------------- |
