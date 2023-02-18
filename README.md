@@ -136,6 +136,13 @@ Because backend listen on a different port, when making AJAX requests from the c
 To proxy them, this line is added to the create-react-app's package.json file (`app/front_end/package.json`); <br>
 `"proxy": "http://localhost:4001"` The port, must be the backend's ```API_PORT``` port.
 
+Setting up a google cloud project for google auth;
+- Create a project in `Google Cloud Developer Console`
+- Go to API's & Services -> Credentials and create a `OAuth client ID` credential
+	- It will ask you to configure your consent screen first. When doing so, include the `email` scope. Also, we don't require a test user since we don't access any sensitive/restricted info.
+	- When creating the credential, add `http://localhost:3000` to `Authorized JavaScript Origins` and `http://localhost:4001/login-via-google` to `Authorized redirect URIs` sections. (note that the ports must be your front-end port and backend port relatively)
+- After creation, download your credential's JSON file, rename it as "google_login.json" and copy the file into `/app/backend`
+
 #### Notes
 
 Admin panel is accessible at `/admin`. Only an user with `admin` type can access there. For that, an user's type must be manually changed in database from `normal` to `admin`
@@ -144,7 +151,7 @@ If the bot is not wanted, simply delete the `BomchessBot.js` file, also the `Bom
 
 ## Regarding Building/Deployment
 
-Considering required technologies and libraries are installed and running as described in `Regarding Development` section,
+Considering google cloud project is setup and required technologies and libraries are installed and running as described in `Regarding Development` section,
 
 Running `npm run build` in `app/front_end` creates the static files in the `app/_build/public` folder. <br>
 To serve the files, in the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
@@ -152,3 +159,8 @@ To serve the files, in the `app/_build` folder, run `npm install` to install the
 Running `node index.js` in `app/backend` sets up the backend.
 
 If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
+
+## Extra Notes
+
+Resources used for implementing google auth (OAtuh 2.0);<br>
+https://cloud.google.com/nodejs/docs/reference/google-auth-library/latest#oauth2
