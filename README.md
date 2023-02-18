@@ -153,12 +153,12 @@ If the bot is not wanted, simply delete the `BomchessBot.js` file, also the `Bom
 
 Considering google cloud project is setup and required technologies and libraries are installed and running as described in `Regarding Development` section,
 
+If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
+
 Running `npm run build` in `app/front_end` creates the static files in the `app/_build/public` folder. <br>
 To serve the files, in the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
 
 Running `node index.js` in `app/backend` sets up the backend.
-
-If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
 
 ## Extra Notes
 
