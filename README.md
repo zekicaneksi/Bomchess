@@ -125,7 +125,7 @@ Considering required technologies (Node.js (npm) and MongoDB) are installed and 
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
 
-the `SECRET` for sessions in the backend's .env file must be changed.
+the `SECRET` for sessions in `app/backend/.env` file must be changed.
 
 The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
 
