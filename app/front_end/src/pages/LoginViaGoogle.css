@@ -1,0 +1,43 @@
+#sign-google{
+    position: absolute;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    background-color: peru;
+    border-radius: 3%;
+    padding: 3%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#sign-google h1{
+    color: dimgray;
+    font-size:2em;
+    margin:0;
+    margin-bottom: 1em;
+}
+
+#sign-google p{
+    color: dimgray;
+    font-size:2em;
+    margin:0;
+}
+
+#sign-google button{
+    color: dimgray;
+    background-color: burlywood;
+    font-size:1.3em;
+}
+
+#sign-google input{
+    line-height: 2em;
+    margin-bottom:0.5em;
+    background-color: #ecc38f;
+}
+
+@media only screen and (max-width: 601px) {
+    #sign-google{
+        font-size: 0.6rem;
+    }
+}

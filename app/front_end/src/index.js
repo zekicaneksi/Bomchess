@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import Home from './pages/Home'
 import Sign from './pages/Sign'
+import LoginViaGoogle from './pages/LoginViaGoogle'
 import Game from './pages/Game'
 import Computer from './pages/Computer'
 import Profile from './pages/Profile'
@@ -43,6 +44,7 @@ root.render(
           <Route path="admin" element={<Admin />} />
         </Route>
         <Route path="/sign" element={<Sign />} />
+        <Route path="/login-via-google" element={<LoginViaGoogle />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

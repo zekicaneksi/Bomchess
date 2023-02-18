@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Sign.css'
 import * as HelperFunctions from './../components/HelperFunctions.js'
 import { Navigate } from "react-router-dom";
 
-class Sign extends React.Component{
+class Sign extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.checkSession = this.checkSession.bind(this);
     this.handleInitial = this.handleInitial.bind(this);
@@ -14,56 +14,62 @@ class Sign extends React.Component{
     this.handleGoBack = this.handleGoBack.bind(this);
     this.handleInitialKeyUp = this.handleInitialKeyUp.bind(this);
     this.handleLoginKeyUp = this.handleLoginKeyUp.bind(this);
-    this.state = {phase:"initial", email:"", isLoggedIn:""};
+    this.state = { phase: "initial", email: "", isLoggedIn: "" };
   }
 
-  checkSession(){
+  checkSession() {
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-          this.setState({isLoggedIn:"true"});
-        } else if(httpRequest.status === 401) {
-          this.setState({isLoggedIn:"false"});
+          this.setState({ isLoggedIn: "true" });
+        } else if (httpRequest.status === 401) {
+          this.setState({ isLoggedIn: "false" });
         } else {
           alert("unknown error from server");
         }
       }
     }
-    HelperFunctions.ajax('/checkSession','GET', responseFunction);
+    HelperFunctions.ajax('/checkSession', 'GET', responseFunction);
   }
 
-  handleInitial(){
+  handleInitial() {
     let emailAddress = document.getElementById('sign-initial').getElementsByTagName('input')[0].value;
 
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-          if (httpRequest.responseText == 'exists'){
-            this.setState({phase:"login", email:emailAddress});
+          if (httpRequest.responseText == 'exists') {
+            this.setState({ phase: "login", email: emailAddress });
+          } else if (httpRequest.responseText == 'googleLogin') {
+            HelperFunctions.ajax('/get-google-login-url', 'GET', (httpRequest) => {
+              if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                window.location.href = httpRequest.responseText;
+              }
+            });
           } else {
-            this.setState({phase:"register", email:emailAddress});
+            this.setState({ phase: "register", email: emailAddress });
           }
         } else {
           alert('unexpected response from server');
         }
       }
     }
-    HelperFunctions.ajax('/checkEmail','POST', responseFunction, { "email": emailAddress});
+    HelperFunctions.ajax('/checkEmail', 'POST', responseFunction, { "email": emailAddress });
 
   }
 
-  handleRegister(){
+  handleRegister() {
 
     let divRegister = document.getElementById('sign-register');
     let username = divRegister.getElementsByTagName('input')[0].value;
-    let password =  divRegister.getElementsByTagName('input')[1].value;
+    let password = divRegister.getElementsByTagName('input')[1].value;
 
-    if(password !=  divRegister.getElementsByTagName('input')[2].value){
+    if (password != divRegister.getElementsByTagName('input')[2].value) {
       alert("passwords dont match, put your passwords again");
       return;
     }
 
-    if(username == '' || password == '') {
+    if (username == '' || password == '') {
       alert("Don't leave an empty field");
       return;
     }
@@ -71,9 +77,9 @@ class Sign extends React.Component{
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-          this.setState({phase:"navigate"});
+          this.setState({ phase: "navigate" });
         } else if (httpRequest.status === 409) {
-          if(httpRequest.responseText == 'email')
+          if (httpRequest.responseText == 'email')
             alert('email is in use');
           else
             alert('username is in use');
@@ -83,26 +89,26 @@ class Sign extends React.Component{
         }
       }
     }
-    HelperFunctions.ajax('/register','POST', responseFunction,
-    { "email": this.state.email, "username": username, "password": password});
+    HelperFunctions.ajax('/register', 'POST', responseFunction,
+      { "email": this.state.email, "username": username, "password": password });
 
   }
 
-  handleLogin(){
+  handleLogin() {
     let divLogin = document.getElementById('sign-login');
     let password = divLogin.getElementsByTagName('input')[0].value;
 
-    if(password == ''){
+    if (password == '') {
       return;
     }
 
     let responseFunction = (httpRequest) => {
       if (httpRequest.readyState === XMLHttpRequest.DONE) {
         if (httpRequest.status === 200) {
-          this.setState({phase:"navigate"});
-        } else if(httpRequest.status === 400) {
+          this.setState({ phase: "navigate" });
+        } else if (httpRequest.status === 400) {
           alert('password is incorrect');
-        } else if(httpRequest.status === 406) {
+        } else if (httpRequest.status === 406) {
           alert('the user is already logged in');
         }
         else {
@@ -110,8 +116,8 @@ class Sign extends React.Component{
         }
       }
     }
-    HelperFunctions.ajax('/login','POST', responseFunction,
-    { "email": this.state.email, "password": password});
+    HelperFunctions.ajax('/login', 'POST', responseFunction,
+      { "email": this.state.email, "password": password });
 
   }
 
@@ -126,12 +132,12 @@ class Sign extends React.Component{
       this.handleLogin();
     }
   }
-  
-  handleGoBack(){
-    this.setState({phase:"initial"});
+
+  handleGoBack() {
+    this.setState({ phase: "initial" });
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.checkSession();
   }
 
@@ -140,25 +146,24 @@ class Sign extends React.Component{
     let phase = this.state.phase;
     let content;
 
-    if(isLoggedIn == "true")
-    {
+    if (isLoggedIn == "true") {
       return (<Navigate to='/' />);
     }
-    else if(isLoggedIn == ""){
-      return(<div>Loading...</div>);
+    else if (isLoggedIn == "") {
+      return (<div>Loading...</div>);
     }
-    else{
+    else {
 
-      if(phase == 'initial'){
-        content = <Initial onClick={this.handleInitial} onKeyUp={this.handleInitialKeyUp}/>;
-      }else if(phase == 'login'){
-        content = <Login email={this.state.email} onClick={this.handleLogin} onKeyUp={this.handleLoginKeyUp}/>;
-      }else if(phase == 'navigate') {
-        return(<Navigate to='/' />);
+      if (phase == 'initial') {
+        content = <Initial onClick={this.handleInitial} onKeyUp={this.handleInitialKeyUp} />;
+      } else if (phase == 'login') {
+        content = <Login email={this.state.email} onClick={this.handleLogin} onKeyUp={this.handleLoginKeyUp} />;
+      } else if (phase == 'navigate') {
+        return (<Navigate to='/' />);
       } else {
         content = <Register email={this.state.email} onClick={this.handleRegister} />;
       }
-  
+
       return (
         <div id="sign-container">
           {this.state.phase != 'initial' &&
@@ -167,25 +172,40 @@ class Sign extends React.Component{
           {content}
         </div>
       );
-      
+
     }
 
   }
 
 }
 
-function Initial(props){
-  return(
+function Initial(props) {
+
+  function handleGoogleLogin() {
+    let responseFunction = (httpRequest) => {
+      if (httpRequest.readyState === XMLHttpRequest.DONE) {
+        window.location.href = httpRequest.responseText;
+      }
+    }
+    HelperFunctions.ajax('/get-google-login-url', 'GET', responseFunction);
+  }
+
+  return (
     <div id="sign-initial">
       <h1>Enter your email</h1>
       <input type="email" onKeyUp={props.onKeyUp}></input>
       <button onClick={props.onClick}>continue</button>
+      <p>or</p>
+      <div className='google-div' onClick={handleGoogleLogin}>
+        <img src='/google_icon.svg'></img>
+        <p>Login with Google</p>
+      </div>
     </div>
   );
 }
 
-function Login(props){
-  return(
+function Login(props) {
+  return (
     <div id="sign-login">
       <h1>Please enter your password for <br></br> <b>{props.email}</b></h1>
       <div>
@@ -196,8 +216,8 @@ function Login(props){
   );
 }
 
-function Register(props){
-  return(
+function Register(props) {
+  return (
     <div id="sign-register">
       <h1>Register your email <br></br><b>{props.email}</b></h1>
       <p>username</p>
@@ -212,4 +232,3 @@ function Register(props){
 }
 
 export default Sign;
-  

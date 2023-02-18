@@ -46,6 +46,27 @@
     justify-content: center;
 }
 
+#sign-initial .google-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(210, 209, 209);
+    border-radius: 0.5rem;
+    margin-top: 8%;
+    padding: 2%;
+    cursor: pointer;
+}
+
+#sign-initial .google-div p{
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#sign-initial .google-div:hover{
+    background-color: rgb(141, 140, 140);
+}
+
 #sign-register h1{
     margin-bottom: 0;
 }
