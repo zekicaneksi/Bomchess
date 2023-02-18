@@ -125,11 +125,11 @@ Considering required technologies (Node.js (npm) and MongoDB) are installed and 
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
 
-the `SECRET` for sessions in `app/backend/.env` file must be changed.
+The `SECRET` for sessions in `app/backend/.env` file must be changed.
 
 The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
 
-Because backend listen on a different port, when making AJAX requests from the create-react-app those requests need to be proxied.<br>
+Because backend listens on a different port, when making AJAX requests from the create-react-app those requests need to be proxied.<br>
 To proxy them, this line is added to the create-react-app's package.json file (`app/front_end/package.json`); <br>
 `"proxy": "http://localhost:4001"` The port, must be the backend's ```API_PORT``` port.
 
@@ -137,8 +137,8 @@ Setting up a google cloud project for google auth;
 - Create a project in `Google Cloud Developer Console`
 - Go to API's & Services -> Credentials and create a `OAuth client ID` credential
 	- It will ask you to configure your consent screen first. When doing so, include the `email` scope. Also, we don't require a test user since we don't access any sensitive/restricted info.
-	- When creating the credential, add `http://localhost:3000` to `Authorized JavaScript Origins` and `http://localhost:4001/login-via-google` to `Authorized redirect URIs` sections. (note that the ports must be your front-end port and backend port relatively)
-- After creation, download your credential's JSON file, rename it as "google_login.json" and copy the file into `/app/backend`
+	- When creating the credential, add `http://localhost:3000` to `Authorized JavaScript Origins` and `http://localhost:4001/api/login-via-google` to `Authorized redirect URIs` sections. (note that the ports must be your front-end port and backend port relatively)
+- After creation, download your credential's JSON file, rename it as `google_login.json` and copy the file into `/app/backend`
 
 Finally, running `npm start` in the `app/front_end`, <br>
 and `node index.js` in the `app/backend` sets up the app for development.
