@@ -125,9 +125,6 @@ Considering required technologies (Node.js (npm) and MongoDB) are installed and 
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
 
-Finally, running `npm start` in the `app/front_end`, <br>
-and `node index.js` in the `app/backend` sets up the app for development.
-
 the `SECRET` for sessions in the backend's .env file must be changed.
 
 The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
@@ -142,6 +139,9 @@ Setting up a google cloud project for google auth;
 	- It will ask you to configure your consent screen first. When doing so, include the `email` scope. Also, we don't require a test user since we don't access any sensitive/restricted info.
 	- When creating the credential, add `http://localhost:3000` to `Authorized JavaScript Origins` and `http://localhost:4001/login-via-google` to `Authorized redirect URIs` sections. (note that the ports must be your front-end port and backend port relatively)
 - After creation, download your credential's JSON file, rename it as "google_login.json" and copy the file into `/app/backend`
+
+Finally, running `npm start` in the `app/front_end`, <br>
+and `node index.js` in the `app/backend` sets up the app for development.
 
 #### Notes
 
