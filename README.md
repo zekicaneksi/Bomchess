@@ -1,6 +1,5 @@
 # Bomchess
-
-[To test live: Click me](https://bomchess.zekicaneksi.com) (Sorry, you'll have to register first though)
+## [To test live: Click me](https://bomchess.zekicaneksi.com)
 
 | Home Page  | Playing a Game  |  An other user's profile | 
 | ------------- | ------------- | ------------- |
@@ -24,7 +23,7 @@ It is made for testing the private message system. If you send a private message
 
 ## Functionalities
 
-- Authentication
+- Authentication (Google Authentication as well)
 - Profile pages
 - Sending messages to other users
 - PvP
@@ -121,6 +120,8 @@ sessions
 
 ## Regarding Development
 
+Before everything, i want to let you know that backend and frontend must be both in the same host because of hardcoded "localhost"s in the code. This was because of my inexperience at the time of writing the project.
+
 Considering required technologies (Node.js (npm) and MongoDB) are installed and running
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
@@ -153,10 +154,15 @@ If the bot is not wanted, simply delete the `BomchessBot.js` file, also the `Bom
 
 Considering google cloud project is setup and required technologies and libraries are installed and running as described in `Regarding Development` section,
 
-If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
+The google project's OAuth Client ID credential that was created in development section must be changed;
+- Remove localhost and add your real host to `Authorized JavaScript Origins` section. (ex: https://mySubDomain.myDomain.com)
+- Remove localhost and add your real host to `Authorized redirect URIs` section. (ex: https://mySubDomain.myDomain.com/api/login-via-google)
+- Download the credential's JSON file, rename it to `google_login.json` and update the one in `/app/backend`
 
 Running `npm run build` in `app/front_end` creates the static files in the `app/_build/public` folder. <br>
-To serve the files, in the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
+- If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
+
+In the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
 
 Running `node index.js` in `app/backend` sets up the backend.
 
