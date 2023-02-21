@@ -5,6 +5,7 @@ const config = dotenv.config().parsed;
 
 const MONGO_URI  = config.MONGO_URI;
 
+console.log('connecting to database:' + MONGO_URI);
 const dbConnect = 
   // Connecting to the database
   mongoose
