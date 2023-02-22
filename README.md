@@ -116,8 +116,6 @@ sessions
 
 ## Regarding Development
 
-Before everything, i want to let you know that backend and frontend must be both in the same host because of hardcoded "localhost"s in the code. This was because of my inexperience at the time of writing the project.
-
 Considering required technologies (Node.js (npm) and MongoDB) are installed and running
 
 Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
@@ -125,10 +123,6 @@ Running `npm install` in `app/backend` and in `app/front_end` installs the libra
 The `SECRET` for sessions in `app/backend/.env` file must be changed.
 
 The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
-
-Because backend listens on a different port, when making AJAX requests from the create-react-app those requests need to be proxied.<br>
-To proxy them, this line is added to the create-react-app's package.json file (`app/front_end/package.json`); <br>
-`"proxy": "http://localhost:4001"` The port, must be the backend's ```API_PORT``` port.
 
 Setting up a google cloud project for google auth;
 - Create a project in `Google Cloud Developer Console`
