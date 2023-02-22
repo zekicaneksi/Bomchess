@@ -13,6 +13,7 @@ import { Message } from "./model/message.js"
 import { Session } from "./model/session.js";
 import { auth } from './middleware/auth.js';
 import mongoose from "mongoose";
+import cors from "cors";
 import { google } from 'googleapis';
 import fs from 'fs';
 import { promisify } from 'node:util';
@@ -50,13 +51,35 @@ const sessionConfig = session({
     collectionName: "sessions",
     stringify: false,
     autoRemove: 'interval',
-    autoRemoveInterval: 1
+    autoRemoveInterval: 1,
   })
 });
 
 app.use(sessionConfig);
 
 app.use(express.json());
+
+app.options('*', cors({
+  credentials: true,
+  methods: '*',
+  origin: config.FRONT_END_ADDRESS
+})) // include before other routes
+
+app.use(cors({
+  allowedHeaders: '*',
+  credentials: true,
+  methods: '*',
+  origin: config.FRONT_END_ADDRESS
+}))
+
+/*
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header("Access-Control-Allow-Origin", config.FRONT_END_ADDRESS);
+  res.header("Access-Control-Allow-Headers", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  next();
+});*/
 
 // Check existence of email
 app.post("/api/checkEmail", async (req, res) => {
@@ -191,13 +214,13 @@ app.get('/api/login-via-google', async (req, res) => {
 
     // If user is registered but hasn't set an username
     if (!user || user.username == '')
-      return res.redirect('http://localhost:' + config.FRONT_END_PORT + '/login-via-google');
+      return res.redirect(config.FRONT_END_ADDRESS + '/login-via-google');
     else  // Login the user
-      return res.redirect('http://localhost:' + config.FRONT_END_PORT + '/');
+      return res.redirect(config.FRONT_END_ADDRESS + '/');
 
   } catch (error) {
     console.log(error);
-    return res.redirect('http://localhost:' + config.FRONT_END_PORT + '/');
+    return res.redirect(config.FRONT_END_ADDRESS + '/');
   }
 });
 

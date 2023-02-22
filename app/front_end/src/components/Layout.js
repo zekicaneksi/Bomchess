@@ -57,7 +57,7 @@ const Layout = () => {
 
   function setUpLayoutSocket(){
     
-    layoutSocket.current = new WebSocket((document.location.protocol === 'http:' ? 'ws://' : 'wss://')+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/layout');
+    layoutSocket.current = new WebSocket((process.env.REACT_APP_SECURE=="true" ? 'wss://' : 'ws://')+ process.env.REACT_APP_BACKEND_ADDRESS + '/ws/layout');
     
     // Listen for messages
     layoutSocket.current.addEventListener('message', function (event) {

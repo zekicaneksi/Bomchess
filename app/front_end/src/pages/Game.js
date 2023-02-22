@@ -95,7 +95,7 @@ const Game = (props) => {
   // Setup the web socket
   function setUpWebSocket(){
     // Create the WebSocket
-    socket.current = new WebSocket((document.location.protocol === 'http:' ? 'ws://' : 'wss://')+document.location.hostname+':'+ HelperFunctions.apiPort + '/ws/game');
+    socket.current = new WebSocket((process.env.REACT_APP_SECURE=="true" ? 'wss://' : 'ws://')+ process.env.REACT_APP_BACKEND_ADDRESS + '/ws/game');
         
     // Listen for messages
     socket.current.addEventListener('message', function (event) {

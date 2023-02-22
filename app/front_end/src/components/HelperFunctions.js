@@ -1,6 +1,3 @@
-export let apiPort = (process.env.NODE_ENV === "development" ? process.env.REACT_APP_BACKEND_API_PORT_DEV : (document.location.protocol === 'http:' ? '80' : '443'))
-
-
 /**
  * @param route /api will added to the route automatically. ex:/login
  * @param type 'GET' or 'POST'
@@ -12,7 +9,8 @@ export function ajax(route, type, responseFunction, payloadJson) {
     
     httpRequest.onreadystatechange = () => {responseFunction(httpRequest);}
 
-    httpRequest.open(type, '/api'+ route, true);
+    httpRequest.open(type, (process.env.REACT_APP_SECURE=="true" ? 'https://' : 'http://') + process.env.REACT_APP_BACKEND_ADDRESS+'/api'+ route, true);
+    httpRequest.withCredentials=true;
 
     if(type == 'POST'){
         httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
