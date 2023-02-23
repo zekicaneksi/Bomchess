@@ -116,13 +116,27 @@ sessions
 
 ## Regarding Development
 
-Considering required technologies (Node.js (npm) and MongoDB) are installed and running
+Considering required technologies (Node.js (npm) and MongoDB) are installed and running,
 
-Running `npm install` in `app/backend` and in `app/front_end` installs the libraries,
+Running `npm install` in `app/backend` and in `app/front_end` installs the libraries.
 
-The `SECRET` for sessions in `app/backend/.env` file must be changed.
+.env files must be created in `app/backend/` and in `app/front_end/`;
 
-The ports of backend, frontend and database can be changed in `app/front_end/.env` and in `app/backend/.env` environment files.
+- `app/backend/`
+```
+API_PORT=4001 # backend api port
+FRONT_END_ADDRESS="http://localhost:3000" # the full address of frontend
+MONGO_URI="mongodb://localhost:27017/bomchess" # the connection string of mongodb
+SECRET="SUPERSECRETCRAZYAMAZINGPERPENDICULAR" # secret for the session
+```
+
+- `app/front_end/`
+```
+PORT=3000 # frontend port
+BUILD_PATH=../_build/public # DON'T CHANGE THIS
+REACT_APP_BACKEND_ADDRESS="localhost:4001" # backend api's address
+REACT_APP_SECURE="false" # if app uses secure connection (https) "true" or "false"
+```
 
 Setting up a google cloud project for google auth;
 - Create a project in `Google Cloud Developer Console`
@@ -148,7 +162,11 @@ The google project's OAuth Client ID credential that was created in development 
 - Download the credential's JSON file, rename it to `google_login.json` and update the one in `/app/backend`
 
 Running `npm run build` in `app/front_end` creates the static files in the `app/_build/public` folder. <br>
-- If changed in development, backend's and front end's ports must be changed accordingly in the `app/_build/.env` file.
+
+- `.env` file must be created in `app/_build/`;
+```
+FRONT_END_PORT=3000 # This must be the same with development's frontend port.
+```
 
 In the `app/_build` folder, run `npm install` to install the libraries and then `node index.js` to serve the files.
 
