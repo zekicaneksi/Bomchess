@@ -1,5 +1,4 @@
 # Bomchess
-## [To test live: Click me](https://bomchess.zekicaneksi.com)
 
 | Home Page  | Playing a Game  |  An other user's profile | 
 | ------------- | ------------- | ------------- |
